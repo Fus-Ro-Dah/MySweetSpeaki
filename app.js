@@ -187,13 +187,16 @@ const ASSETS = {
  */
 const ITEMS = {
     Pumpkin: {
+        name: 'かぼちゃ',
         imagefile: 'item_pumpkin.png',
-        soundfile: 'チョワヨ.mp3', // 配置時に再生
-        text: 'わあ、カボチャだ！',   // 配置時に表示
+        soundfile: 'チョワヨ.mp3',
+        text: 'わあ、カボチャだ！',
         size: 60,
+        showInMenu: true,
         transform: { nextId: 'BabySpeaki', duration: 10000 }
     },
     BabySpeaki: {
+        name: '赤ちゃんスピキ',
         imagefile: 'item_baby_speaki.png',
         soundfile: '完全詠唱.mp3',
         text: 'ピキッ？',
@@ -201,21 +204,28 @@ const ITEMS = {
         transform: { isAdult: true, duration: 20000 }
     },
     CatTower: {
+        name: 'キャットタワー',
         imagefile: 'item_cat_tower.png',
         type: 'furniture',
         size: 100,
-        text: '登ってみたい！'
+        text: '登ってみたい！',
+        showInMenu: true,
+        transform: { nextId: 'ToyBall', duration: 10000 }
     },
     ToyBall: {
+        name: 'おもちゃのボール',
         imagefile: 'item_toy_ball.png',
         size: 40,
-        text: '転がそう！'
+        text: '転がそう！',
+        showInMenu: true
     },
     LuxuryPillow: {
+        name: '高級枕',
         imagefile: 'item_luxury_pillow.png',
         size: 60,
         text: 'ふかふかだ...',
-        ignoreReaction: true
+        ignoreReaction: true,
+        showInMenu: true
     }
 };
 
@@ -860,6 +870,7 @@ class Game {
 
     /** ゲームの初期設定 */
     init() {
+        this.initItemMenu();
         this.setupInteractions();
         this.setupDragAndDrop();
 
@@ -869,6 +880,26 @@ class Game {
         for (let i = 0; i < 1; i++) {
             this.addSpeaki();
         }
+    }
+
+    /** アイテムメニューを動的に生成 */
+    initItemMenu() {
+        const itemList = document.getElementById('item-list');
+        if (!itemList) return;
+
+        itemList.innerHTML = ''; // クリア
+
+        Object.entries(ITEMS).forEach(([id, config]) => {
+            if (config.showInMenu) {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'draggable-item';
+                itemDiv.dataset.id = id;
+                itemDiv.dataset.type = config.type || 'item';
+                itemDiv.draggable = true;
+                itemDiv.textContent = config.name || id;
+                itemList.appendChild(itemDiv);
+            }
+        });
     }
 
     /** 新しいSpeakiを追加 */
