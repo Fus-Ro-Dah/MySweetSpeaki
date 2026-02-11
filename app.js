@@ -28,6 +28,154 @@ const STATE = {
     GAME_REACTION: 'game_reaction'
 };
 
+/**
+ * 統合アセット定義 (ASSETS)
+ * 形式: speaki_タイプ_感情_行動_番号
+ */
+const ASSETS = {
+    // -- Mood (状態の継続中ループ・継続するエフェクト) --
+    // ---- 通常 ----
+    // ------ 停止 ------
+    speaki_mood_normal_idle_1: {
+        imagefile: 'speaki_normal_idle_1.png',
+        soundfile: 'チョワヨ.mp3', // 仮の割り当て
+        text: 'ﾁｮﾜﾖ!',
+        movePattern: 'none'
+    },
+    speaki_mood_normal_idle_2: {
+        imagefile: 'speaki_normal_idle_2.png',
+        soundfile: 'アーウ.mp3', // 仮の割り当て
+        text: 'ｱｰｳ',
+        movePattern: 'none'
+    },
+    speaki_mood_normal_idle_3: {
+        imagefile: 'speaki_normal_idle_3.png',
+        soundfile: 'スピキ.mp3',
+        text: 'ｽﾋﾟｷ!',
+        movePattern: 'stretch'
+    },
+    // ------ 歩き ------
+    speaki_mood_normal_walking_1: {
+        imagefile: 'speaki_normal_walking_1.png',
+        soundfile: 'チョワヨ.mp3',
+        text: 'ﾁｮﾜﾖ!',
+        movePattern: 'bounce'
+    },
+    speaki_mood_normal_walking_2: {
+        imagefile: 'speaki_normal_walking_2.png',
+        soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
+        text: 'ﾁｮﾜﾖ-ﾁｮﾜﾖ-',
+        movePattern: 'none'
+    },
+    speaki_mood_normal_walking_3: {
+        imagefile: 'speaki_normal_walking_3.png',
+        soundfile: 'スピキ.mp3',
+        text: 'ｽﾋﾟｷ!',
+        movePattern: 'none'
+    },
+    // ---- うれしい ----
+    // ------ 停止 ------
+    speaki_mood_happy_idle_1: {
+        imagefile: 'speaki_happy_idle_1.png',
+        soundfile: 'チョワヨ.mp3',
+        text: 'ﾁｮﾜﾖ!',
+        movePattern: 'none'
+    },
+    speaki_mood_happy_idle_2: {
+        imagefile: 'speaki_happy_idle_2.png',
+        soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
+        text: 'ﾁｮﾜﾖｰﾁｮﾜﾖｰ',
+        movePattern: 'none'
+    },
+    speaki_mood_happy_idle_3: {
+        imagefile: 'speaki_happy_idle_3.png',
+        soundfile: 'スピキ.mp3',
+        text: 'ｽﾋﾟｷ!',
+        movePattern: 'stretch'
+    },
+    // ------ 歩き ------
+    speaki_mood_happy_walking_1: {
+        imagefile: 'speaki_happy_walking_1.png',
+        soundfile: 'チョワヨチョワヨウェガレジチョワヨ.mp3',
+        text: 'ﾁｮﾜﾖ-ﾁｮﾜﾖ-',
+        movePattern: 'bounce'
+    },
+    speaki_mood_happy_walking_2: {
+        imagefile: 'speaki_happy_walking_2.png',
+        soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
+        text: 'ﾁｮﾜﾖｰﾁｮﾜﾖｰ',
+        movePattern: 'none'
+    },
+    speaki_mood_happy_walking_3: {
+        imagefile: 'speaki_happy_walking_3.png',
+        soundfile: 'チョワヨチョワヨスンバコッチチョワヨ.mp3',
+        text: 'ﾁｮﾜﾖ-ﾁｮﾜﾖ-',
+        movePattern: 'none'
+    },
+    // ---- 悲しい ----
+    // ------ 停止 ------
+    speaki_mood_sad_idle_1: {
+        imagefile: 'speaki_sad_idle_1.png',
+        soundfile: 'ウアア.mp3',
+        text: 'ｳｱｱ!',
+        movePattern: 'shake'
+    },
+    speaki_mood_sad_idle_2: {
+        imagefile: 'speaki_sad_idle_2.png',
+        soundfile: 'デルジバゼヨ.mp3',
+        text: 'ﾃﾞﾙｼﾞﾊﾞｾﾞﾖ!',
+        movePattern: 'stretch'
+    },
+    speaki_mood_sad_idle_3: {
+        imagefile: 'speaki_sad_idle_3.png',
+        soundfile: 'ウアアスピキデルジバゼヨ.mp3',
+        text: 'ｳｱｱ!ｽﾋﾟｷﾃﾞﾙｼﾞﾊﾞｾﾞﾖ!',
+        movePattern: 'stretch'
+    },
+    // ------ 歩き ------
+    speaki_mood_sad_walking_1: {
+        imagefile: 'speaki_sad_walking_1.png',
+        soundfile: 'スピキヲイジメヌンデ.mp3',
+        text: 'ｽﾋﾟｷｦｲｼﾞﾒﾇﾝﾃﾞ...',
+        movePattern: 'bounce'
+    },
+    speaki_mood_sad_walking_2: {
+        imagefile: 'speaki_sad_walking_2.png',
+        soundfile: 'アーウ.mp3',
+        text: 'ｱｰｳ',
+        movePattern: 'stretch'
+    },
+    speaki_mood_sad_walking_3: {
+        imagefile: 'speaki_sad_walking_3.png',
+        soundfile: 'デルジバゼヨ.mp3',
+        text: 'ﾃﾞﾙｼﾞﾊﾞｾﾞﾖ!',
+        movePattern: 'stretch'
+    },
+
+    // -- Performance (特定の演技として一度出し切るエフェクト) --
+    // ---- 通常 ----
+    speaki_performance_happy_reaction_1: {
+        imagefile: 'speaki_happy_wait_3.png',
+        soundfile: 'チョワヨ.mp3',
+        text: 'ヤッター!',
+        movePattern: 'bounce'
+    },
+    // ---- うれしい ----
+    speaki_performance_happy_reaction_1: {
+        imagefile: 'speaki_happy_wait_3.png',
+        soundfile: 'チョワヨ.mp3',
+        text: 'ヤッター!',
+        movePattern: 'bounce'
+    },
+    // ---- 悲しい ----
+    speaki_performance_sad_timeout_1: {
+        imagefile: 'speaki_sad_wait_3.png',
+        soundfile: 'チョワヨ.mp3',
+        text: 'ぐーぐー',
+        movePattern: 'stretch'
+    }
+};
+
 class Speaki {
     /** コンストラクタ: Speakiの初期化 */
     constructor(id, parentElement, x, y) {
@@ -71,15 +219,16 @@ class Speaki {
         this.isActuallyDragging = false;
 
         // アセット管理用
-        this.currentAssetKey = ''; // 現在の「感情_行動」
+        this.currentAssetKey = ''; // 現在のアセットキー
+        this.currentAsset = null;  // 現在選択されているアセットデータ
         this.currentImgSrc = '';   // 現在選択されている画像パス
         this.targetItem = null;    // 現在向かっているアイテム同期用
 
         // DOM生成
         this.createDOM();
 
-        // 初期画像を表示
-        this.syncSpeakiDOM();
+        // 初期アセットを適用（感情のランダム化と画像のセット）
+        this._onStateChanged(this.state);
     }
 
     /** DOM要素の生成 */
@@ -96,13 +245,30 @@ class Speaki {
         const emoji = document.createElement('div');
         emoji.className = 'speaki-emoji-overlay';
 
+        // デバッグ用テキスト（アセット名用）
+        const debugText = document.createElement('div');
+        debugText.style.position = 'absolute';
+        debugText.style.left = '100%';
+        debugText.style.top = '50%';
+        debugText.style.transform = 'translateY(-50%)';
+        debugText.style.whiteSpace = 'nowrap';
+        debugText.style.fontSize = '12px';
+        debugText.style.color = '#fff';
+        debugText.style.background = 'rgba(0,0,0,0.5)';
+        debugText.style.padding = '2px 5px';
+        debugText.style.borderRadius = '4px';
+        debugText.style.pointerEvents = 'none';
+        debugText.style.display = this.id === 0 ? 'block' : 'none';
+
         container.appendChild(img);
         container.appendChild(emoji);
+        container.appendChild(debugText);
         this.parentElement.appendChild(container); // 親要素に追加
 
         this.dom.container = container;
         this.dom.sprite = img;
         this.dom.emoji = emoji;
+        this.dom.debugText = debugText;
     }
 
     /** フレームごとの更新処理 */
@@ -142,20 +308,28 @@ class Speaki {
                 const elaspedTime = now - this.arrivalTime; // 経過時間
                 if (elaspedTime > this.waitDuration) {
                     this.state = STATE.WALKING;
+                    this._onStateChanged(this.state);
                 }
                 break;
 
             case STATE.WALKING:
-                if (arrived) this.state = STATE.IDLE;
+                if (arrived) {
+                    this.state = STATE.IDLE;
+                    this._onStateChanged(this.state);
+                }
                 break;
 
             case STATE.GIFT_LEAVING:
-                if (arrived) this.state = STATE.GIFT_SEARCHING;
+                if (arrived) {
+                    this.state = STATE.GIFT_SEARCHING;
+                    this._onStateChanged(this.state);
+                }
                 break;
 
             case STATE.GIFT_SEARCHING:
                 if (now - this.arrivalTime > 5000) { // 5秒待機で戻る
                     this.state = STATE.GIFT_RETURNING;
+                    this._onStateChanged(this.state);
                 }
                 break;
 
@@ -163,7 +337,8 @@ class Speaki {
                 if (arrived) {
                     this.state = STATE.GIFT_WAIT_FOR_USER_REACTION;
                     window.game.startGiftReceiveEvent(this);
-                    this.eventStartTime = now; // イベント開始時刻を記録
+                    this.eventStartTime = now;
+                    this._onStateChanged(this.state);
                 }
                 break;
 
@@ -176,20 +351,25 @@ class Speaki {
                     window.game.updateGiftUI('hide');
                     const emotionEl = document.getElementById('status-emotion');
                     if (emotionEl) emotionEl.textContent = 'ぐーぐー...';
+                    this._onStateChanged(this.state);
                 }
                 break;
 
             case STATE.GIFT_REACTION:
-                // 3秒間喜んでから終了
-                if (now - this.eventStartTime > 3000) {
+                // 音声長（デフォルト3秒）喜んでから終了
+                const reactionDur = this.actionDuration || 3000;
+                if (now - this.eventStartTime > reactionDur) {
                     window.game.completeGiftEvent();
+                    this._onStateChanged(STATE.IDLE);
                 }
                 break;
 
             case STATE.GIFT_TIMEOUT:
-                // 5秒間寝てから終了
-                if (now - this.eventStartTime > 5000) {
+                // 音声長（デフォルト5秒）寝てから終了
+                const timeoutDur = this.actionDuration || 5000;
+                if (now - this.eventStartTime > timeoutDur) {
                     window.game.completeGiftEvent();
+                    this._onStateChanged(STATE.IDLE);
                 }
                 break;
 
@@ -203,19 +383,100 @@ class Speaki {
                     if (this.targetItem) {
                         this._performItemAction(this.targetItem);
                     }
+                    this._onStateChanged(this.state);
                 }
                 break;
 
             case STATE.ITEM_ACTION:
                 // アイテムアクション終了を時間ベースで判定
                 const itemActionElapsed = now - this.actionStartTime;
-                if (itemActionElapsed > this.actionDuration) {
+                const actionDur = this.actionDuration || 3000;
+                if (itemActionElapsed > actionDur) {
                     this.state = STATE.IDLE;
-                    this.action = 'idle';
-                    this.emotion = 'happy';
+                    this._onStateChanged(this.state);
                 }
                 break;
         }
+    }
+
+    /** 状態変更時のエフェクト発動（ASSETS方式） */
+    _onStateChanged(newState) {
+        // 1. 前の音声を停止
+        if (this.currentVoice) {
+            this.currentVoice.pause();
+            this.currentVoice = null;
+        }
+
+        // 2. 状態に応じたアクション（action）の自動割り当て
+        if (newState === STATE.IDLE) {
+            const emotions = ['normal', 'happy', 'sad'];
+            this.emotion = emotions[Math.floor(Math.random() * emotions.length)];
+            this.action = 'idle';
+            console.log(`[Speaki] Random emotion set for IDLE: ${this.emotion}`);
+        } else if ([STATE.WALKING, STATE.GIFT_LEAVING, STATE.GIFT_RETURNING, STATE.ITEM_APPROACHING].includes(newState)) {
+            this.action = 'walking';
+        } else if (newState === STATE.GIFT_REACTION || newState === STATE.ITEM_ACTION) {
+            this.action = 'reaction';
+        } else if (newState === STATE.GIFT_TIMEOUT) {
+            this.action = 'timeout';
+        } else if (newState === STATE.USER_INTERACTING) {
+            this.action = 'idle';
+        }
+
+        // 3. 状態からタイプ (mood / performance) を判定
+        const performanceStates = [STATE.GIFT_REACTION, STATE.GIFT_TIMEOUT, STATE.ITEM_ACTION, STATE.USER_INTERACTING];
+        const type = performanceStates.includes(newState) ? 'performance' : 'mood';
+
+        // 3. ASSETS からフィルタリング (type, emotion, action)
+        const candidates = Object.entries(ASSETS).filter(([key, data]) => {
+            const parts = key.split('_'); // speaki_type_emotion_action_num
+            if (parts.length < 4) return false;
+            return parts[1] === type && parts[2] === this.emotion && parts[3] === this.action;
+        });
+
+        // 合致するものがなければ normal 感情で再検索
+        let selectedEntry = null;
+        if (candidates.length > 0) {
+            selectedEntry = candidates[Math.floor(Math.random() * candidates.length)];
+        } else {
+            const fallbackCandidates = Object.entries(ASSETS).filter(([key, data]) => {
+                const parts = key.split('_');
+                return parts[1] === type && parts[2] === 'normal' && parts[3] === this.action;
+            });
+            if (fallbackCandidates.length > 0) {
+                selectedEntry = fallbackCandidates[Math.floor(Math.random() * fallbackCandidates.length)];
+            }
+        }
+
+        if (!selectedEntry) {
+            this.currentAsset = null;
+            this.motionType = 'none';
+            return;
+        }
+
+        const [assetKey, assetData] = selectedEntry;
+        this.currentAssetKey = assetKey;
+        this.currentAsset = assetData;
+
+        // 4. 音声の再生
+        if (assetData.soundfile) {
+            const game = window.game || Game.instance;
+            if (game) {
+                this.currentVoice = game.playSound(assetData.soundfile);
+
+                // Performanceタイプなら音声長をDurationに反映
+                if (type === 'performance' && this.currentVoice) {
+                    this.currentVoice.addEventListener('loadedmetadata', () => {
+                        this.actionDuration = this.currentVoice.duration * 1000;
+                        console.log(`[Speaki] Dynamic performance duration: ${this.actionDuration}ms`);
+                    }, { once: true });
+                }
+            }
+        }
+
+        // 5. モーション設定
+        this.motionType = assetData.movePattern || 'none';
+        this.motionTimer = 0;
     }
 
     /** 現在の状態に応じた行動の実行 */
@@ -243,27 +504,13 @@ class Speaki {
     syncSpeakiDOM() {
         const dom = this.dom;
 
-        // 1. 画像切り替え
-        // 感情とアクションからキーを作成 (例: speaki_happy_wait)
-        // 今回のアセットは _wait 系統がメインなので、アクションを wait に寄せているが
-        // 将来的に _walking などが増えても対応できる設計にする。
-        let mappedAction = this.action;
-        if (mappedAction === 'idle' || mappedAction === 'walking') mappedAction = 'wait';
-
-        const assetKey = `speaki_${this.emotion}_${mappedAction}`;
-
-        // キーが変わったか、まだ画像が決まっていないなら再抽選
-        if (this.currentAssetKey !== assetKey || !this.currentImgSrc) {
-            this.currentAssetKey = assetKey;
+        // 1. 画像切り替え (ASSETSから選択された画像を使用)
+        if (this.currentAsset && this.currentAsset.imagefile) {
             const game = window.game || Game.instance;
-            if (game) {
-                this.currentImgSrc = game.getRandomAsset(assetKey);
-                // console.log(`[Speaki] Asset changed: ${assetKey} -> ${this.currentImgSrc}`);
+            const img = game.images[this.currentAsset.imagefile];
+            if (img && dom.sprite.src !== img.src) {
+                dom.sprite.src = img.src;
             }
-        }
-
-        if (this.currentImgSrc && dom.sprite.src.indexOf(this.currentImgSrc) === -1) {
-            dom.sprite.src = this.currentImgSrc;
         }
 
         // 2. 位置とサイズ
@@ -278,22 +525,54 @@ class Speaki {
         const transform = `perspective(800px) rotateX(${this.distortion.rotateX}deg) skewX(${this.distortion.skewX}deg) scale(${this.distortion.scale}) scaleX(${flip})`;
         dom.sprite.style.transform = transform;
 
-        // 3. 絵文字
+        // 3. 絵文字 (将来的にテキスト表示に統合)
         let emoji = '';
         if (this.state === STATE.GIFT_RETURNING || this.state === STATE.GIFT_READY) emoji = '🎁';
         else if (this.isDragging) emoji = '❤️';
 
         dom.emoji.textContent = emoji;
+
+        // 4. セリフ（text）の表示 (ID 0 のみ)
+        if (this.id === 0) {
+            dom.debugText.textContent = (this.currentAsset && this.currentAsset.text) || '';
+        }
     }
 
-    /** ドラッグ時の歪み・インタラクションアニメーションの更新 */
+    /** ドラッグ時・モーションアニメーションの更新 */
     _updateDistortion(dt) {
+        this.motionTimer += dt || 16;
+
         if (this.isActuallyDragging) {
             this.distortion.skewX += (this.targetDistortion.skewX - this.distortion.skewX) * 0.15;
             this.distortion.rotateX += (this.targetDistortion.rotateX - this.distortion.rotateX) * 0.15;
             this.distortion.scale += (this.targetDistortion.scale - this.distortion.scale) * 0.15;
-        } else {
-            this.distortion.skewX *= 0.85;
+            return;
+        }
+
+        // ASSETS定義に基づくモーション適用
+        switch (this.motionType) {
+            case 'shake':
+                this.distortion.skewX = Math.sin(this.motionTimer * 0.05) * 10;
+                this.distortion.rotateX *= 0.85;
+                this.distortion.scale = 1.0;
+                break;
+            case 'stretch':
+                const stretch = Math.sin(this.motionTimer * 0.01) * 0.1;
+                this.distortion.scale = 1.0 + stretch;
+                this.distortion.rotateX = stretch * -50;
+                this.distortion.skewX *= 0.85;
+                break;
+            case 'bounce':
+                const bounce = Math.abs(Math.sin(this.motionTimer * 0.01)) * 0.1;
+                this.distortion.scale = 1.0 + bounce;
+                this.distortion.skewX *= 0.85;
+                this.distortion.rotateX *= 0.85;
+                break;
+            default:
+                this.distortion.skewX *= 0.85;
+                this.distortion.rotateX *= 0.85;
+                this.distortion.scale += (1.0 - this.distortion.scale) * 0.15;
+                break;
         }
     }
 
@@ -416,17 +695,17 @@ class Speaki {
         // 3秒間その場で喜ぶモーションを維持する
         setTimeout(() => {
             // 待機中に別のドラッグやイベントが発生して状態が変わっていたら何もしない
-            if (this.state !== STATE.INTERACTING) return;
+            if (this.state !== STATE.USER_INTERACTING) return;
 
             this.action = 'idle';
 
             // 中断されていた行動（お土産イベント中など）があればそこに戻り、なければ待機へ
-            if (this.interruptedState) {
-                this.state = this.interruptedState;
-                this.interruptedState = null;
+            if (this.stateStack && this.stateStack.length > 0) {
+                this.state = this.stateStack.pop();
             } else {
                 this.state = STATE.IDLE;
             }
+            this._onStateChanged(this.state);
         }, 3000);
     }
 }
@@ -443,44 +722,15 @@ class Game {
         this.placedItems = [];
         this.lastGiftTime = Date.now();
 
-        this.images = {};      // キャッシュ用
-        this.assetGroups = {}; // speaki_happy_wait: [path1, path2, ...]
+        this.images = {};      // キャッシュ用（パス -> Image）
+        this.sounds = {};      // キャッシュ用（ファイル名 -> Audio）
 
         // 音声管理
         this.audioEnabled = false;
-        this.sounds = {};      // カテゴリごとのAudioオブジェクト配列
-        this.soundList = [
-            'happy_1.mp3', 'happy_2.mp3',
-            'surprised_1.mp3', 'surprised_2.mp3',
-            'hatch_1.mp3',
-            'gift_1.mp3',
-            'sleep_1.mp3'
-        ];
 
         Game.instance = this;
 
-        // アセットの全ファイル名リスト
-        // ほんとはfsなどで自動取得したいが、ブラウザ環境のためリスト化
-        this.assetList = [
-            'speaki_happy_wait_1.png',
-            'speaki_happy_wait_2.png',
-            'speaki_happy_wait_3.png',
-            'speaki_normal_wait_1.png',
-            'speaki_normal_wait_2.png',
-            'speaki_sad_wait_1.png',
-            'speaki_sad_wait_2.png',
-            'speaki_sad_wait_3.png',
-            'speaki_sad_surprised_1.png',
-            'speaki_sad_surprised_2.png',
-            'speaki_sad_surprised_3.png',
-            'furniture_cat_tower.png',
-            'item_toy_ball.png',
-            'item_pumpkin.png',
-            'item_baby_speaki.png'
-        ];
-
-        this.loadAssets();
-        this.loadSounds();
+        this.loadResources();
 
         this.init();
         this.resize();
@@ -490,66 +740,48 @@ class Game {
         requestAnimationFrame((t) => this.loop(t));
     }
 
-    /** アセット（画像）の読み込みとグループ化 */
-    loadAssets() {
-        this.assetList.forEach(fileName => {
-            const path = `speaki_images/${fileName}`;
-            const baseName = fileName.replace('.png', '');
+    /** アセット（画像・音声）の全読み込み */
+    loadResources() {
+        Object.entries(ASSETS).forEach(([key, data]) => {
+            // 1. 画像のロード
+            if (data.imagefile && !this.images[data.imagefile]) {
+                const img = new Image();
+                img.src = `speaki_images/${data.imagefile}`;
+                this.images[data.imagefile] = img;
+                // 後方互換性のためパス形式でも登録
+                this.images[`speaki_images/${data.imagefile}`] = img;
+            }
 
-            // 1. キャッシュに登録
+            // 2. 音声のロード（Audioオブジェクトを事前に作成）
+            if (data.soundfile && !this.sounds[data.soundfile]) {
+                const audio = new Audio(`speaki_sounds/${data.soundfile}`);
+                this.sounds[data.soundfile] = audio;
+            }
+        });
+
+        // 既存の家具・アイテム画像も引き続き読み込む（以前のリロケータ用）
+        const otherAssets = [
+            'furniture_cat_tower.png', 'item_toy_ball.png',
+            'item_pumpkin.png', 'item_baby_speaki.png'
+        ];
+        otherAssets.forEach(fileName => {
+            const path = `speaki_images/${fileName}`;
             const img = new Image();
             img.src = path;
+            const key = fileName.replace('.png', '');
+            this.images[key] = img;
             this.images[path] = img;
-            this.images[baseName] = img;
-
-            // 2. Speaki用アセットのグループ化判定
-            if (!fileName.startsWith('speaki_')) return;
-
-            const parts = fileName.split('_');
-            if (parts.length < 3) return;
-
-            // グループキーの作成 (例: speaki_happy_wait)
-            const groupKey = `${parts[0]}_${parts[1]}_${parts[2]}`;
-
-            if (!this.assetGroups[groupKey]) {
-                this.assetGroups[groupKey] = [];
-            }
-            this.assetGroups[groupKey].push(path); //二次元配列として画像をグループごとに登録
         });
     }
 
-    getRandomAsset(groupKey) {
-        const group = this.assetGroups[groupKey];
-        if (!group) {
-            return this.assetGroups['speaki_normal_wait']?.[0] || '';
-        }
-        return group[Math.floor(Math.random() * group.length)];
-    }
+    /** 音声の再生（インスタンスを返す） */
+    playSound(fileName) {
+        if (!this.audioEnabled || !this.sounds[fileName]) return null;
 
-
-    /** 音声の読み込み */
-    loadSounds() {
-        this.soundList.forEach(fileName => {
-            const category = fileName.split('_')[0]; // 'happy', 'surprised' など
-            const path = `speaki_sounds/${fileName}`;
-
-            if (!this.sounds[category]) this.sounds[category] = [];
-
-            const audio = new Audio(path);
-            this.sounds[category].push(audio);
-        });
-    }
-
-    /** 音声の再生（カテゴリからランダムに選択） */
-    playSound(category) {
-        if (!this.audioEnabled || !this.sounds[category]) return;
-
-        const group = this.sounds[category];
-        const audio = group[Math.floor(Math.random() * group.length)];
-
-        // 連続再生のためにクローンするか、最初から再生する
+        const audio = this.sounds[fileName];
         const playClone = audio.cloneNode();
         playClone.play().catch(e => console.log("[Audio] Playback failed:", e));
+        return playClone;
     }
 
     /** ゲームの初期設定 */
@@ -557,10 +789,10 @@ class Game {
         this.setupInteractions();
         this.setupDragAndDrop();
 
-        // 初期Speaki生成（3匹）
+        // 初期Speaki生成（1匹に変更）
         // アセットのロード完了を待つ必要はない（画像は描画時に解決される）が
         // 念のため少しだけ遅らせて生成してもよい。今回は即時生成。
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 1; i++) {
             this.addSpeaki();
         }
     }
@@ -706,8 +938,8 @@ class Game {
             const s = this.speakis[i];
             const dist = Math.sqrt((x - s.x) ** 2 + (y - s.y) ** 2);
 
-            // 基本的な当たり判定（円形）かつ、画像の上部1/4以内（頭部）であること
-            const isHeadHit = (y < s.y - s.size / 4);
+            // 基本的な当たり判定（円形）かつ、画像の上部1/3以内（頭部）であること
+            const isHeadHit = (y < s.y - s.size / 3);
 
             if (dist < s.size / 2 && isHeadHit) return s;
         }
@@ -734,6 +966,7 @@ class Game {
 
         speaki.state = STATE.USER_INTERACTING;
         this.draggingSpeaki = speaki;
+        speaki._onStateChanged(speaki.state);
     }
 
     /** マウスムーブ処理（ドラッグ中の移動） */
