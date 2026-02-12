@@ -379,22 +379,20 @@ class Speaki {
 
         switch (this.state) {
             case STATE.IDLE:
-                // 好感度が「とっても低い」場合は隠れ場所に移動する
+                // 好感度が「とっても低い」場合：隠れ場所から遠ければ強制的に向かう
                 if (this.friendship <= -31) {
                     const hiddenX = 50;
                     const hiddenY = 100;
                     const distToHidden = Math.sqrt((this.x - hiddenX) ** 2 + (this.y - hiddenY) ** 2);
-                    if (distToHidden > 20) {
+                    if (distToHidden > 100) {
                         this.state = STATE.WALKING;
                         this.targetX = hiddenX;
                         this.targetY = hiddenY;
                         this.destinationSet = true;
                         this._onStateChanged(this.state);
                         return;
-                    } else {
-                        // すでに隠れ場所にいるなら、ここから動かない
-                        return;
                     }
+                    // すでに隠れ場所付近にいる場合は、通常の待機・お散歩サイクル（周辺移動）に任せる
                 }
 
                 // お土産イベントのトリガーチェック (好感度が「とっても高い」全個体が対象)
@@ -552,6 +550,11 @@ class Speaki {
                 this.emotion = 'happy';
                 this.action = 'idle';
                 break;
+        }
+
+        // 2.5 低好感度時は感情を sad に強制固定（アセット選択に反映させる）
+        if (this.friendship <= -11 && this.emotion !== 'ITEM') {
+            this.emotion = 'sad';
         }
 
         // 3. 状態からタイプ (mood / performance) を判定
@@ -756,11 +759,11 @@ class Speaki {
                 break;
             case STATE.WALKING:
             default:
-                // 好感度が「とっても低い」場合は隠れ場所に移動固定
+                // 好感度が「とっても低い」場合は隠れ場所周辺に移動
                 if (this.friendship <= -31) {
                     this.targetItem = null;
-                    this.targetX = 50;
-                    this.targetY = 100;
+                    this.targetX = 50 + (Math.random() * 40 - 20); // 50 ± 20
+                    this.targetY = 100 + (Math.random() * 40 - 20); // 100 ± 20
                     this.destinationSet = true;
                     this._onStateChanged(this.state);
                     break;
