@@ -51,27 +51,13 @@
                     <!-- Dynamic Items from ITEMS in app.js -->
                 </div>
                 <div id="speaki-status">
-                    <h3>スピキの状態</h3>
-                    <div class="status-indicator">
-                        <span>感情:</span> <span id="status-emotion">穏やか</span>
+                    <h3>スピキたちの状態</h3>
+                    <div id="speaki-list">
+                        <!-- スピキごとのエントリが動的に生成されます -->
+                        <p class="empty-list">スピキはいません</p>
                     </div>
-                    <div class="status-indicator">
-                        <span>行動:</span> <span id="status-action">待機中</span>
-                    </div>
-                    <div class="status-indicator debug-status">
+                    <div id="gift-countdown-container" class="status-indicator">
                         <span>次のお土産まで:</span> <span id="gift-countdown">--</span>
-                    </div>
-                    <div class="status-indicator debug-status">
-                        <span>Debug State:</span> <span id="status-debug-state">--</span>
-                    </div>
-                    <div class="status-indicator debug-status">
-                        <span>Debug Asset:</span> <span id="status-debug-asset">--</span>
-                    </div>
-                    <div class="status-indicator debug-status">
-                        <span>Debug Action:</span> <span id="status-debug-action">--</span>
-                    </div>
-                    <div class="status-indicator debug-status">
-                        <span>Debug Emotion:</span> <span id="status-debug-emotion">--</span>
                     </div>
                 </div>
             </aside>

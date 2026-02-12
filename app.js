@@ -255,6 +255,10 @@ class Speaki {
         this.speed = 1.5 + Math.random() * 2.5; // 1.5 〜 4.0 の範囲でランダム化
         this.state = STATE.IDLE;
         this.stateStack = [];  // 割り込まれた状態を保存するスタック
+
+        // 好感度パラメータ (-50 〜 +50)
+        this.friendship = 0;
+
         this.emotion = 'happy';
         this.action = 'idle';
         this.angle = 0;
@@ -352,6 +356,18 @@ class Speaki {
 
         // 4. 実行フェーズ：現在のSTATEに応じた行動をとる
         this._executeStateAction(dt);
+
+        // 好感度の自然回復（マイナスの時のみ、0にゆっくり近づく）
+        if (this.friendship < 0) {
+            this.friendship += 0.005; // 1秒で約0.3回復するペース
+            if (this.friendship > 0) this.friendship = 0;
+        }
+
+        // 好感度が「低い」または「とっても低い」場合は表情を「かなしい」に固定
+        // (ただしアイテム反応中のワクワクは例外とする)
+        if (this.friendship <= -11 && this.emotion !== 'ITEM') {
+            this.emotion = 'sad';
+        }
     }
 
     /** 状態の切り替え判定（判断のみ） */
@@ -363,14 +379,13 @@ class Speaki {
 
         switch (this.state) {
             case STATE.IDLE:
-                // お土産イベントのトリガーチェック（メイン個体のみ）
-                if (this.id === 0) {
-                    const timeSinceGift = now - window.game.lastGiftTime;
-                    if (timeSinceGift >= 30000) {
-                        this.state = STATE.GIFT_LEAVING;
-                        this._onStateChanged(this.state);
-                        return;
-                    }
+                // お土産イベントのトリガーチェック (好感度が「とっても高い」全個体が対象)
+                const timeSinceLastGift = now - window.game.lastGiftTime;
+                if (this.friendship >= 31 && timeSinceLastGift >= 30000 && !window.game.giftPartner) {
+                    this.state = STATE.GIFT_LEAVING;
+                    window.game.giftPartner = this;
+                    this._onStateChanged(this.state);
+                    return;
                 }
 
                 // 通常の待機終了チェック
@@ -417,8 +432,6 @@ class Speaki {
                     this.state = STATE.GIFT_TIMEOUT;
                     this.eventStartTime = now;
                     window.game.updateGiftUI('hide');
-                    const emotionEl = document.getElementById('status-emotion');
-                    if (emotionEl) emotionEl.textContent = 'ぐーぐー...';
                     this._onStateChanged(this.state);
                 }
                 break;
@@ -724,6 +737,15 @@ class Speaki {
                 break;
             case STATE.WALKING:
             default:
+                // 好感度が「とっても低い」場合は隠れ場所に移動固定
+                if (this.friendship <= -31) {
+                    this.targetItem = null;
+                    this.targetX = 50;
+                    this.targetY = 100;
+                    this._onStateChanged(this.state);
+                    break;
+                }
+
                 // 20%の確率でアイテムを目的地にする
                 const game = window.game || Game.instance;
                 if (game && game.placedItems.length > 0 && Math.random() < 0.2) {
@@ -811,6 +833,13 @@ class Speaki {
 
             this.action = 'idle';
 
+            // 好感度が非常に低い場合、インタラクション終了後にすぐに隠れるように
+            if (this.friendship <= -31) {
+                this.state = STATE.IDLE;
+                this._onStateChanged(this.state);
+                return;
+            }
+
             // 中断されていた行動（お土産イベント中など）があればそこに戻り、なければ待機へ
             if (this.stateStack && this.stateStack.length > 0) {
                 this.state = this.stateStack.pop();
@@ -819,6 +848,43 @@ class Speaki {
             }
             this._onStateChanged(this.state);
         }, 3000);
+    }
+
+    /** 好感度のラベル取得 (5段階) */
+    getFriendshipLabel() {
+        if (this.friendship >= 31) return 'とっても高い';
+        if (this.friendship >= 11) return '高い';
+        if (this.friendship >= -10) return 'どちらでもない';
+        if (this.friendship >= -30) return '低い';
+        return 'とっても低い';
+    }
+
+    /** 好感度のCSSクラス取得 */
+    getFriendshipClass() {
+        if (this.friendship >= 31) return 'friendship-v-high';
+        if (this.friendship >= 11) return 'friendship-high';
+        if (this.friendship >= -10) return 'friendship-normal';
+        if (this.friendship >= -30) return 'friendship-low';
+        return 'friendship-v-low';
+    }
+
+    /** UI表示用のステータス名取得 */
+    getStateLabel() {
+        if (this.friendship <= -31 && [STATE.IDLE, STATE.WALKING].includes(this.state)) {
+            return 'かくれてる';
+        }
+        switch (this.state) {
+            case STATE.IDLE: return '休憩中';
+            case STATE.WALKING: return 'お散歩中';
+            case STATE.GIFT_LEAVING:
+            case STATE.GIFT_SEARCHING:
+            case STATE.GIFT_RETURNING: return 'お土産探し中';
+            case STATE.GIFT_WAIT_FOR_USER_REACTION: return '待機中';
+            case STATE.ITEM_APPROACHING: return 'アイテムへ移動中';
+            case STATE.ITEM_ACTION: return 'アイテムで遊んでる';
+            case STATE.USER_INTERACTING: return 'ふれあい中';
+            default: return 'のんびり';
+        }
     }
 }
 
@@ -1054,6 +1120,9 @@ class Game {
                 let distToItem = Math.sqrt((speaki.x - x) ** 2 + (speaki.y - y) ** 2);
                 if (distToItem > 500) return;
 
+                // 好感度が「とっても低い」場合はアイテムに興味を示さない
+                if (speaki.friendship <= -31) return;
+
                 const isGiftEventActive = [STATE.GIFT_LEAVING, STATE.GIFT_SEARCHING, STATE.GIFT_RETURNING, STATE.GIFT_WAIT_FOR_USER_REACTION].includes(speaki.state);
                 const isItemEventActive = [STATE.ITEM_APPROACHING, STATE.ITEM_ACTION].includes(speaki.state);
 
@@ -1062,8 +1131,9 @@ class Game {
                     speaki.stateStack.push(speaki.state);
                 }
 
-                // アイテムへの接近を開始（共通メソッドを使用、距離は100px）
-                speaki.approachItem(item);
+                // アイテムへの接近を開始（共通メソッドを使用、距離は50px）
+                speaki.friendship = Math.min(50, speaki.friendship + 2);
+                speaki.approachItem(item, 50);
             });
         }
     }
@@ -1149,12 +1219,25 @@ class Game {
 
         if (dist <= 5) return;
 
+        // なでなで判定
+        if (speaki.state === STATE.USER_INTERACTING) {
+            speaki.pettingStartTime = Date.now();
+            speaki.isActuallyDragging = true;
+
+            // 好感度を微増 (最高50)
+            speaki.friendship = Math.min(50, speaki.friendship + 0.05);
+
+            // 好感度が高い時は、なでなでされると必ずハッピーになる
+            if (speaki.friendship >= 11) {
+                speaki.emotion = 'happy';
+            }
+        }
+
         speaki.isActuallyDragging = true;
 
         // なでなで演出：位置は変えず、喜びの表情と震えのみ適用
         speaki.action = 'happy';
         speaki.emotion = 'happy';
-        document.getElementById('status-emotion').textContent = 'なでなで中...';
 
         // マウスの動きに合わせた歪み（震え）の演出
         speaki.targetDistortion.skewX = Math.max(-20, Math.min(20, dx * -1.0));
@@ -1177,7 +1260,10 @@ class Game {
         if (isTap) {
             speaki.action = 'surprised';
             speaki.emotion = 'sad';
-            document.getElementById('status-emotion').textContent = 'いたい...';
+
+            // 好感度を大幅に減らす (最低-50)
+            speaki.friendship = Math.max(-50, speaki.friendship - 5);
+
             this.playSound('surprised');
         }
 
@@ -1223,7 +1309,6 @@ class Game {
             speaki.action = 'idle';
         }
         speaki.emotion = 'happy';
-        document.getElementById('status-emotion').textContent = '穏やか';
     }
 
     /** ギフトイベントのUI表示を更新する */
@@ -1276,8 +1361,6 @@ class Game {
             this.giftPartner.state = STATE.GIFT_REACTION;
             this.giftPartner.eventStartTime = Date.now();
             this.giftPartner._onStateChanged(this.giftPartner.state);
-            const emotionEl = document.getElementById('status-emotion');
-            if (emotionEl) emotionEl.textContent = (type === 1) ? 'えへへ、うれしい！' : 'どういたしまして！';
             this.playSound('happy');
         }
     }
@@ -1311,7 +1394,7 @@ class Game {
         // アイテムのライフサイクル更新 (かぼちゃ -> 赤ちゃん -> 大人)
         this._updateItemLifecycles();
 
-        this._updateUIStatus();
+        this.updateSpeakiListUI();
     }
 
     /** アイテムの成長・変化を管理 */
@@ -1351,38 +1434,60 @@ class Game {
         }
     }
 
-    /** UIステータスの更新 */
-    _updateUIStatus() {
-        // 代表して最初の個体の状態を表示する（簡易実装）
-        if (this.speakis.length > 0) {
-            const s = this.speakis[0];
-            const emEl = document.getElementById('status-emotion');
-            const acEl = document.getElementById('status-action');
-            if (emEl) emEl.textContent = s.emotion === 'happy' ? '幸せ' : (s.emotion === 'sad' ? '悲しい' : '穏やか');
-            if (acEl) acEl.textContent = s.action === 'walking' ? '散歩中' : (s.action === 'idle' ? '待機中' : '活動中');
+    /** 全スピキの状態リストUIを更新 */
+    updateSpeakiListUI() {
+        const listContainer = document.getElementById('speaki-list');
+        if (!listContainer) return;
 
-            // お土産カウントダウンの更新
+        if (this.speakis.length === 0) {
+            listContainer.innerHTML = '<p class="empty-list">スピキはいません</p>';
+            return;
+        }
+
+        let html = '';
+        this.speakis.forEach(s => {
+            const label = s.getFriendshipLabel();
+            const cls = s.getFriendshipClass();
+            const state = s.getStateLabel();
+
+            // 感情の表示名
+            let emotionLabel = '穏やか';
+            if (s.state === STATE.USER_INTERACTING) {
+                if (s.emotion === 'sad') emotionLabel = 'いたい...';
+                else if (s.friendship >= 11) emotionLabel = 'うれしい！';
+                else emotionLabel = 'なでなで';
+            } else if (s.emotion === 'ITEM') emotionLabel = 'ワクワク';
+            else if (s.emotion === 'happy') emotionLabel = 'しあわせ';
+            else if (s.emotion === 'sad') emotionLabel = 'かなしい';
+
+            html += `
+                <div class="speaki-entry">
+                    <div class="speaki-entry-header">
+                        <span class="speaki-name">スピキ #${s.id + 1}</span>
+                        <span class="speaki-friendship ${cls}">${label}</span>
+                    </div>
+                    <div class="speaki-detail">
+                        <div class="speaki-detail-item">
+                            <span>状態:</span>
+                            <span class="speaki-detail-val">${state}</span>
+                        </div>
+                        <div class="speaki-detail-item">
+                            <span>感情:</span>
+                            <span class="speaki-detail-val">${emotionLabel}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = html;
+
+        // ギフトカウントダウンの更新
+        const countdownEl = document.getElementById('gift-countdown');
+        if (countdownEl) {
             const timeSinceGift = Date.now() - this.lastGiftTime;
-            const countdown = Math.ceil((30000 - timeSinceGift) / 1000);
-            let statusText = '準備中...';
-            if ([STATE.GIFT_LEAVING, STATE.GIFT_SEARCHING, STATE.GIFT_RETURNING, STATE.GIFT_READY].includes(s.state)) {
-                statusText = '発生中...';
-            } else if (countdown > 0) {
-                statusText = `${countdown}秒`;
-            }
-            const cdEl = document.getElementById('gift-countdown');
-            if (cdEl) cdEl.textContent = statusText;
-
-            // Debug Stateの更新 (id===0の個体の状態を表示)
-            const debugStateEl = document.getElementById('status-debug-state');
-            const debugAssetEl = document.getElementById('status-debug-asset');
-            const debugActionEl = document.getElementById('status-debug-action');
-            const debugEmotionEl = document.getElementById('status-debug-emotion');
-
-            if (debugStateEl) debugStateEl.textContent = s.state;
-            if (debugAssetEl) debugAssetEl.textContent = s.currentAssetKey || '(no asset)';
-            if (debugActionEl) debugActionEl.textContent = s.action;
-            if (debugEmotionEl) debugEmotionEl.textContent = s.emotion;
+            const remaining = Math.max(0, Math.ceil((30000 - timeSinceGift) / 1000));
+            // パートナーがいる場合は「発生中」
+            countdownEl.textContent = this.giftPartner ? '発生中' : (remaining > 0 ? `${remaining}s` : 'Ready!');
         }
     }
 
