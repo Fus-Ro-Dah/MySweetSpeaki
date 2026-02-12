@@ -1310,6 +1310,9 @@ class Game {
             speaki.action = 'surprised';
             speaki.emotion = 'sad';
 
+            // 独立したヒットエフェクト（💢）を生成
+            this._createHitEffect(speaki.lastMouseX, speaki.lastMouseY);
+
             // 好感度を大幅に減らす (最低-50)
             speaki.friendship = Math.max(-50, speaki.friendship - 5);
 
@@ -1342,6 +1345,22 @@ class Game {
         }
 
         this.draggingSpeaki = null;
+    }
+
+    /** 独立したヒットエフェクト（💢）を生成 */
+    _createHitEffect(x, y) {
+        const effect = document.createElement('div');
+        effect.className = 'hit-effect';
+        effect.textContent = '💢';
+        effect.style.left = `${x}px`;
+        effect.style.top = `${y}px`;
+
+        this.speakiRoom.appendChild(effect);
+
+        // 2秒後に自動削除
+        setTimeout(() => {
+            effect.remove();
+        }, 2000);
     }
 
     /** アクションタイマーをリセットして新しく予約するヘルパー */

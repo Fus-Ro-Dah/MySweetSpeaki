@@ -416,3 +416,35 @@ button:hover {
     white-space: nowrap;
     pointer-events: none;
 }
+
+/* 独立したヒットエフェクト（💢）のスタイル */
+.hit-effect {
+    position: absolute;
+    font-size: 40px;
+    pointer-events: none;
+    z-index: 100;
+    user-select: none;
+    animation: floatAndFade 2s ease-out forwards;
+}
+
+@keyframes floatAndFade {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+    }
+
+    15% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 1;
+    }
+
+    30% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -60px) scale(0.8);
+        opacity: 0;
+    }
+}
