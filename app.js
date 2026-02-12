@@ -379,6 +379,24 @@ class Speaki {
 
         switch (this.state) {
             case STATE.IDLE:
+                // 好感度が「とっても低い」場合は隠れ場所に移動する
+                if (this.friendship <= -31) {
+                    const hiddenX = 50;
+                    const hiddenY = 100;
+                    const distToHidden = Math.sqrt((this.x - hiddenX) ** 2 + (this.y - hiddenY) ** 2);
+                    if (distToHidden > 20) {
+                        this.state = STATE.WALKING;
+                        this.targetX = hiddenX;
+                        this.targetY = hiddenY;
+                        this.destinationSet = true;
+                        this._onStateChanged(this.state);
+                        return;
+                    } else {
+                        // すでに隠れ場所にいるなら、ここから動かない
+                        return;
+                    }
+                }
+
                 // お土産イベントのトリガーチェック (好感度が「とっても高い」全個体が対象)
                 const timeSinceLastGift = now - window.game.lastGiftTime;
                 if (this.friendship >= 31 && timeSinceLastGift >= 30000 && !window.game.giftPartner) {
@@ -400,6 +418,7 @@ class Speaki {
                 if (arrived) {
                     this.state = STATE.IDLE;
                     this._onStateChanged(this.state);
+                    this._handleArrival(); // 到着時刻を記録し、待機を開始させる
                 }
                 break;
 
@@ -742,6 +761,7 @@ class Speaki {
                     this.targetItem = null;
                     this.targetX = 50;
                     this.targetY = 100;
+                    this.destinationSet = true;
                     this._onStateChanged(this.state);
                     break;
                 }
@@ -1308,7 +1328,8 @@ class Game {
         } else {
             speaki.action = 'idle';
         }
-        speaki.emotion = 'happy';
+        // 好感度に応じて表情をリセット
+        speaki.emotion = (speaki.friendship <= -11) ? 'sad' : 'happy';
     }
 
     /** ギフトイベントのUI表示を更新する */
