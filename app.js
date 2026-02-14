@@ -158,7 +158,8 @@ const ASSETS = {
         imagefile: 'speaki_happy_idle_1.png',
         soundfile: 'チョワヨ.mp3',
         text: 'ﾁｮﾜﾖ!',
-        movePattern: 'bounce'
+        movePattern: 'bounce',
+        pitch: 1.5
     },
     speaki_performance_ITEM_Pumpkin_1: {
         imagefile: 'speaki_happy_idle_1.png',
@@ -232,18 +233,21 @@ const ITEMS = {
     Pumpkin: {
         name: 'かぼちゃ',
         imagefile: 'item_pumpkin.png',
-        //soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
+        soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
         text: '',
         size: 60,
+        pitch: 1.5,
         showInMenu: true,
         transform: { nextId: 'BabySpeaki', duration: 10000 }
     },
     BabySpeaki: {
         name: '赤ちゃんスピキ',
         imagefile: 'item_baby_speaki.png',
-        soundfile: 'チョワヨ.mp3',
+        soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
+        //soundfile: 'チョワヨ.mp3',
         text: 'ﾁｮﾜﾖ',
         size: 80,
+        pitch: 1.5,
         transform: { isAdult: true, duration: 20000 }
     },
     CatTower: {
@@ -670,7 +674,7 @@ class Speaki {
         const game = window.game || Game.instance;
         if (!data.soundfile || !game) return;
 
-        this.currentVoice = game.playSound(data.soundfile);
+        this.currentVoice = game.playSound(data.soundfile, data.pitch || 1.0);
 
         const voice = this.currentVoice;
         if (type === 'performance' && voice) {
@@ -1053,7 +1057,7 @@ class Game {
             }
         });
 
-        // ITEMSに定義された画像をすべて読み込む
+        // ITEMSに定義された画像と音声をすべて読み込む
         Object.values(ITEMS).forEach(item => {
             if (item.imagefile) {
                 const path = `assets/images/${item.imagefile}`;
@@ -1062,6 +1066,10 @@ class Game {
                 const key = item.imagefile.replace('.png', '');
                 this.images[key] = img;
                 this.images[path] = img; // パス指定でも引けるように
+            }
+            if (item.soundfile && !this.sounds[item.soundfile]) {
+                const audio = new Audio(`assets/sounds/${item.soundfile}`);
+                this.sounds[item.soundfile] = audio;
             }
         });
 
@@ -1103,12 +1111,37 @@ class Game {
     }
 
     /** 音声の再生（インスタンスを返す） */
-    playSound(fileName) {
+    playSound(fileName, pitch = 1.0) {
         if (!this.audioEnabled || !this.sounds[fileName]) return null;
 
         const audio = this.sounds[fileName];
-        const playClone = audio.cloneNode();
-        playClone.play().catch(e => console.log("[Audio] Playback failed:", e));
+        // 既存のcloneNodeは挙動が不安定な場合があるため、新しくAudioインスタンスを作成
+        const playClone = new Audio(audio.src);
+        playClone.volume = 0.5;
+
+        // ピッチ（再生速度）の設定
+        if (pitch !== 1.0) {
+            // defaultPlaybackRate もセットしておくのが安全
+            playClone.defaultPlaybackRate = pitch;
+            playClone.playbackRate = pitch;
+
+            // preservesPitch を false にすることで、速度変更に伴って音程も変化させる（高い声になる）
+            // 各種ブラウザ向けにプリフィックスも試行
+            if ('preservesPitch' in playClone) playClone.preservesPitch = false;
+            if ('webkitPreservesPitch' in playClone) playClone.webkitPreservesPitch = false;
+            if ('mozPreservesPitch' in playClone) playClone.mozPreservesPitch = false;
+        }
+
+        // 再生直後に改めて設定を上書きする（ブラウザによるリセット対策）
+        const promise = playClone.play();
+        if (promise !== undefined) {
+            promise.then(() => {
+                if (pitch !== 1.0) {
+                    playClone.playbackRate = pitch;
+                }
+            }).catch(e => console.log("[Audio] Playback failed:", e));
+        }
+
         return playClone;
     }
 
@@ -1267,7 +1300,7 @@ class Game {
 
         // 配置時の音声再生
         if (itemDef.soundfile) {
-            this.playSound(itemDef.soundfile);
+            this.playSound(itemDef.soundfile, itemDef.pitch || 1.0);
         }
 
         // 配置直後にスピキたちが興味を持つ
@@ -1653,7 +1686,7 @@ class Game {
         item.size = nextDef.size || item.size;
         item.placedTime = Date.now(); // タイマーリセット
 
-        if (nextDef.soundfile) this.playSound(nextDef.soundfile);
+        if (nextDef.soundfile) this.playSound(nextDef.soundfile, nextDef.pitch || 1.0);
         if (nextDef.text) {
             item.displayText = nextDef.text;
             item.textDisplayUntil = Date.now() + 3000;
