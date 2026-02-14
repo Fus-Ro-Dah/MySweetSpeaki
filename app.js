@@ -191,17 +191,36 @@ const ASSETS = {
         text: 'ぐーぐー...',
         movePattern: 'stretch'
     },
-    // ---- なでなで ----
+    // ---- なでなで (idle) ----
     speaki_performance_happy_idle_1: {
         imagefile: 'speaki_happy_idle_1.png',
         soundfile: 'チョワヨ.mp3',
         text: 'チョワヨ！',
         movePattern: 'bounce'
     },
+    speaki_performance_normal_idle_1: {
+        imagefile: 'speaki_normal_idle_1.png',
+        soundfile: 'スピキ.mp3',
+        text: 'ｽﾋﾟｷ?',
+        movePattern: 'bounce'
+    },
     speaki_performance_sad_idle_1: {
         imagefile: 'speaki_sad_idle_1.png',
         soundfile: 'アーウ.mp3',
         text: 'アーーウ...',
+        movePattern: 'shake'
+    },
+    // ---- 叩く (surprised) ----
+    speaki_performance_sad_surprised_1: {
+        imagefile: 'speaki_sad_surprised_1.png',
+        soundfile: 'ウアア.mp3',
+        text: 'ｳｱｱｯ!',
+        movePattern: 'shake'
+    },
+    speaki_performance_normal_surprised_1: {
+        imagefile: 'speaki_normal_idle_2.png',
+        soundfile: 'アーウ.mp3',
+        text: '痛いよ！',
         movePattern: 'shake'
     }
 };
@@ -552,9 +571,15 @@ class Speaki {
 
     /** 状態に基づいたデフォルトの外見設定 */
     _applyStateAppearance(state) {
+        // 基本感情を好感度に基づいて更新（ただしアイテム、ギフト等は除く）
+        const isSpecialEmotion = [STATE.ITEM_ACTION, STATE.GIFT_RETURNING, STATE.GIFT_WAIT_FOR_USER_REACTION, STATE.GIFT_REACTION].includes(state);
+        if (!isSpecialEmotion) {
+            this._updateBaseEmotion();
+        }
+
         switch (state) {
             case STATE.IDLE:
-                this.emotion = ['normal', 'happy', 'sad'][Math.floor(Math.random() * 3)];
+                // _updateBaseEmotionで設定されるためここではactionのみ
                 this.action = 'idle';
                 break;
             case STATE.WALKING:
@@ -579,11 +604,29 @@ class Speaki {
                 this.action = 'gifttimeout';
                 break;
             case STATE.USER_INTERACTING:
-                // インタラクト開始直後は感情・アクションを固定せず、
-                // なでなで判定 (MouseMove) またはタップ判定 (MouseUp) を待つ
-                this.emotion = (this.friendship <= -11) ? 'sad' : 'normal';
-                this.action = 'idle';
+                // すでにアクションがセットされている（叩く・撫でる等）場合は上書きしない
+                if (this.action === 'walking') {
+                    this.action = 'idle';
+                }
                 break;
+        }
+    }
+
+    /** 表情とアクションを即座に変更してアセットを反映させる (外部用) */
+    setExpression(action, emotion) {
+        if (action) this.action = action;
+        if (emotion) this.emotion = emotion;
+        this._applySelectedAsset(this.state);
+    }
+
+    /** 好感度ランクに基づいて基本感情を決定する (ヘルパー) */
+    _updateBaseEmotion() {
+        if (this.friendship <= -11) {
+            this.emotion = 'sad';
+        } else if (this.friendship <= 10) {
+            this.emotion = 'normal';
+        } else {
+            this.emotion = 'happy';
         }
     }
 
@@ -687,7 +730,8 @@ class Speaki {
 
         let emoji = '';
         if ([STATE.GIFT_RETURNING, STATE.GIFT_WAIT_FOR_USER_REACTION, STATE.GIFT_REACTION].includes(this.state)) emoji = '🎁';
-        else if (this.isInteracting) emoji = '❤️';
+        else if (this.isPetting && this.emotion === 'happy') emoji = '❤️';
+        else if (this.isPetting && this.emotion === 'sad') emoji = '💧'; // 低好感度時は汗など
 
         dom.emoji.textContent = emoji;
 
@@ -1341,12 +1385,7 @@ class Game {
             // 好感度を微増 (最高50)
             speaki.friendship = Math.min(50, speaki.friendship + 0.05);
 
-            // 好感度が高い時は、なでなでされると必ずハッピーになる
-            if (speaki.friendship >= 11) {
-                speaki.emotion = 'happy';
-            }
-
-            // なでなで中はサウンドをループ再生させる
+            // なでなではサウンドをループ再生させる
             if (speaki.currentVoice) {
                 speaki.currentVoice.loop = true;
             }
@@ -1354,9 +1393,13 @@ class Game {
 
         speaki.isActuallyDragging = true;
 
-        // なでなで演出：位置は変えず、喜びの表情と震えのみ適用
-        speaki.action = 'happy';
-        speaki.emotion = 'happy';
+        // なでなで演出：位置は変えず、演出を適用
+        const targetEmotion = (speaki.friendship <= -11) ? 'sad' : 'happy';
+
+        // アクションと感情が変化した場合、または未設定の場合に反映
+        if (speaki.action !== 'idle' || speaki.emotion !== targetEmotion) {
+            speaki.setExpression('idle', targetEmotion);
+        }
 
         // マウスの動きに合わせた歪み（震え）の演出
         speaki.targetDistortion.skewX = Math.max(-20, Math.min(20, dx * -1.0));
@@ -1387,8 +1430,7 @@ class Game {
 
     /** タップ（叩かれた）時の処理 */
     _handleSpeakiTap(speaki) {
-        speaki.action = 'surprised';
-        speaki.emotion = 'sad';
+        speaki.setExpression('surprised', 'sad');
         this._createHitEffect(speaki.lastMouseX, speaki.lastMouseY);
         speaki.friendship = Math.max(-50, speaki.friendship - 5);
         this.playSound('surprised');
@@ -1441,7 +1483,10 @@ class Game {
 
         // タイマー参照をクリア
         speaki.actionTimeout = null;
-        speaki.action = 'idle';
+
+        // 基本感情に戻してアセット更新
+        speaki._updateBaseEmotion();
+        speaki.setExpression('idle', speaki.emotion);
 
         // アクション終了時に音声を停止
         if (speaki.currentVoice) {
@@ -1449,9 +1494,6 @@ class Game {
             speaki.currentVoice.pause();
             speaki.currentVoice = null;
         }
-
-        // 好感度に応じて表情をリセット
-        speaki.emotion = (speaki.friendship <= -11) ? 'sad' : 'happy';
     }
 
     /** ギフトイベントのUI表示を更新する */
