@@ -232,8 +232,8 @@ const ITEMS = {
     Pumpkin: {
         name: 'かぼちゃ',
         imagefile: 'item_pumpkin.png',
-        soundfile: 'チョワヨ.mp3',
-        text: 'わあ、カボチャだ！',
+        //soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
+        text: '',
         size: 60,
         showInMenu: true,
         transform: { nextId: 'BabySpeaki', duration: 10000 }
@@ -241,8 +241,8 @@ const ITEMS = {
     BabySpeaki: {
         name: '赤ちゃんスピキ',
         imagefile: 'item_baby_speaki.png',
-        soundfile: '完全詠唱.mp3',
-        text: 'ピキッ？',
+        soundfile: 'チョワヨ.mp3',
+        text: 'ﾁｮﾜﾖ',
         size: 80,
         transform: { isAdult: true, duration: 20000 }
     },
@@ -441,11 +441,11 @@ class Speaki {
     _tryHideWhenFriendshipLow() {
         if (this.friendship > -31) return false;
 
-        const hiddenX = 50;
-        const hiddenY = 100;
+        const hiddenX = 60;  // 隠れ家 (hideout.png) の中心付近
+        const hiddenY = 80;
         const distToHidden = Math.sqrt((this.x - hiddenX) ** 2 + (this.y - hiddenY) ** 2);
 
-        if (distToHidden <= 100) return false;
+        if (distToHidden <= 30) return false; // すでに隠れ家の中にいれば何もしない
 
         this.state = STATE.WALKING;
         this.targetX = hiddenX;

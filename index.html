@@ -18,8 +18,9 @@
     <div id="title-screen">
         <div class="title-content">
             <h1>ﾏｲ ｽｳｨｰﾄ ｽﾋﾟｷ</h1>
-            <p>不思議な生き物「スピキ」たちの、のんびりした日常を眺めて癒やされませんか？<br>
-                アイテムを置いて触れ合う、あなただけの小さな飼育スペースへようこそ。</p>
+            <p>ここはあなただけの小さな飼育スペース (開発中)。<br>
+                不思議な生き物(?) ｽﾋﾟｷたちと触れ合って癒されよう。
+            </p>
             <button id="start-button">スピキに会いに行く</button>
         </div>
     </div>
@@ -29,6 +30,8 @@
             <!-- 飼育スペース (80%) -->
             <main id="speaki-room">
                 <canvas id="game-canvas"></canvas>
+                <!-- 隠れ家 (常に最前面) -->
+                <img id="speaki-hideout" src="assets/images/hideout.png" alt="hideout">
                 <!-- Speaki elements will be generated dynamically here -->
                 <div id="room-overlay">
                     <div id="gift-event-ui" class="hidden">

@@ -134,6 +134,19 @@ body {
     display: block;
 }
 
+/* 隠れ家 (hideout) */
+#speaki-hideout {
+    position: absolute;
+    left: -20px;
+    top: -20px;
+    width: 280px;
+    /* スピキを覆い隠せるサイズ */
+    height: auto;
+    z-index: 200;
+    pointer-events: none;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+}
+
 #room-overlay {
     position: absolute;
     top: 0;
