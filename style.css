@@ -428,8 +428,23 @@ button:hover {
     left: 50%;
     transform: translateX(-50%);
     font-size: 32px;
-    white-space: nowrap;
+}
+
+.speaki-gift-overlay {
+    position: absolute;
+    top: -55px;
+    /* スピキの頭の上 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: auto;
     pointer-events: none;
+    z-index: 15;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.speaki-gift-overlay.hidden {
+    display: none;
 }
 
 /* 独立したヒットエフェクト（💢）のスタイル */

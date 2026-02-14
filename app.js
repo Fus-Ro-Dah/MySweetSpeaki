@@ -52,7 +52,7 @@ const ASSETS = {
         imagefile: 'speaki_normal_idle_3.png',
         soundfile: 'スピキ.mp3',
         text: 'ｽﾋﾟｷ!',
-        movePattern: 'stretch'
+        movePattern: 'swing'
     },
     // ------ 歩き ------
     speaki_mood_normal_walking_1: {
@@ -85,32 +85,32 @@ const ASSETS = {
         imagefile: 'speaki_happy_idle_2.png',
         soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
         text: 'ﾁｮﾜﾖｰﾁｮﾜﾖｰ',
-        movePattern: 'none'
+        movePattern: 'swing'
     },
     speaki_mood_happy_idle_3: {
         imagefile: 'speaki_happy_idle_3.png',
         soundfile: 'スピキ.mp3',
         text: 'ｽﾋﾟｷ!',
-        movePattern: 'stretch'
+        movePattern: 'swing'
     },
     // ------ 歩き ------
     speaki_mood_happy_walking_1: {
         imagefile: 'speaki_happy_walking_1.png',
         soundfile: 'チョワヨチョワヨウェガレジチョワヨ.mp3',
         text: 'ﾁｮﾜﾖ-ﾁｮﾜﾖ-',
-        movePattern: 'bounce'
+        movePattern: 'swing'
     },
     speaki_mood_happy_walking_2: {
         imagefile: 'speaki_happy_walking_2.png',
         soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
         text: 'ﾁｮﾜﾖｰﾁｮﾜﾖｰ',
-        movePattern: 'none'
+        movePattern: 'swing'
     },
     speaki_mood_happy_walking_3: {
         imagefile: 'speaki_happy_walking_3.png',
         soundfile: 'チョワヨチョワヨスンバコッチチョワヨ.mp3',
         text: 'ﾁｮﾜﾖ-ﾁｮﾜﾖ-',
-        movePattern: 'none'
+        movePattern: 'swing'
     },
     // ---- 悲しい ----
     // ------ 停止 ------
@@ -124,32 +124,32 @@ const ASSETS = {
         imagefile: 'speaki_sad_idle_2.png',
         soundfile: 'デルジバゼヨ.mp3',
         text: 'ﾃﾞﾙｼﾞﾊﾞｾﾞﾖ!',
-        movePattern: 'stretch'
+        movePattern: 'shake'
     },
     speaki_mood_sad_idle_3: {
         imagefile: 'speaki_sad_idle_3.png',
         soundfile: 'ウアアスピキデルジバゼヨ.mp3',
         text: 'ｳｱｱ!ｽﾋﾟｷﾃﾞﾙｼﾞﾊﾞｾﾞﾖ!',
-        movePattern: 'stretch'
+        movePattern: 'none'
     },
     // ------ 歩き ------
     speaki_mood_sad_walking_1: {
         imagefile: 'speaki_sad_walking_1.png',
         soundfile: 'スピキヲイジメヌンデ.mp3',
         text: 'ｽﾋﾟｷｦｲｼﾞﾒﾇﾝﾃﾞ...',
-        movePattern: 'bounce'
+        movePattern: 'shake'
     },
     speaki_mood_sad_walking_2: {
         imagefile: 'speaki_sad_walking_2.png',
         soundfile: 'アーウ.mp3',
         text: 'ｱｰｳ',
-        movePattern: 'stretch'
+        movePattern: 'shake'
     },
     speaki_mood_sad_walking_3: {
         imagefile: 'speaki_sad_walking_3.png',
         soundfile: 'デルジバゼヨ.mp3',
         text: 'ﾃﾞﾙｼﾞﾊﾞｾﾞﾖ!',
-        movePattern: 'stretch'
+        movePattern: 'none'
     },
 
     // -- Performance --
@@ -367,13 +367,19 @@ class Speaki {
         debugText.style.pointerEvents = 'none';
         debugText.style.display = 'block';
 
+        const gift = document.createElement('img');
+        gift.className = 'speaki-gift-overlay hidden';
+        gift.src = 'assets/images/gift.png';
+
         container.appendChild(img);
+        container.appendChild(gift);
         container.appendChild(emoji);
         container.appendChild(debugText);
         this.parentElement.appendChild(container); // 親要素に追加
 
         this.dom.container = container;
         this.dom.sprite = img;
+        this.dom.gift = gift;
         this.dom.emoji = emoji;
         this.dom.debugText = debugText;
     }
@@ -733,12 +739,17 @@ class Speaki {
         const transform = `perspective(800px) rotateX(${this.distortion.rotateX}deg) skewX(${this.distortion.skewX}deg) scale(${this.distortion.scale}) scaleX(${flip})`;
         dom.sprite.style.transform = transform;
 
-        let emoji = '';
-        if ([STATE.GIFT_RETURNING, STATE.GIFT_WAIT_FOR_USER_REACTION, STATE.GIFT_REACTION].includes(this.state)) {
-            emoji = '🎁';
+        let isShowingGift = [STATE.GIFT_RETURNING, STATE.GIFT_WAIT_FOR_USER_REACTION, STATE.GIFT_REACTION].includes(this.state);
+
+        if (isShowingGift) {
+            dom.gift.classList.remove('hidden');
+            // スピキ本体のscaleを考慮しつつ、flip(反転)は打ち消す
+            dom.gift.style.transform = `translateX(-50%) scale(${1.0 / this.distortion.scale}) scaleX(${flip})`;
+        } else {
+            dom.gift.classList.add('hidden');
         }
 
-        dom.emoji.textContent = emoji;
+        dom.emoji.textContent = ''; // 絵文字は非表示にするため空に
 
         // 4. セリフ（text）の表示
         dom.debugText.textContent = (this.currentAsset && this.currentAsset.text) || '';
