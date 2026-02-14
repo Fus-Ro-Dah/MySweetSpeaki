@@ -295,12 +295,11 @@ class Speaki {
         this.distortion = { skewX: 0, rotateX: 0, scale: 1.0 };
         this.targetDistortion = { skewX: 0, rotateX: 0, scale: 1.0 };
 
-        // インタラクション関連
-        this.isDragging = false;
-        this.dragStartTime = 0;
-        this.lastMouseX = 0;
-        this.lastMouseY = 0;
-        this.isActuallyDragging = false;
+        // インタラクション (操作) 状態
+        this.isInteracting = false;      // 操作中（マウスダウン中）か
+        this.isPetting = false;          // なでなで（一定以上の移動）が確定したか
+        this.interactStartTime = 0;      // 操作開始時刻
+        this.isActuallyDragging = false; // ドラッグ移動しているか（内部フラグとして維持）
 
         // アセット管理用
         this.currentAssetKey = ''; // 現在のアセットキー
@@ -361,8 +360,8 @@ class Speaki {
         this._updateDistortion(dt);
         this.syncSpeakiDOM();
 
-        // 2. ドラッグ中はAI処理を停止
-        if (this.isDragging) return;
+        // 2. インタラクト中はAI処理を停止
+        if (this.isInteracting) return;
 
         // 3. 判断フェーズ：状況に応じてSTATEを切り替える
         this._updateStateTransition();
@@ -387,246 +386,257 @@ class Speaki {
     _updateStateTransition() {
         const now = Date.now();
         const dist = this.destinationSet ? Math.sqrt(Math.pow(this.targetX - this.x, 2) + Math.pow(this.targetY - this.y, 2)) : 999;
-        //const arrived = dist <= 100; // ある程度近づいたら到着とみなす（小さくすると複数のスピキが完全に重なってしまうため）
         const arrived = dist <= 10;
 
         switch (this.state) {
-            case STATE.IDLE:
-                // 好感度が「とっても低い」場合：隠れ場所から遠ければ強制的に向かう
-                if (this.friendship <= -31) {
-                    const hiddenX = 50;
-                    const hiddenY = 100;
-                    const distToHidden = Math.sqrt((this.x - hiddenX) ** 2 + (this.y - hiddenY) ** 2);
-                    if (distToHidden > 100) {
-                        this.state = STATE.WALKING;
-                        this.targetX = hiddenX;
-                        this.targetY = hiddenY;
-                        this.destinationSet = true;
-                        this._onStateChanged(this.state);
-                        return;
-                    }
-                    // すでに隠れ場所付近にいる場合は、通常の待機・お散歩サイクル（周辺移動）に任せる
-                }
-
-                // お土産イベントのトリガーチェック (好感度が「とっても高い」全個体が対象)
-                const timeSinceLastGift = now - window.game.lastGiftTime;
-                if (this.friendship >= 31 && timeSinceLastGift >= 30000 && !window.game.giftPartner) {
-                    this.state = STATE.GIFT_LEAVING;
-                    window.game.giftPartner = this;
-                    this._onStateChanged(this.state);
-                    return;
-                }
-
-                // 通常の待機終了チェック
-                const elaspedTime = now - this.arrivalTime; // 経過時間
-                if (elaspedTime > this.waitDuration) {
-                    this.state = STATE.WALKING;
-                    this._onStateChanged(this.state);
-                }
-                break;
-
-            case STATE.WALKING:
-                if (arrived) {
-                    this.state = STATE.IDLE;
-                    this._onStateChanged(this.state);
-                    this._handleArrival(); // 到着時刻を記録し、待機を開始させる
-                }
-                break;
-
-            case STATE.GIFT_LEAVING:
-                if (arrived) {
-                    this.state = STATE.GIFT_SEARCHING;
-                    this._onStateChanged(this.state);
-                }
-                break;
-
-            case STATE.GIFT_SEARCHING:
-                if (now - this.arrivalTime > 5000) { // 5秒待機で戻る
-                    this.state = STATE.GIFT_RETURNING;
-                    this._onStateChanged(this.state);
-                }
-                break;
-
-            case STATE.GIFT_RETURNING:
-                if (arrived) {
-                    this.state = STATE.GIFT_WAIT_FOR_USER_REACTION;
-                    window.game.startGiftReceiveEvent(this);
-                    this.eventStartTime = now;
-                    this._onStateChanged(this.state);
-                }
-                break;
-
-            case STATE.GIFT_WAIT_FOR_USER_REACTION:
-                // 10秒間反応がなければタイムアウト（寝てしまう）
-                if (now - this.eventStartTime > 10000) {
-                    this.state = STATE.GIFT_TIMEOUT;
-                    this.eventStartTime = now;
-                    window.game.updateGiftUI('hide');
-                    this._onStateChanged(this.state);
-                }
-                break;
-
-            case STATE.GIFT_REACTION:
-                // 音声長（デフォルト3秒）喜んでから終了
-                const reactionDur = this.actionDuration || 3000;
-                if (now - this.eventStartTime > reactionDur) {
-                    window.game.completeGiftEvent();
-                    this._onStateChanged(STATE.IDLE);
-                }
-                break;
-
-            case STATE.GIFT_TIMEOUT:
-                // 音声長（デフォルト5秒）寝てから終了
-                const timeoutDur = this.actionDuration || 5000;
-                if (now - this.eventStartTime > timeoutDur) {
-                    window.game.completeGiftEvent();
-                    this._onStateChanged(STATE.IDLE);
-                }
-                break;
-
-            case STATE.USER_INTERACTING:
-                // インタラクション終了（3秒喜ぶ）は既存のタイマーに任せる、またはここで管理に移行
-                break;
-
-            case STATE.ITEM_APPROACHING:
-                if (arrived) {
-                    this.state = STATE.ITEM_ACTION;
-                    if (this.targetItem) {
-                        this._performItemAction(this.targetItem);
-                    }
-                    this._onStateChanged(this.state);
-                }
-                break;
-
-            case STATE.ITEM_ACTION:
-                // アイテムアクション終了を時間ベースで判定
-                const itemActionElapsed = now - this.actionStartTime;
-                const actionDur = this.actionDuration || 3000;
-                if (itemActionElapsed > actionDur) {
-                    this.state = STATE.IDLE;
-                    this._onStateChanged(this.state);
-                }
-                break;
+            case STATE.IDLE: this._checkIdleState(now); break;
+            case STATE.WALKING: this._checkWalkingState(arrived); break;
+            case STATE.GIFT_LEAVING: this._checkGiftLeavingState(arrived); break;
+            case STATE.GIFT_SEARCHING: this._checkGiftSearchingState(now); break;
+            case STATE.GIFT_RETURNING: this._checkGiftReturningState(now, arrived); break;
+            case STATE.GIFT_WAIT_FOR_USER_REACTION: this._checkGiftWaitState(now); break;
+            case STATE.GIFT_REACTION: this._checkGiftReactionState(now); break;
+            case STATE.GIFT_TIMEOUT: this._checkGiftTimeoutState(now); break;
+            case STATE.ITEM_APPROACHING: this._checkItemApproachingState(arrived); break;
+            case STATE.ITEM_ACTION: this._checkItemActionState(now); break;
         }
+    }
+
+    /** IDLE状態の遷移チェック */
+    _checkIdleState(now) {
+        // 低好感度時の隠れ処理
+        if (this._tryHideWhenFriendshipLow()) return;
+
+        // お土産イベント開始チェック
+        if (this._tryStartGiftEvent(now)) return;
+
+        // 通常の待機終了チェック
+        if (now - this.arrivalTime > this.waitDuration) {
+            this.state = STATE.WALKING;
+            this._onStateChanged(this.state);
+        }
+    }
+
+    /** 低好感度（とっても低い）時の隠れ場所移動試行 */
+    _tryHideWhenFriendshipLow() {
+        if (this.friendship > -31) return false;
+
+        const hiddenX = 50;
+        const hiddenY = 100;
+        const distToHidden = Math.sqrt((this.x - hiddenX) ** 2 + (this.y - hiddenY) ** 2);
+
+        if (distToHidden <= 100) return false;
+
+        this.state = STATE.WALKING;
+        this.targetX = hiddenX;
+        this.targetY = hiddenY;
+        this.destinationSet = true;
+        this._onStateChanged(this.state);
+        return true;
+    }
+
+    /** お土産イベント開始試行 */
+    _tryStartGiftEvent(now) {
+        const timeSinceLastGift = now - window.game.lastGiftTime;
+        const canStartGift = this.friendship >= 31 && timeSinceLastGift >= 30000 && !window.game.giftPartner;
+
+        if (!canStartGift) return false;
+
+        this.state = STATE.GIFT_LEAVING;
+        window.game.giftPartner = this;
+        this._onStateChanged(this.state);
+        return true;
+    }
+
+    /** WALKING状態の遷移チェック */
+    _checkWalkingState(arrived) {
+        if (!arrived) return;
+        this.state = STATE.IDLE;
+        this._onStateChanged(this.state);
+        this._handleArrival();
+    }
+
+    /** GIFT_LEAVING状態の遷移チェック */
+    _checkGiftLeavingState(arrived) {
+        if (!arrived) return;
+        this.state = STATE.GIFT_SEARCHING;
+        this._onStateChanged(this.state);
+    }
+
+    /** GIFT_SEARCHING状態の遷移チェック */
+    _checkGiftSearchingState(now) {
+        if (now - this.arrivalTime <= 5000) return;
+        this.state = STATE.GIFT_RETURNING;
+        this._onStateChanged(this.state);
+    }
+
+    /** GIFT_RETURNING状態の遷移チェック */
+    _checkGiftReturningState(now, arrived) {
+        if (!arrived) return;
+        this.state = STATE.GIFT_WAIT_FOR_USER_REACTION;
+        window.game.startGiftReceiveEvent(this);
+        this.eventStartTime = now;
+        this._onStateChanged(this.state);
+    }
+
+    /** GIFT_WAIT_FOR_USER_REACTION状態の遷移チェック */
+    _checkGiftWaitState(now) {
+        if (now - this.eventStartTime <= 10000) return;
+        this.state = STATE.GIFT_TIMEOUT;
+        this.eventStartTime = now;
+        window.game.updateGiftUI('hide');
+        this._onStateChanged(this.state);
+    }
+
+    /** GIFT_REACTION状態の遷移チェック */
+    _checkGiftReactionState(now) {
+        const reactionDur = this.actionDuration || 3000;
+        if (now - this.eventStartTime <= reactionDur) return;
+        window.game.completeGiftEvent();
+        this._onStateChanged(STATE.IDLE);
+    }
+
+    /** GIFT_TIMEOUT状態の遷移チェック */
+    _checkGiftTimeoutState(now) {
+        const timeoutDur = this.actionDuration || 5000;
+        if (now - this.eventStartTime <= timeoutDur) return;
+        window.game.completeGiftEvent();
+        this._onStateChanged(STATE.IDLE);
+    }
+
+    /** ITEM_APPROACHING状態の遷移チェック */
+    _checkItemApproachingState(arrived) {
+        if (!arrived) return;
+        this.state = STATE.ITEM_ACTION;
+        if (this.targetItem) {
+            this._performItemAction(this.targetItem);
+        }
+        this._onStateChanged(this.state);
+    }
+
+    /** ITEM_ACTION状態の遷移チェック */
+    _checkItemActionState(now) {
+        const duration = this.actionDuration || 3000;
+        if (now - this.actionStartTime <= duration) return;
+        this.state = STATE.IDLE;
+        this._onStateChanged(this.state);
     }
 
     /** 状態変更時のエフェクト発動（ASSETS方式） */
     _onStateChanged(newState) {
         // 1. 前の音声を停止
+        this._stopCurrentVoice();
+
+        // 2. 状態に応じた感情・アクションの自動割り当て
+        this._applyStateAppearance(newState);
+
+        // 2.5 低好感度時は表情を強制固定
+        if (this.friendship <= -11 && this.emotion !== 'ITEM') {
+            this.emotion = 'sad';
+        }
+
+        // 3. アセットの選択と適用
+        this._applySelectedAsset(newState);
+
+        // 6. モーションのリセット
+        this.motionTimer = 0;
+    }
+
+    /** 再生中の音声を停止 */
+    _stopCurrentVoice() {
         if (this.currentVoice) {
             this.currentVoice.pause();
             this.currentVoice = null;
         }
+    }
 
-        // 2. 状態に応じたアクション（action）の自動割り当て
-        switch (newState) {
+    /** 状態に基づいたデフォルトの外見設定 */
+    _applyStateAppearance(state) {
+        switch (state) {
             case STATE.IDLE:
-                const emotions = ['normal', 'happy', 'sad'];
-                this.emotion = emotions[Math.floor(Math.random() * emotions.length)];
+                this.emotion = ['normal', 'happy', 'sad'][Math.floor(Math.random() * 3)];
                 this.action = 'idle';
                 break;
-
             case STATE.WALKING:
+            case STATE.ITEM_APPROACHING:
                 this.action = 'walking';
                 break;
-
             case STATE.GIFT_LEAVING:
             case STATE.GIFT_RETURNING:
                 this.emotion = 'happy';
                 this.action = 'walking';
                 break;
-
             case STATE.GIFT_WAIT_FOR_USER_REACTION:
                 this.emotion = 'happy';
                 this.action = 'giftwait';
                 break;
-
             case STATE.GIFT_REACTION:
                 this.emotion = 'happy';
                 this.action = 'giftreaction';
                 break;
-
-            case STATE.ITEM_APPROACHING:
-                this.action = 'walking';
-                break;
-
-            case STATE.ITEM_ACTION:
-                // _performItemAction で既に emotion='ITEM', action='アイテム名' がセットされているため上書き不要
-                break;
-
             case STATE.GIFT_TIMEOUT:
                 this.emotion = 'sad';
                 this.action = 'gifttimeout';
                 break;
-
             case STATE.USER_INTERACTING:
-                this.emotion = 'happy';
+                // インタラクト開始直後は感情・アクションを固定せず、
+                // なでなで判定 (MouseMove) またはタップ判定 (MouseUp) を待つ
+                this.emotion = (this.friendship <= -11) ? 'sad' : 'normal';
                 this.action = 'idle';
                 break;
         }
+    }
 
-        // 2.5 低好感度時は感情を sad に強制固定（アセット選択に反映させる）
-        if (this.friendship <= -11 && this.emotion !== 'ITEM') {
-            this.emotion = 'sad';
-        }
+    /** 条件に合致するアセットを検索して適用 */
+    _applySelectedAsset(state) {
+        const type = [STATE.GIFT_REACTION, STATE.GIFT_TIMEOUT, STATE.ITEM_ACTION, STATE.USER_INTERACTING].includes(state)
+            ? 'performance' : 'mood';
 
-        // 3. 状態からタイプ (mood / performance) を判定
-        const performanceStates = [STATE.GIFT_REACTION, STATE.GIFT_TIMEOUT, STATE.ITEM_ACTION, STATE.USER_INTERACTING];
-        const type = performanceStates.includes(newState) ? 'performance' : 'mood';
-
-        // 3. ASSETS からフィルタリング (type, emotion, action)
-        const candidates = Object.entries(ASSETS).filter(([key, data]) => {
-            const parts = key.split('_'); // speaki_type_emotion_action_num
-            if (parts.length < 4) return false;
-            return parts[1] === type && parts[2] === this.emotion && parts[3] === this.action;
+        // アセットのフィルタリング (type, emotion, action)
+        let candidates = Object.entries(ASSETS).filter(([key]) => {
+            const p = key.split('_'); // speaki_type_emotion_action_num
+            return p.length >= 4 && p[1] === type && p[2] === this.emotion && p[3] === this.action;
         });
 
-        // 合致するものがなければ normal 感情で再検索
-        let selectedEntry = null;
-        if (candidates.length > 0) {
-            selectedEntry = candidates[Math.floor(Math.random() * candidates.length)];
-        } else {
-            const fallbackCandidates = Object.entries(ASSETS).filter(([key, data]) => {
-                const parts = key.split('_');
-                return parts[1] === type && parts[2] === 'normal' && parts[3] === this.action;
+        // 合致しなければ normal 感情で再検索
+        if (candidates.length === 0) {
+            candidates = Object.entries(ASSETS).filter(([key]) => {
+                const p = key.split('_');
+                return p[1] === type && p[2] === 'normal' && p[3] === this.action;
             });
-            if (fallbackCandidates.length > 0) {
-                selectedEntry = fallbackCandidates[Math.floor(Math.random() * fallbackCandidates.length)];
-            }
         }
 
-        if (!selectedEntry) {
+        if (candidates.length === 0) {
             this.currentAsset = null;
             this.motionType = 'none';
             return;
         }
 
-        const [assetKey, assetData] = selectedEntry;
+        const [assetKey, assetData] = candidates[Math.floor(Math.random() * candidates.length)];
         this.currentAssetKey = assetKey;
         this.currentAsset = assetData;
+        this.motionType = assetData.movePattern || 'none';
 
-        // 4. 音声の再生
+        // 音声の再生とDuration設定
+        this._playAssetSound(assetData, type);
+    }
+
+    /** アセットの音声を再生し、パフォーマンスなら時間を計測 */
+    _playAssetSound(data, type) {
         const game = window.game || Game.instance;
-        if (assetData.soundfile && game) {
-            this.currentVoice = game.playSound(assetData.soundfile);
-        }
+        if (!data.soundfile || !game) return;
 
-        // Performanceタイプなら音声長をDurationに反映
+        this.currentVoice = game.playSound(data.soundfile);
+
         const voice = this.currentVoice;
         if (type === 'performance' && voice) {
-            const updateDuration = () => {
+            const updateDur = () => {
                 if (isNaN(voice.duration) || voice.duration <= 0) return;
                 this.actionDuration = voice.duration * 1000;
-                console.log(`[Speaki] Dynamic performance duration: ${this.actionDuration}ms`);
             };
-
-            if (voice.readyState >= 1) updateDuration();
-            else voice.addEventListener('loadedmetadata', updateDuration, { once: true });
+            if (voice.readyState >= 1) updateDur();
+            else voice.addEventListener('loadedmetadata', updateDur, { once: true });
         }
-
-        // 5. モーション設定
-        this.motionType = assetData.movePattern || 'none';
-        this.motionTimer = 0;
     }
 
     /** 現在の状態に応じた行動の実行 */
@@ -675,10 +685,9 @@ class Speaki {
         const transform = `perspective(800px) rotateX(${this.distortion.rotateX}deg) skewX(${this.distortion.skewX}deg) scale(${this.distortion.scale}) scaleX(${flip})`;
         dom.sprite.style.transform = transform;
 
-        // 3. 絵文字 (将来的にテキスト表示に統合)
         let emoji = '';
         if ([STATE.GIFT_RETURNING, STATE.GIFT_WAIT_FOR_USER_REACTION, STATE.GIFT_REACTION].includes(this.state)) emoji = '🎁';
-        else if (this.isDragging) emoji = '❤️';
+        else if (this.isInteracting) emoji = '❤️';
 
         dom.emoji.textContent = emoji;
 
@@ -690,7 +699,8 @@ class Speaki {
     _updateDistortion(dt) {
         this.motionTimer += dt || 16;
 
-        if (this.isActuallyDragging) {
+        // インタラクト中（なでなで確定時）はマウス移動に伴う動的な歪みを適用
+        if (this.isPetting) {
             this.distortion.skewX += (this.targetDistortion.skewX - this.distortion.skewX) * 0.15;
             this.distortion.rotateX += (this.targetDistortion.rotateX - this.distortion.rotateX) * 0.15;
             this.distortion.scale += (this.targetDistortion.scale - this.distortion.scale) * 0.15;
@@ -754,49 +764,52 @@ class Speaki {
         const canvasWidth = this.parentElement.clientWidth || window.innerWidth;
         const canvasHeight = this.parentElement.clientHeight || window.innerHeight;
 
-        // 宛先設定
         this.action = 'walking';
         this.destinationSet = true;
-        this.currentImgSrc = ''; // 移動開始時に画像を再抽選
+        this.currentImgSrc = ''; // 画像の再抽選フラグ
 
-        // 目的地タイプに応じた座標設定
-        switch (this.state) {
-            case STATE.GIFT_LEAVING:
-                this.targetX = -100;
-                this.targetY = canvasHeight / 2;
-                break;
-            case STATE.GIFT_RETURNING:
-                this.targetX = canvasWidth * 0.4 + (Math.random() * 100 - 50);
-                this.targetY = canvasHeight * 0.5 + (Math.random() * 100 - 50);
-                this._onStateChanged(this.state);
-                break;
-            case STATE.WALKING:
-            default:
-                // 好感度が「とっても低い」場合は隠れ場所周辺に移動
-                if (this.friendship <= -31) {
-                    this.targetItem = null;
-                    this.targetX = 50 + (Math.random() * 40 - 20); // 50 ± 20
-                    this.targetY = 100 + (Math.random() * 40 - 20); // 100 ± 20
-                    this.destinationSet = true;
-                    this._onStateChanged(this.state);
-                    break;
-                }
-
-                // 20%の確率でアイテムを目的地にする
-                const game = window.game || Game.instance;
-                if (game && game.placedItems.length > 0 && Math.random() < 0.2) {
-                    const item = game.placedItems[Math.floor(Math.random() * game.placedItems.length)];
-                    this.approachItem(item); // 共通メソッドを使用し、停止距離は100px
-                } else {
-                    this.targetItem = null;
-                    this.targetX = Math.random() * (canvasWidth - 100) + 50;
-                    this.targetY = Math.random() * (canvasHeight - 100) + 50;
-                    // 通常の歩行（WALKING）のままであればactionは既にwalkingになっているはずだが、
-                    // 万が一のために_onStateChangedを呼んでアセットを確定させる
-                    this._onStateChanged(this.state);
-                }
-                break;
+        if (this.state === STATE.GIFT_LEAVING) {
+            this.targetX = -100;
+            this.targetY = canvasHeight / 2;
+            return;
         }
+
+        if (this.state === STATE.GIFT_RETURNING) {
+            this.targetX = canvasWidth * 0.4 + (Math.random() * 100 - 50);
+            this.targetY = canvasHeight * 0.5 + (Math.random() * 100 - 50);
+            this._onStateChanged(this.state);
+            return;
+        }
+
+        // WALKINGまたはデフォルト（通常の散歩）
+        this._decideWanderingDestination(canvasWidth, canvasHeight);
+    }
+
+    /** 通常の散歩中の目的地決定 */
+    _decideWanderingDestination(w, h) {
+        // 低好感度時は隠れ家付近限定
+        if (this.friendship <= -31) {
+            this.targetItem = null;
+            this.targetX = 50 + (Math.random() * 40 - 20);
+            this.targetY = 100 + (Math.random() * 40 - 20);
+            this.destinationSet = true;
+            this._onStateChanged(this.state);
+            return;
+        }
+
+        // 20%の確率で配置済みアイテムを目指す
+        const game = window.game || Game.instance;
+        if (game && game.placedItems.length > 0 && Math.random() < 0.2) {
+            const item = game.placedItems[Math.floor(Math.random() * game.placedItems.length)];
+            this.approachItem(item);
+            return;
+        }
+
+        // ランダムな位置へ
+        this.targetItem = null;
+        this.targetX = Math.random() * (w - 100) + 50;
+        this.targetY = Math.random() * (h - 100) + 50;
+        this._onStateChanged(this.state);
     }
 
     /** 移動処理 */
@@ -819,8 +832,8 @@ class Speaki {
 
         // 逃走中（好感度が低く、隠れ家に向かっている）なら速度を2倍にする
         let currentSpeed = this.speed;
-        const distToHiddenTarget = Math.sqrt(Math.pow(this.targetX - 50, 2) + Math.pow(this.targetY - 100, 2));
-        if (this.friendship <= -31 && distToHiddenTarget < 30) {
+        const isHeadingToHidden = this.friendship <= -31 && Math.sqrt(Math.pow(this.targetX - 50, 2) + Math.pow(this.targetY - 100, 2)) < 30;
+        if (isHeadingToHidden) {
             currentSpeed *= 2.0;
         }
 
@@ -847,9 +860,8 @@ class Speaki {
 
         // 到着時の物理的なクリーンアップのみ行う
         // (状態遷移やイベント開始は _updateStateTransition で実行済み)
-        if (this.state === STATE.WALKING) {
-            this.action = 'idle';
-        }
+        if (this.state !== STATE.WALKING) return;
+        this.action = 'idle';
     }
 
     /** アイテムに到着した際の固有アクション */
@@ -877,19 +889,15 @@ class Speaki {
 
             this.action = 'idle';
 
-            // 好感度が非常に低い場合、インタラクション終了後にすぐに隠れるように
+            // 好感度が非常に低い場合、インタラクション終了後にすぐに隠れるように（IDLEへ）
             if (this.friendship <= -31) {
                 this.state = STATE.IDLE;
                 this._onStateChanged(this.state);
                 return;
             }
 
-            // 中断されていた行動（お土産イベント中など）があればそこに戻り、なければ待機へ
-            if (this.stateStack && this.stateStack.length > 0) {
-                this.state = this.stateStack.pop();
-            } else {
-                this.state = STATE.IDLE;
-            }
+            // 中断されていた行動があればそこに戻り、なければ待機へ
+            this.state = (this.stateStack && this.stateStack.length > 0) ? this.stateStack.pop() : STATE.IDLE;
             this._onStateChanged(this.state);
         }, 3000);
     }
@@ -917,6 +925,7 @@ class Speaki {
         if (this.friendship <= -31 && [STATE.IDLE, STATE.WALKING].includes(this.state)) {
             return 'かくれてる';
         }
+
         switch (this.state) {
             case STATE.IDLE: return '休憩中';
             case STATE.WALKING: return 'お散歩中';
@@ -942,7 +951,12 @@ class Game {
         this.speakis = [];      // 複数管理用の配列
         this.furniture = [];
         this.placedItems = [];
+        this.interactTarget = null; // 現在操作（タップ・なでなで）中のスピキ
         this.lastGiftTime = Date.now();
+        this.bgmBuffer = null;      // Web Audio API用デコード済みデータ
+        this.bgmSource = null;      // 再生用ノード
+        this.audioCtx = null;       // AudioContext
+        this.bgmFallback = null;    // CORSエラー時のフォールバック用
 
         this.images = {};      // キャッシュ用（パス -> Image）
         this.sounds = {};      // キャッシュ用（ファイル名 -> Audio）
@@ -975,15 +989,15 @@ class Game {
             // 1. 画像のロード
             if (data.imagefile && !this.images[data.imagefile]) {
                 const img = new Image();
-                img.src = `speaki_images/${data.imagefile}`;
+                img.src = `assets/images/${data.imagefile}`;
                 this.images[data.imagefile] = img;
                 // 後方互換性のためパス形式でも登録
-                this.images[`speaki_images/${data.imagefile}`] = img;
+                this.images[`assets/images/${data.imagefile}`] = img;
             }
 
             // 2. 音声のロード（Audioオブジェクトを事前に作成）
             if (data.soundfile && !this.sounds[data.soundfile]) {
-                const audio = new Audio(`speaki_sounds/${data.soundfile}`);
+                const audio = new Audio(`assets/sounds/${data.soundfile}`);
                 this.sounds[data.soundfile] = audio;
             }
         });
@@ -991,7 +1005,7 @@ class Game {
         // ITEMSに定義された画像をすべて読み込む
         Object.values(ITEMS).forEach(item => {
             if (item.imagefile) {
-                const path = `speaki_images/${item.imagefile}`;
+                const path = `assets/images/${item.imagefile}`;
                 const img = new Image();
                 img.src = path;
                 const key = item.imagefile.replace('.png', '');
@@ -1004,12 +1018,37 @@ class Game {
         const specialAssets = ['item_baby_speaki.png', 'item_pumpkin.png'];
         specialAssets.forEach(fileName => {
             if (!this.images[fileName.replace('.png', '')]) {
-                const path = `speaki_images/${fileName}`;
+                const path = `assets/images/${fileName}`;
                 const img = new Image();
                 img.src = path;
                 this.images[fileName.replace('.png', '')] = img;
             }
         });
+
+        // 4. BGMのロード (Web Audio API用)
+        this._loadBGM('assets/music/he-jitsu-no-joh.mp3');
+    }
+
+    /** BGMをフェッチしてデコードする (ヘルパー) */
+    async _loadBGM(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+            const arrayBuffer = await response.arrayBuffer();
+
+            if (!this.audioCtx) {
+                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            this.bgmBuffer = await this.audioCtx.decodeAudioData(arrayBuffer);
+            console.log("[Audio] BGM loaded and decoded (Web Audio API).");
+        } catch (e) {
+            console.warn("[Audio] Web Audio API failed (CORS?), falling back to standard Audio element:", e);
+            // フォールバック: 標準の Audio オブジェクトを作成（file:// プロトコル等での回避策）
+            this.bgmFallback = new Audio(url);
+            this.bgmFallback.loop = true;
+            this.bgmFallback.volume = 0.5;
+        }
     }
 
     /** 音声の再生（インスタンスを返す） */
@@ -1041,8 +1080,32 @@ class Game {
         // ユーザーアクションをきっかけに音声を有効化
         this.audioEnabled = true;
 
+        // Web Audio APIの再開（ブラウザ制限解除）
+        if (this.audioCtx && this.audioCtx.state === 'suspended') {
+            this.audioCtx.resume();
+        }
+
+        // BGMの再生開始
+        if (this.bgmBuffer) {
+            // シームレスループ方式 (Web Audio API)
+            if (!this.bgmSource) {
+                this.bgmSource = this.audioCtx.createBufferSource();
+                this.bgmSource.buffer = this.bgmBuffer;
+                this.bgmSource.loop = true;
+                const gainNode = this.audioCtx.createGain();
+                gainNode.gain.value = 0.5;
+                this.bgmSource.connect(gainNode);
+                gainNode.connect(this.audioCtx.destination);
+                this.bgmSource.start(0);
+                console.log("[Audio] Playing BGM via Web Audio API (Seamless).");
+            }
+        } else if (this.bgmFallback) {
+            // 標準方式 (HTML Audio) - CORS回避用
+            this.bgmFallback.play().catch(e => console.log("[Audio] Fallback playback failed:", e));
+            console.log("[Audio] Playing BGM via Standard Audio (Fallback).");
+        }
+
         // 初期Speaki生成（1匹）
-        // アセットのロード完了を待つ必要はない（画像は描画時に解決される）
         this.addSpeaki();
     }
 
@@ -1156,43 +1219,56 @@ class Game {
             this.playSound(itemDef.soundfile);
         }
 
-        // 配置直後にスピキたちが興味を持つ（ignoreReactionが設定されていない場合）
-        if (!itemDef.ignoreReaction) {
-            this.speakis.forEach(speaki => {
+        // 配置直後にスピキたちが興味を持つ
+        if (itemDef.ignoreReaction) return;
 
-                // 半径500px以内のスピキだけが反応する
-                let distToItem = Math.sqrt((speaki.x - x) ** 2 + (speaki.y - y) ** 2);
-                if (distToItem > 500) return;
+        this.speakis.forEach(speaki => {
+            // 半径500px以内のスピキだけが反応する
+            const distToItem = Math.sqrt((speaki.x - x) ** 2 + (speaki.y - y) ** 2);
+            if (distToItem > 500) return;
 
-                // 好感度が「とっても低い」場合はアイテムに興味を示さない
-                if (speaki.friendship <= -31) return;
+            // 好感度が「とっても低い」場合はアイテムに興味を示さない
+            if (speaki.friendship <= -31) return;
 
-                const isGiftEventActive = [STATE.GIFT_LEAVING, STATE.GIFT_SEARCHING, STATE.GIFT_RETURNING, STATE.GIFT_WAIT_FOR_USER_REACTION].includes(speaki.state);
-                const isItemEventActive = [STATE.ITEM_APPROACHING, STATE.ITEM_ACTION].includes(speaki.state);
+            const isGiftEventActive = [STATE.GIFT_LEAVING, STATE.GIFT_SEARCHING, STATE.GIFT_RETURNING, STATE.GIFT_WAIT_FOR_USER_REACTION].includes(speaki.state);
+            const isItemEventActive = [STATE.ITEM_APPROACHING, STATE.ITEM_ACTION].includes(speaki.state);
 
-                // 割り込み可能な状態ならスタックに保存
-                if (isGiftEventActive || isItemEventActive) {
-                    speaki.stateStack.push(speaki.state);
-                }
+            // 割り込み可能な状態ならスタックに保存
+            if (isGiftEventActive || isItemEventActive) {
+                speaki.stateStack.push(speaki.state);
+            }
 
-                // アイテムへの接近を開始（共通メソッドを使用、距離は50px）
-                speaki.friendship = Math.min(50, speaki.friendship + 2);
-                speaki.approachItem(item, 50);
-            });
-        }
+            // アイテムへの接近を開始（共通メソッドを使用、距離は50px）
+            speaki.friendship = Math.min(50, speaki.friendship + 2);
+            speaki.approachItem(item, 50);
+        });
     }
 
-    /** マウスダウン処理（Speakiのドラッグ開始） */
+    /** マウスダウン処理（ヒットテストと操作開始） */
     handleMouseDown(e) {
-        const rect = this.canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-
-        // 1. ヒットテスト: クリック位置のスピキを取得（手前のものを優先）
-        const target = this._findSpeakiAt(mouseX, mouseY);
+        const { x, y } = this._getMousePos(e);
+        const target = this._findSpeakiAt(x, y);
         if (!target) return;
 
-        // 2. インタラクト許可判定: 指定した状態のときのみ操作を受け付ける
+        if (!this._isInteractable(target)) {
+            console.log(`[Interaction] Blocked in state: ${target.state}`);
+            return;
+        }
+
+        this._prepareInteraction(target, x, y);
+    }
+
+    /** マップ上の座標を取得 */
+    _getMousePos(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+    }
+
+    /** 指定したSpeakiが操作可能な状態かチェック */
+    _isInteractable(speaki) {
         const interactableStates = [
             STATE.IDLE,
             STATE.WALKING,
@@ -1201,14 +1277,7 @@ class Game {
             STATE.GIFT_WAIT_FOR_USER_REACTION,
             STATE.ITEM_APPROACHING,
         ];
-
-        if (!interactableStates.includes(target.state)) {
-            console.log(`[Interaction] Blocked in state: ${target.state}`);
-            return;
-        }
-
-        // 3. ドラッグ・操作の開始
-        this._startInteracting(target, mouseX, mouseY);
+        return interactableStates.includes(speaki.state);
     }
 
     /** 指定座標にあるスピキを検索（手前の個体を優先） */
@@ -1225,12 +1294,13 @@ class Game {
         return null;
     }
 
-    /** ユーザーによる操作（ドラッグ）の開始 */
-    _startInteracting(speaki, x, y) {
-        speaki.isDragging = true;
-        speaki.dragStartTime = Date.now();
+    /** ユーザーによる操作（インタラクト）の準備 */
+    _prepareInteraction(speaki, x, y) {
+        speaki.isInteracting = true;
+        speaki.interactStartTime = Date.now();
         speaki.lastMouseX = x;
         speaki.lastMouseY = y;
+        speaki.isPetting = false;
 
         // 割り込み判定：保存すべき状態のリスト
         const interruptibleStates = [
@@ -1244,21 +1314,21 @@ class Game {
         }
 
         speaki.state = STATE.USER_INTERACTING;
-        this.draggingSpeaki = speaki;
-        speaki._onStateChanged(speaki.state);
+        this.interactTarget = speaki;
+
+        // ※ここでは _onStateChanged を呼ばない（または呼んでも見た目を変えない）
+        // MouseMove または MouseUp で結果が決まってからエフェクトを発動させるため。
     }
 
     /** マウスムーブ処理（なでなで演出） */
     handleMouseMove(e) {
-        if (!this.draggingSpeaki) return;
+        if (!this.interactTarget) return;
 
-        const speaki = this.draggingSpeaki;
-        const rect = this.canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
+        const speaki = this.interactTarget;
+        const { x, y } = this._getMousePos(e);
 
-        const dx = mouseX - speaki.lastMouseX;
-        const dy = mouseY - speaki.lastMouseY;
+        const dx = x - speaki.lastMouseX;
+        const dy = y - speaki.lastMouseY;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist <= 5) return;
@@ -1266,7 +1336,7 @@ class Game {
         // なでなで判定
         if (speaki.state === STATE.USER_INTERACTING) {
             speaki.pettingStartTime = Date.now();
-            speaki.isActuallyDragging = true;
+            speaki.isPetting = true;
 
             // 好感度を微増 (最高50)
             speaki.friendship = Math.min(50, speaki.friendship + 0.05);
@@ -1293,58 +1363,52 @@ class Game {
         speaki.targetDistortion.rotateX = Math.max(-15, Math.min(15, dy * -0.5));
         speaki.targetDistortion.scale = 1.05;
 
-        speaki.lastMouseX = mouseX;
-        speaki.lastMouseY = mouseY;
+        speaki.lastMouseX = x;
+        speaki.lastMouseY = y;
     }
 
-    /** マウスアップ処理（ドラッグ終了 / クリック終了） */
+    /** マウスアップ処理（結果の確定とクリーンアップ） */
     handleMouseUp() {
-        // 対象がいなければ即座に終了
-        if (!this.draggingSpeaki) return;
+        const speaki = this.interactTarget;
+        if (!speaki) return;
 
-        const speaki = this.draggingSpeaki;
-        const isTap = (Date.now() - speaki.dragStartTime < 300) && !speaki.isActuallyDragging;
+        const isTap = (Date.now() - speaki.interactStartTime < 300) && !speaki.isPetting;
 
-        // 1. たたかれた（タップ）時の固有処理
         if (isTap) {
-            speaki.action = 'surprised';
-            speaki.emotion = 'sad';
-
-            // 独立したヒットエフェクト（💢）を生成
-            this._createHitEffect(speaki.lastMouseX, speaki.lastMouseY);
-
-            // 好感度を大幅に減らす (最低-50)
-            speaki.friendship = Math.max(-50, speaki.friendship - 5);
-
-            this.playSound('surprised');
+            this._handleSpeakiTap(speaki);
         }
 
-        // 2. 表情リセットタイマーの開始（タップまたはドラッグ終了時）
         if (isTap || speaki.isActuallyDragging) {
             this._resetActionTimer(speaki, 2000);
         }
 
-        // 3. 物理的な状態のクリーンアップ
-        speaki.isDragging = false;
-        speaki.isActuallyDragging = false;
+        this._cleanupInteraction(speaki);
+    }
+
+    /** タップ（叩かれた）時の処理 */
+    _handleSpeakiTap(speaki) {
+        speaki.action = 'surprised';
+        speaki.emotion = 'sad';
+        this._createHitEffect(speaki.lastMouseX, speaki.lastMouseY);
+        speaki.friendship = Math.max(-50, speaki.friendship - 5);
+        this.playSound('surprised');
+    }
+
+    /** インタラクション終了後の物理状態・音声クリーンアップ */
+    _cleanupInteraction(speaki) {
+        speaki.isInteracting = false;
+        speaki.isPetting = false;
         speaki.arrivalTime = Date.now();
         speaki.destinationSet = false;
+        speaki.state = (speaki.stateStack.length > 0) ? speaki.stateStack.pop() : STATE.IDLE;
 
-        // 4. 次の状態へ復帰（スタックから復帰、なければIDLEへ）
-        if (speaki.stateStack.length > 0) {
-            speaki.state = speaki.stateStack.pop();
-        } else {
-            speaki.state = STATE.IDLE;
-        }
-
-        // なでなでループ音声を停止
         if (speaki.currentVoice) {
             speaki.currentVoice.loop = false;
             speaki.currentVoice.pause();
             speaki.currentVoice = null;
         }
 
-        this.draggingSpeaki = null;
+        this.interactTarget = null;
     }
 
     /** 独立したヒットエフェクト（💢）を生成 */
@@ -1377,12 +1441,7 @@ class Game {
 
         // タイマー参照をクリア
         speaki.actionTimeout = null;
-
-        if (speaki.state === STATE.GIFT_RETURNING || speaki.state === STATE.GIFT_READY) {
-            speaki.action = 'idle';
-        } else {
-            speaki.action = 'idle';
-        }
+        speaki.action = 'idle';
 
         // アクション終了時に音声を停止
         if (speaki.currentVoice) {
@@ -1486,35 +1545,41 @@ class Game {
         const now = Date.now();
         for (let i = this.placedItems.length - 1; i >= 0; i--) {
             const item = this.placedItems[i];
-            const itemDef = ITEMS[item.id];
-            if (!itemDef || !itemDef.transform) continue;
+            const def = ITEMS[item.id];
+            if (!def || !def.transform) continue;
 
-            const age = now - item.placedTime;
-            const transform = itemDef.transform;
-
-            if (age > transform.duration) {
-                if (transform.isAdult) {
-                    // スピキとして群れに加わる
-                    this.addSpeaki(item.x, item.y);
-                    this.placedItems.splice(i, 1);
-                } else if (transform.nextId) {
-                    // 別のアイテムに変化
-                    const nextId = transform.nextId;
-                    const nextDef = ITEMS[nextId];
-                    if (nextDef) {
-                        item.id = nextId;
-                        item.size = nextDef.size || item.size;
-                        item.placedTime = now; // 次の変化へのタイマーリセット
-
-                        // 変化後のアイテムの演出（音声・テキスト）を適用
-                        if (nextDef.soundfile) this.playSound(nextDef.soundfile);
-                        if (nextDef.text) {
-                            item.displayText = nextDef.text;
-                            item.textDisplayUntil = now + 3000;
-                        }
-                    }
-                }
+            if (now - item.placedTime > def.transform.duration) {
+                this._processItemTransform(item, i, def.transform);
             }
+        }
+    }
+
+    /** 個別アイテムの変身・成長実行 */
+    _processItemTransform(item, index, transform) {
+        if (transform.isAdult) {
+            this.addSpeaki(item.x, item.y);
+            this.placedItems.splice(index, 1);
+            return;
+        }
+
+        if (transform.nextId) {
+            this._transformItemTo(item, transform.nextId);
+        }
+    }
+
+    /** アイテムを別の種類に切り替える */
+    _transformItemTo(item, nextId) {
+        const nextDef = ITEMS[nextId];
+        if (!nextDef) return;
+
+        item.id = nextId;
+        item.size = nextDef.size || item.size;
+        item.placedTime = Date.now(); // タイマーリセット
+
+        if (nextDef.soundfile) this.playSound(nextDef.soundfile);
+        if (nextDef.text) {
+            item.displayText = nextDef.text;
+            item.textDisplayUntil = Date.now() + 3000;
         }
     }
 
@@ -1533,16 +1598,7 @@ class Game {
             const label = s.getFriendshipLabel();
             const cls = s.getFriendshipClass();
             const state = s.getStateLabel();
-
-            // 感情の表示名
-            let emotionLabel = '穏やか';
-            if (s.state === STATE.USER_INTERACTING) {
-                if (s.emotion === 'sad') emotionLabel = 'いたい...';
-                else if (s.friendship >= 11) emotionLabel = 'うれしい！';
-                else emotionLabel = 'なでなで';
-            } else if (s.emotion === 'ITEM') emotionLabel = 'ワクワク';
-            else if (s.emotion === 'happy') emotionLabel = 'しあわせ';
-            else if (s.emotion === 'sad') emotionLabel = 'かなしい';
+            const emotionLabel = this._getEmotionLabel(s);
 
             html += `
                 <div class="speaki-entry">
@@ -1565,14 +1621,35 @@ class Game {
         });
         listContainer.innerHTML = html;
 
-        // ギフトカウントダウンの更新
-        const countdownEl = document.getElementById('gift-countdown');
-        if (countdownEl) {
-            const timeSinceGift = Date.now() - this.lastGiftTime;
-            const remaining = Math.max(0, Math.ceil((30000 - timeSinceGift) / 1000));
-            // パートナーがいる場合は「発生中」
-            countdownEl.textContent = this.giftPartner ? '発生中' : (remaining > 0 ? `${remaining}s` : 'Ready!');
+        this._updateGiftCountdownUI();
+    }
+
+    /** 感情の表示用テキストを取得 (ヘルパー) */
+    _getEmotionLabel(s) {
+        if (s.state === STATE.USER_INTERACTING) {
+            if (s.emotion === 'sad') return 'いたい...';
+            if (s.friendship >= 11) return 'うれしい！';
+            return 'なでなで';
         }
+        if (s.emotion === 'ITEM') return 'ワクワク';
+        if (s.emotion === 'happy') return 'しあわせ';
+        if (s.emotion === 'sad') return 'かなしい';
+        return '穏やか';
+    }
+
+    /** ギフトカウントダウンUIの更新 (ヘルパー) */
+    _updateGiftCountdownUI() {
+        const countdownEl = document.getElementById('gift-countdown');
+        if (!countdownEl) return;
+
+        if (this.giftPartner) {
+            countdownEl.textContent = '発生中';
+            return;
+        }
+
+        const timeSinceGift = Date.now() - this.lastGiftTime;
+        const remaining = Math.max(0, Math.ceil((30000 - timeSinceGift) / 1000));
+        countdownEl.textContent = remaining > 0 ? `${remaining}s` : 'Ready!';
     }
 
     /** 描画処理 */

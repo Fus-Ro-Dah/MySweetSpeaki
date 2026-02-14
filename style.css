@@ -429,17 +429,12 @@ button:hover {
 
 @keyframes floatAndFade {
     0% {
-        transform: translate(-50%, -50%) scale(0.5);
-        opacity: 0;
-    }
-
-    15% {
-        transform: translate(-50%, -50%) scale(1.2);
+        transform: translate(-50%, -50%) scale(0.8);
         opacity: 1;
     }
 
-    30% {
-        transform: translate(-50%, -50%) scale(1);
+    10% {
+        transform: translate(-50%, -50%) scale(1.5);
         opacity: 1;
     }
 
