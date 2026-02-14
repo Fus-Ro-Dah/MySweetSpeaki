@@ -238,6 +238,7 @@ const ITEMS = {
         size: 60,
         pitch: 1.5,
         showInMenu: true,
+        isSpecialGift: true,
         transform: { nextId: 'BabySpeaki', duration: 10000 }
     },
     BabySpeaki: {
@@ -257,6 +258,7 @@ const ITEMS = {
         size: 100,
         text: '登ってみたい！',
         showInMenu: true,
+        isSpecialGift: true,
         transform: { nextId: 'ToyBall', duration: 10000 }
     },
     ToyBall: {
@@ -266,13 +268,12 @@ const ITEMS = {
         text: '転がそう！',
         showInMenu: true
     },
-    LuxuryPillow: {
-        name: '高級枕',
-        imagefile: 'item_luxury_pillow.png',
-        size: 60,
-        text: 'ふかふかだ...',
-        ignoreReaction: true,
-        showInMenu: true
+    RandomGift: {
+        name: '？',
+        imagefile: 'gift.png', // ギフト画像を使用
+        size: 50,
+        showInMenu: true,
+        isRandomTool: true // 内部的な識別用
     }
 };
 
@@ -1019,6 +1020,7 @@ class Game {
         this.placedItems = [];
         this.interactTarget = null; // 現在操作（タップ・なでなで）中のスピキ
         this.lastGiftTime = Date.now();
+        this.stockGifts = 0;        // 溜まったギフト回数
         this.bgmBuffer = null;      // Web Audio API用デコード済みデータ
         this.bgmSource = null;      // 再生用ノード
         this.audioCtx = null;       // AudioContext
@@ -1213,12 +1215,19 @@ class Game {
 
         Object.entries(ITEMS).forEach(([id, config]) => {
             if (config.showInMenu) {
+                // 特殊な「？」アイテムの場合、在庫数を名前に含める。在庫0なら表示しない
+                let displayName = config.name || id;
+                if (id === 'RandomGift') {
+                    if (this.stockGifts <= 0) return;
+                    displayName = `？（×${this.stockGifts}）`;
+                }
+
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'draggable-item';
                 itemDiv.dataset.id = id;
                 itemDiv.dataset.type = config.type || 'item';
                 itemDiv.draggable = true;
-                itemDiv.textContent = config.name || id;
+                itemDiv.textContent = displayName;
                 itemList.appendChild(itemDiv);
             }
         });
@@ -1268,35 +1277,78 @@ class Game {
 
     /** ドラッグ＆ドロップの設定 */
     setupDragAndDrop() {
-        const draggables = document.querySelectorAll('.draggable-item');
-        draggables.forEach(item => {
-            item.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', JSON.stringify({
-                    id: item.dataset.id,
-                    type: item.dataset.type
-                }));
+        // アイテムリストにイベント委譲を設定（動的なアイテム追加に対応）
+        const itemList = document.getElementById('item-list');
+        if (itemList) {
+            itemList.addEventListener('dragstart', (e) => {
+                const item = e.target.closest('.draggable-item');
+                if (item) {
+                    const data = {
+                        id: item.dataset.id,
+                        type: item.dataset.type
+                    };
+                    const dataStr = JSON.stringify(data);
+                    e.dataTransfer.setData('text/plain', dataStr);
+                    // より確実な受け渡しのためカスタムタイプも設定
+                    try {
+                        e.dataTransfer.setData('application/json', dataStr);
+                    } catch (err) { }
+
+                    e.dataTransfer.effectAllowed = 'move';
+                }
             });
-        });
+        }
 
         this.canvas.addEventListener('dragover', (e) => e.preventDefault());
         this.canvas.addEventListener('drop', (e) => {
             e.preventDefault();
-            const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-            const rect = this.canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const rawData = e.dataTransfer.getData('application/json') || e.dataTransfer.getData('text/plain');
+            if (!rawData) return;
 
-            this.addItem(data.id, data.type, x, y);
+            try {
+                const data = JSON.parse(rawData);
+                const rect = this.canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                this.addItem(data.id, data.type, x, y);
+            } catch (err) {
+                console.error("[Drop] Parse error:", err, rawData);
+            }
         });
     }
 
     /** アイテムの配置 */
     addItem(id, type, x, y) {
-        const itemDef = ITEMS[id];
+        let finalId = id;
+        let itemDef = ITEMS[id];
+
+        // 「？」アイテム（RandomGift）の場合の特殊処理
+        if (id === 'RandomGift') {
+            if (this.stockGifts <= 0) {
+                console.log("[Item] No stock for RandomGift");
+                return;
+            }
+
+            // isSpecialGift: true を持つアイテムからランダムに選択
+            const pool = Object.entries(ITEMS).filter(([key, def]) => def.isSpecialGift);
+            if (pool.length > 0) {
+                const [randomId, randomDef] = pool[Math.floor(Math.random() * pool.length)];
+                finalId = randomId;
+                itemDef = randomDef;
+
+                // ストックを減らしてメニューを更新
+                this.stockGifts--;
+                this.initItemMenu();
+            } else {
+                return;
+            }
+        }
+
         if (!itemDef) return;
 
         const item = {
-            id,
+            id: finalId,
             type: itemDef.type || type,
             x,
             y,
@@ -1626,6 +1678,10 @@ class Game {
             this.giftPartner.eventStartTime = Date.now();
             this.giftPartner._onStateChanged(this.giftPartner.state);
             this.playSound('happy');
+
+            // ギフトカウントを増やしてメニューを更新
+            this.stockGifts++;
+            this.initItemMenu();
         }
     }
 
