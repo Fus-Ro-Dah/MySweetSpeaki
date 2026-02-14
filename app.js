@@ -40,7 +40,7 @@ const ASSETS = {
         imagefile: 'speaki_normal_idle_1.png',
         soundfile: 'チョワヨ.mp3', // 仮の割り当て
         text: 'ﾁｮﾜﾖ!',
-        movePattern: 'none'
+        movePattern: 'swing'
     },
     speaki_mood_normal_idle_2: {
         imagefile: 'speaki_normal_idle_2.png',
@@ -59,13 +59,13 @@ const ASSETS = {
         imagefile: 'speaki_normal_walking_1.png',
         soundfile: 'チョワヨ.mp3',
         text: 'ﾁｮﾜﾖ!',
-        movePattern: 'bounce'
+        movePattern: 'swing'
     },
     speaki_mood_normal_walking_2: {
         imagefile: 'speaki_normal_walking_2.png',
         soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
         text: 'ﾁｮﾜﾖ-ﾁｮﾜﾖ-',
-        movePattern: 'none'
+        movePattern: 'swing'
     },
     speaki_mood_normal_walking_3: {
         imagefile: 'speaki_normal_walking_3.png',
@@ -306,6 +306,7 @@ class Speaki {
         this.reactionStartTime = 0;    // リアクション開始時刻
         this.eventStartTime = 0;       // 汎用イベント開始時刻
         this.pettingStartTime = 0;     // なでなで開始時刻
+        this.lastHeartTime = 0;        // 最後にハートを生成した時刻
 
         this.interactionType = null;   // 'move' or 'petting'
 
@@ -729,9 +730,9 @@ class Speaki {
         dom.sprite.style.transform = transform;
 
         let emoji = '';
-        if ([STATE.GIFT_RETURNING, STATE.GIFT_WAIT_FOR_USER_REACTION, STATE.GIFT_REACTION].includes(this.state)) emoji = '🎁';
-        else if (this.isPetting && this.emotion === 'happy') emoji = '❤️';
-        else if (this.isPetting && this.emotion === 'sad') emoji = '💧'; // 低好感度時は汗など
+        if ([STATE.GIFT_RETURNING, STATE.GIFT_WAIT_FOR_USER_REACTION, STATE.GIFT_REACTION].includes(this.state)) {
+            emoji = '🎁';
+        }
 
         dom.emoji.textContent = emoji;
 
@@ -769,6 +770,12 @@ class Speaki {
                 this.distortion.scale = 1.0 + bounce;
                 this.distortion.skewX *= 0.85;
                 this.distortion.rotateX *= 0.85;
+                break;
+            case 'swing':
+                const swingPhase = Math.sin(this.motionTimer * 0.005);
+                this.distortion.skewX = swingPhase * 15; // 左右への傾き
+                this.distortion.scale = 1.0 + Math.abs(swingPhase) * 0.25; // 伸び
+                this.distortion.rotateX = Math.abs(swingPhase) * -10; // 伸びる時の前傾
                 break;
             default:
                 this.distortion.skewX *= 0.85;
@@ -1401,6 +1408,15 @@ class Game {
             speaki.setExpression('idle', targetEmotion);
         }
 
+        // パーティクル演出（ハート）の生成
+        if (speaki.isPetting && speaki.emotion === 'happy') {
+            const now = Date.now();
+            if (now - speaki.lastHeartTime > 150) { // 150msごとに生成
+                this._createPettingHeart(speaki);
+                speaki.lastHeartTime = now;
+            }
+        }
+
         // マウスの動きに合わせた歪み（震え）の演出
         speaki.targetDistortion.skewX = Math.max(-20, Math.min(20, dx * -1.0));
         speaki.targetDistortion.rotateX = Math.max(-15, Math.min(15, dy * -0.5));
@@ -1451,6 +1467,25 @@ class Game {
         }
 
         this.interactTarget = null;
+    }
+
+    /** なでなで時のハートエフェクト生成 */
+    _createPettingHeart(speaki) {
+        const heart = document.createElement('div');
+        heart.className = 'petting-heart';
+        heart.textContent = '❤️';
+
+        // スピキの頭部付近にランダムに配置
+        const offsetX = (Math.random() - 0.5) * 60;
+        const offsetY = -speaki.size / 2 + (Math.random() - 0.5) * 40;
+
+        heart.style.left = `${speaki.x + offsetX}px`;
+        heart.style.top = `${speaki.y + offsetY}px`;
+
+        this.speakiRoom.appendChild(heart);
+
+        // 1.2秒後（アニメーション終了後）に削除
+        setTimeout(() => heart.remove(), 1200);
     }
 
     /** 独立したヒットエフェクト（💢）を生成 */

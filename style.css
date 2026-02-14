@@ -445,3 +445,30 @@ button:hover {
         opacity: 0;
     }
 }
+
+/* なでなでパーティクル (❤️) のスタイル */
+.petting-heart {
+    position: absolute;
+    font-size: 24px;
+    pointer-events: none;
+    z-index: 90;
+    user-select: none;
+    animation: pettingHeartFloat 1.2s ease-out forwards;
+}
+
+@keyframes pettingHeartFloat {
+    0% {
+        transform: translate(-50%, 0) scale(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    20% {
+        transform: translate(-50%, -20px) scale(1.2) rotate(15deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(calc(-50% + 20px), -100px) scale(0.8) rotate(-15deg);
+        opacity: 0;
+    }
+}
