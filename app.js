@@ -1650,7 +1650,7 @@ class Game {
             speaki.isPetting = true;
 
             // 好感度を微増 (最高50)
-            speaki.friendship = Math.min(50, speaki.friendship + 0.05);
+            speaki.friendship = Math.min(50, speaki.friendship + 0.1);
 
             // なでなではサウンドをループ再生させる
             if (speaki.currentVoice) {
