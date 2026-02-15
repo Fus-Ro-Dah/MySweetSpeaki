@@ -882,7 +882,7 @@ class Speaki {
         // ASSETS定義に基づくモーション適用
         switch (this.motionType) {
             case 'shake':
-                this.distortion.skewX = Math.sin(this.motionTimer * 0.05) * 10;
+                this.distortion.skewX = Math.sin(this.motionTimer * 0.1) * 10;
                 this.distortion.rotateX *= 0.85;
                 this.distortion.scale = 1.0;
                 break;
