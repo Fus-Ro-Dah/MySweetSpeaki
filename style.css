@@ -240,11 +240,13 @@ body {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-left: 1px solid var(--glass-border);
-    padding: 1.5rem;
+    padding: 1.2rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.2rem;
     box-shadow: var(--shadow);
+    overflow-y: auto;
+    /* メニュー全体が溢れた場合にスクロール可能に */
 }
 
 .menu-description {
@@ -324,33 +326,36 @@ h3 {
     border-radius: 10px;
 }
 
-/* 開発ロードマップ表示エリア */
-#memo-section {
-    margin-top: 1rem;
+/* 開発メモ・クレジットセクション共通 */
+#memo-section,
+#credits-section {
+    margin-top: 0.5rem;
     display: flex;
     flex-direction: column;
 }
 
-#dev-roadmap {
+#dev-roadmap,
+#material-credits {
     width: 100%;
-    height: 120px;
-    /* 約5行分の固定高さ */
-    padding: 0.8rem;
+    height: 100px;
+    padding: 0.7rem;
     border-radius: 12px;
     border: 1px solid #e8f5e9;
     background: white;
-    font-size: 0.8rem;
-    line-height: 1.6;
+    font-size: 0.75rem;
+    line-height: 1.5;
     color: #666;
     overflow-y: auto;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
-#dev-roadmap::-webkit-scrollbar {
+#dev-roadmap::-webkit-scrollbar,
+#material-credits::-webkit-scrollbar {
     width: 4px;
 }
 
-#dev-roadmap::-webkit-scrollbar-thumb {
+#dev-roadmap::-webkit-scrollbar-thumb,
+#material-credits::-webkit-scrollbar-thumb {
     background: #c8e6c9;
     border-radius: 10px;
 }

@@ -1142,6 +1142,7 @@ class Game {
 
         // 音声管理
         this.audioEnabled = false;
+        this.isGameStarted = false; // 二重起動防止用フラグ
 
         Game.instance = this;
 
@@ -1280,6 +1281,9 @@ class Game {
 
     /** タイトル画面を閉じてゲームを開始する */
     startGame() {
+        if (this.isGameStarted) return; // すでに開始されていたら何もしない
+        this.isGameStarted = true;
+
         const titleScreen = document.getElementById('title-screen');
         if (titleScreen) {
             titleScreen.classList.add('fade-out');
