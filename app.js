@@ -1364,26 +1364,25 @@ class Game {
         this.canvas.height = rect.height;
     }
 
-    /** インタラクション（マウスイベント等）の設定 */
+    /** インタラクション（ポインターイベント等）の設定 */
     setupInteractions() {
-        // 初回クリック時に音声を有効化
+        // 初回操作時に音声を有効化
         const unlockAudio = () => {
             if (!this.audioEnabled) {
                 this.audioEnabled = true;
                 console.log("[Audio] System unlocked by user interaction.");
-                // 沈黙を流してコンテキストを活性化（iOS/Safari対策）
                 const silent = new Audio();
                 silent.play().catch(() => { });
             }
-            window.removeEventListener('mousedown', unlockAudio);
-            window.removeEventListener('touchstart', unlockAudio);
+            window.removeEventListener('pointerdown', unlockAudio);
         };
-        window.addEventListener('mousedown', unlockAudio);
-        window.addEventListener('touchstart', unlockAudio);
+        window.addEventListener('pointerdown', unlockAudio);
 
-        this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
-        this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
-        this.canvas.addEventListener('mouseup', () => this.handleMouseUp());
+        this.canvas.addEventListener('pointerdown', (e) => this.handleMouseDown(e));
+        this.canvas.addEventListener('pointermove', (e) => this.handleMouseMove(e));
+        this.canvas.addEventListener('pointerup', (e) => this.handleMouseUp(e));
+        // キャンバス外で指を離した場合の対応
+        this.canvas.addEventListener('pointercancel', (e) => this.handleMouseUp(e));
 
         document.getElementById('gift-btn-receive').onclick = () => this.receiveGift();
         document.getElementById('reaction-btn-1').onclick = () => this.handleReaction(1);
@@ -1392,45 +1391,85 @@ class Game {
 
     /** ドラッグ＆ドロップの設定 */
     setupDragAndDrop() {
-        // アイテムリストにイベント委譲を設定（動的なアイテム追加に対応）
         const itemList = document.getElementById('item-list');
-        if (itemList) {
-            itemList.addEventListener('dragstart', (e) => {
-                const item = e.target.closest('.draggable-item');
-                if (item) {
-                    const data = {
-                        id: item.dataset.id,
-                        type: item.dataset.type
-                    };
-                    const dataStr = JSON.stringify(data);
-                    e.dataTransfer.setData('text/plain', dataStr);
-                    // より確実な受け渡しのためカスタムタイプも設定
-                    try {
-                        e.dataTransfer.setData('application/json', dataStr);
-                    } catch (err) { }
+        if (!itemList) return;
 
-                    e.dataTransfer.effectAllowed = 'move';
-                }
-            });
-        }
+        // PC用: 標準 Drag and Drop API
+        itemList.addEventListener('dragstart', (e) => {
+            const item = e.target.closest('.draggable-item');
+            if (item) {
+                const data = { id: item.dataset.id, type: item.dataset.type };
+                e.dataTransfer.setData('application/json', JSON.stringify(data));
+                e.dataTransfer.effectAllowed = 'move';
+            }
+        });
 
         this.canvas.addEventListener('dragover', (e) => e.preventDefault());
         this.canvas.addEventListener('drop', (e) => {
             e.preventDefault();
             const rawData = e.dataTransfer.getData('application/json') || e.dataTransfer.getData('text/plain');
-            if (!rawData) return;
+            if (rawData) this._handleItemDrop(rawData, e.clientX, e.clientY);
+        });
 
-            try {
-                const data = JSON.parse(rawData);
-                const rect = this.canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+        // モバイル用: タッチドラッグの疑似実装
+        let touchDragData = null;
+        let touchGhost = null;
 
-                this.addItem(data.id, data.type, x, y);
-            } catch (err) {
-                console.error("[Drop] Parse error:", err, rawData);
+        itemList.addEventListener('touchstart', (e) => {
+            const item = e.target.closest('.draggable-item');
+            if (item) {
+                touchDragData = { id: item.dataset.id, type: item.dataset.type };
+                // 視覚的フィードバック用のゴースト
+                touchGhost = item.cloneNode(true);
+                touchGhost.style.position = 'fixed';
+                touchGhost.style.pointerEvents = 'none';
+                touchGhost.style.opacity = '0.7';
+                touchGhost.style.zIndex = '1000';
+                document.body.appendChild(touchGhost);
+                this._updateTouchGhost(touchGhost, e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchmove', (e) => {
+            if (touchGhost) {
+                e.preventDefault(); // スクロール防止
+                this._updateTouchGhost(touchGhost, e.touches[0].clientX, e.touches[0].clientY);
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchend', (e) => {
+            if (touchDragData) {
+                const touch = e.changedTouches[0];
+                const target = document.elementFromPoint(touch.clientX, touch.clientY);
+
+                if (target === this.canvas) {
+                    this._handleItemDrop(JSON.stringify(touchDragData), touch.clientX, touch.clientY);
+                }
+
+                if (touchGhost) {
+                    touchGhost.remove();
+                    touchGhost = null;
+                }
+                touchDragData = null;
             }
         });
+    }
+
+    /** タッチ用ゴーストの位置更新 */
+    _updateTouchGhost(ghost, x, y) {
+        ghost.style.left = `${x - 40}px`;
+        ghost.style.top = `${y - 20}px`;
+    }
+
+    /** アイテム投下時の共通処理 */
+    _handleItemDrop(rawData, clientX, clientY) {
+        try {
+            const data = JSON.parse(rawData);
+            const rect = this.canvas.getBoundingClientRect();
+            this.addItem(data.id, data.type, clientX - rect.left, clientY - rect.top);
+        } catch (err) {
+            console.error("[Drop] Parse error:", err);
+        }
     }
 
     /** アイテムの配置 */

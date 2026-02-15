@@ -203,6 +203,8 @@ body {
     width: 100%;
     height: 100%;
     display: block;
+    touch-action: none;
+    /* タッチ中のスクロールを無効化 */
 }
 
 /* 隠れ家 (hideout) */
