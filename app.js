@@ -23,7 +23,7 @@ const STATE = {
     // ユーザーインタラクション
     USER_INTERACTING: 'user_interacting',
 
-    // スピキ同士のインタラクション
+    // スピキ同士のインタラクション(今後実装予定)
     GAME_APPROACHING: 'game_approaching',
     GAME_REACTION: 'game_reaction'
 };
@@ -147,13 +147,19 @@ const ASSETS = {
     },
     speaki_mood_sad_walking_3: {
         imagefile: 'speaki_sad_walking_3.png',
-        soundfile: 'デルジバゼヨ.mp3',
+        soundfile: '本場スピキ叩き.mp3',
         text: 'ﾃﾞﾙｼﾞﾊﾞｾﾞﾖ!',
         movePattern: 'none'
     },
 
     // -- Performance --
     // ---- アイテム ----
+    speaki_performance_ITEM_Pumpkin_1: {
+        imagefile: 'speaki_happy_idle_1.png',
+        soundfile: 'チョワヨ.mp3',
+        text: 'ﾁｮﾜﾖ!',
+        movePattern: 'bounce'
+    },
     speaki_performance_ITEM_BabySpeaki_1: {
         imagefile: 'speaki_happy_idle_1.png',
         soundfile: 'チョワヨ.mp3',
@@ -161,28 +167,47 @@ const ASSETS = {
         movePattern: 'bounce',
         pitch: 1.5
     },
-    speaki_performance_ITEM_Pumpkin_1: {
+    speaki_performance_ITEM_Candy_1: {
+        imagefile: 'speaki_happy_idle_1.png',
+        soundfile: 'チョワヨ.mp3',
+        text: 'ﾁｮﾜﾖ!',
+        movePattern: 'swing'
+    },
+    speaki_performance_ITEM_Mocaron_1: {
         imagefile: 'speaki_happy_idle_1.png',
         soundfile: 'チョワヨ.mp3',
         text: 'ﾁｮﾜﾖ!',
         movePattern: 'bounce'
     },
-    speaki_performance_ITEM_ToyBall_1: {
-        imagefile: 'speaki_happy_idle_1.png',
-        soundfile: '完全詠唱.mp3',
-        text: '完全詠唱',
-        movePattern: 'bounce'
+    speaki_performance_ITEM_AnimalCan_1: {
+        imagefile: 'コミー.png',
+        soundfile: 'これを食べて眠気を覚ますにゃん.mp3',
+        text: 'これを食べて眠気を覚ますにゃん',
+        movePattern: 'swing'
     },
-    speaki_performance_ITEM_CatTower_1: {
-        imagefile: 'speaki_happy_idle_1.png',
-        soundfile: 'チョワヨ.mp3',
-        text: 'たかーい！',
-        movePattern: 'bounce'
+    speaki_performance_ITEM_ShionMelone_1: {
+        imagefile: 'speaki_sad_idle_1.png',
+        soundfile: 'ウアア.mp3',
+        text: 'ｳｱｱ!',
+        movePattern: 'shake'
     },
+    speaki_performance_ITEM_LeviDriver_1: {
+        imagefile: 'speaki_sad_idle_1.png',
+        soundfile: 'ウアア.mp3',
+        text: 'ｳｱｱ!',
+        movePattern: 'shake'
+    },
+    speaki_performance_ITEM_BrokenHobagi_1: {
+        imagefile: 'speaki_sad_idle_1.png',
+        soundfile: '慟哭.mp3',
+        text: '慟哭',
+        movePattern: 'shake'
+    },
+
     speaki_performance_ITEM_generic_1: {
         imagefile: 'speaki_happy_idle_1.png',
         soundfile: 'チョワヨ.mp3',
-        text: 'なにかな？',
+        text: 'ﾁｮﾜﾖ!',
         movePattern: 'bounce'
     },
     // ---- ギフト ----
@@ -190,18 +215,18 @@ const ASSETS = {
         imagefile: 'speaki_happy_idle_1.png', // ギフト待機画像
         soundfile: 'チョワヨ.mp3',
         text: 'プレゼントだよ！',
-        movePattern: 'bounce'
+        movePattern: 'none'
     },
     speaki_performance_happy_giftreaction_1: {
         imagefile: 'speaki_happy_idle_1.png',
-        soundfile: '完全詠唱.mp3',
-        text: '完全詠唱',
-        movePattern: 'bounce'
+        soundfile: '本場スピキくすぐり.mp3',
+        text: '(ｽﾋﾟｷはあなたが大好きなようだ)',
+        movePattern: 'swing'
     },
     speaki_performance_sad_gifttimeout_1: {
         imagefile: 'speaki_sad_idle_1.png',
-        soundfile: 'ウアア.mp3',
-        text: 'ぐーぐー...',
+        soundfile: 'アーウ.mp3',
+        text: 'ｱｰｳ',
         movePattern: 'stretch'
     },
     // ---- なでなで (idle) ----
@@ -245,43 +270,86 @@ const ITEMS = {
     Pumpkin: {
         name: 'かぼちゃ',
         imagefile: 'item_pumpkin.png',
-        soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
         text: '',
-        size: 60,
+        size: 180,
         pitch: 1.5,
         showInMenu: true,
         isSpecialGift: true,
+        transform: { nextId: 'Pumpkin2', duration: 10000 }
+    },
+    Pumpkin2: {
+        name: 'かぼちゃ_割れ',
+        imagefile: 'item_pumpkin2.png',
+        soundfile: 'ピキ.mp3',
+        text: '',
+        size: 180,
+        pitch: 1.5,
         transform: { nextId: 'BabySpeaki', duration: 10000 }
     },
     BabySpeaki: {
         name: '赤ちゃんスピキ',
         imagefile: 'item_baby_speaki.png',
+        soundfile: 'チョワヨ.mp3',
+        text: 'ﾁｮﾜﾖ',
+        size: 80,
+        pitch: 1.5,
+        transform: { nextId: 'BabySpeaki2', duration: 20000 }
+    },
+    BabySpeaki2: {
+        name: '赤ちゃんスピキ2',
+        imagefile: 'item_baby_speaki2.png',
         soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3',
-        //soundfile: 'チョワヨ.mp3',
         text: 'ﾁｮﾜﾖ',
         size: 80,
         pitch: 1.5,
         transform: { isAdult: true, duration: 20000 }
     },
-    CatTower: {
-        name: 'キャットタワー',
-        imagefile: 'item_cat_tower.png',
-        type: 'furniture',
+    Candy: {
+        name: 'キャンディ',
+        imagefile: 'item_キャンディ.png',
         size: 100,
-        text: '登ってみたい！',
+        text: 'ﾜｱ ｷｬﾝﾃﾞｨﾀﾞ ｳｯﾋｮｰ!',
         showInMenu: true,
-        isSpecialGift: true,
-        transform: { nextId: 'ToyBall', duration: 10000 }
     },
-    ToyBall: {
-        name: 'おもちゃのボール',
-        imagefile: 'item_toy_ball.png',
-        size: 40,
-        text: '転がそう！',
-        showInMenu: true
+    Mocaron: {
+        name: 'モカロン',
+        imagefile: 'item_モカロン.png',
+        size: 100,
+        text: '',
+        showInMenu: true,
+    },
+    AnimalCan: {
+        name: 'アニマル缶',
+        imagefile: 'item_アニマル缶.png',
+        soundfile: 'コミーだってやるときはやるにゃん.mp3',
+        size: 100,
+        text: 'エルフ族特製!',
+        isSpecialGift: true,
+    },
+    Shionmelone: {
+        name: 'シオン・ザ・メロンブレッド',
+        imagefile: 'item_シオン・ザ・メロンブレッド.png',
+        soundfile: 'シオン口上視線が泳いでいるぞ.mp3',
+        size: 150,
+        text: '闇の閃光!',
+        isSpecialGift: true,
+    },
+    LeviDriver: {
+        name: 'レヴィ・ドライバー',
+        imagefile: 'item_レヴィドライバー.png',
+        soundfile: 'レヴィドライバー.mp3',
+        size: 100,
+        text: 'ｱｱｱｱ! ｱｱｱｱｱｱｱ!!',
+        isSpecialGift: true,
+    },
+    BrokenHobagi: {
+        name: 'かぼちゃ粥',
+        imagefile: 'item_かぼちゃ粥.png',
+        size: 100,
+        isSpecialGift: true,
     },
     RandomGift: {
-        name: '？',
+        name: 'ランダムギフト(ｽﾋﾟｷからもらったプラスチックの分だけ配置できる)',
         imagefile: 'gift.png', // ギフト画像を使用
         size: 50,
         showInMenu: true,
@@ -996,11 +1064,11 @@ class Speaki {
 
     /** 好感度のラベル取得 (5段階) */
     getFriendshipLabel() {
-        if (this.friendship >= 31) return 'とっても高い';
-        if (this.friendship >= 11) return '高い';
-        if (this.friendship >= -10) return 'どちらでもない';
-        if (this.friendship >= -30) return '低い';
-        return 'とっても低い';
+        if (this.friendship >= 31) return 'あなたのことが大好きだ';
+        if (this.friendship >= 11) return 'あなたを信頼している';
+        if (this.friendship >= -10) return 'ふつう';
+        if (this.friendship >= -30) return 'あなたを怖がっている';
+        return '怯えきっている(そのうち隠れ家から出てくるだろう)';
     }
 
     /** 好感度のCSSクラス取得 */
