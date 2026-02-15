@@ -233,13 +233,13 @@ const ASSETS = {
     speaki_mood_happy_giftwait_1: {
         imagefile: 'speaki_happy_idle_1.png', // ギフト待機画像
         soundfile: 'チョワヨ.mp3',
-        text: '(ｽﾋﾟｷは私にプレゼントを持ってきてくれたようだ)',
+        text: 'ﾁｮﾜﾖ!!!!!',
         movePattern: 'none'
     },
     speaki_performance_happy_giftreaction_1: {
         imagefile: 'speaki_happy_idle_1.png',
         soundfile: '本場スピキくすぐり.mp3',
-        text: '(ｽﾋﾟｷは私にプレゼントを渡せてとっても満足げだ)',
+        text: '(ｽﾋﾟｷはとっても満足げだ)',
         movePattern: 'swing'
     },
     speaki_performance_sad_gifttimeout_1: {
@@ -349,7 +349,7 @@ const ITEMS = {
         imagefile: 'item_シオン・ザ・メロンブレッド.png',
         soundfile: 'シオン口上視線が泳いでいるぞ.mp3',
         size: 150,
-        text: '闇の閃光!',
+        text: '元ネタ: https://youtu.be/Py06vYKp4EY?si=V2BOhdAMiVH_Rvh1',
         isSpecialGift: true,
     },
     LeviDriver: {
@@ -357,7 +357,7 @@ const ITEMS = {
         imagefile: 'item_レヴィドライバー.png',
         soundfile: 'レヴィドライバー.mp3',
         size: 100,
-        text: 'ｱｱｱｱ! ｱｱｱｱｱｱｱ!!',
+        text: '元ネタ: https://youtu.be/WsQKUin6sb0?si=lltZElvtIdY4qbA6',
         isSpecialGift: true,
     },
     BrokenHobagi: {
@@ -855,8 +855,8 @@ class Speaki {
 
         if (isShowingGift) {
             dom.gift.classList.remove('hidden');
-            // スピキ本体のscaleを考慮しつつ、flip(反転)は打ち消す
-            dom.gift.style.transform = `translateX(-50%) scale(${1.0 / this.distortion.scale}) scaleX(${flip})`;
+            // スピキ本体よりも手前に表示するため translateZ(100px) を追加
+            dom.gift.style.transform = `translateX(-50%) translateZ(100px) scale(${1.0 / this.distortion.scale}) scaleX(${flip})`;
         } else {
             dom.gift.classList.add('hidden');
         }
@@ -1082,11 +1082,11 @@ class Speaki {
 
     /** 好感度のラベル取得 (5段階) */
     getFriendshipLabel() {
-        if (this.friendship >= 31) return 'あなたのことが大好きだ';
-        if (this.friendship >= 11) return 'あなたを信頼している';
+        if (this.friendship >= 31) return '私のことが大好きなようだ';
+        if (this.friendship >= 11) return '私を信頼しているようだ';
         if (this.friendship >= -10) return 'ふつう';
-        if (this.friendship >= -30) return 'あなたを怖がっている';
-        return '怯えきっている(そのうち隠れ家から出てくるだろう)';
+        if (this.friendship >= -30) return '私を怖がっているようだ';
+        return '怯えきっている (そのうち隠れ家から出てくるだろう)';
     }
 
     /** 好感度のCSSクラス取得 */
@@ -1467,7 +1467,7 @@ class Game {
             placedTime: Date.now(),
             stage: 'default',
             displayText: itemDef.text || null,
-            textDisplayUntil: itemDef.text ? Date.now() + 3000 : 0
+            textDisplayUntil: itemDef.text ? Date.now() + 15000 : 0
         };
 
         this.placedItems.push(item);
@@ -1752,13 +1752,13 @@ class Game {
 
         switch (mode) {
             case 'start':
-                message.textContent = 'お土産を持ってきたよ！';
+                message.textContent = 'プレゼントを持ってきてくれた！';
                 ui.classList.remove('hidden');
                 receiveBtn.classList.remove('hidden');
                 reactionGroup.classList.add('hidden');
                 break;
             case 'receiving':
-                message.textContent = '何をくれるかな？';
+                message.textContent = 'お礼を言おう';
                 receiveBtn.classList.add('hidden');
                 reactionGroup.classList.remove('hidden');
                 break;
@@ -1872,7 +1872,7 @@ class Game {
         if (nextDef.soundfile) this.playSound(nextDef.soundfile, nextDef.pitch || 1.0);
         if (nextDef.text) {
             item.displayText = nextDef.text;
-            item.textDisplayUntil = Date.now() + 3000;
+            item.textDisplayUntil = Date.now() + 15000;
         }
     }
 
@@ -1901,11 +1901,11 @@ class Game {
                     </div>
                     <div class="speaki-detail">
                         <div class="speaki-detail-item">
-                            <span>状態:</span>
+                            <span>なにをしているか:</span>
                             <span class="speaki-detail-val">${state}</span>
                         </div>
                         <div class="speaki-detail-item">
-                            <span>感情:</span>
+                            <span>きもち:</span>
                             <span class="speaki-detail-val">${emotionLabel}</span>
                         </div>
                     </div>
