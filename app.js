@@ -1109,8 +1109,8 @@ class Speaki {
             case STATE.WALKING: return 'お散歩中';
             case STATE.GIFT_LEAVING:
             case STATE.GIFT_SEARCHING:
-            case STATE.GIFT_RETURNING: return 'お土産探し中';
-            case STATE.GIFT_WAIT_FOR_USER_REACTION: return '待機中';
+            case STATE.GIFT_RETURNING: return '何かを探している...';
+            case STATE.GIFT_WAIT_FOR_USER_REACTION: return 'にこにこしながらこっちを見ている';
             case STATE.ITEM_APPROACHING: return 'アイテムへ移動中';
             case STATE.ITEM_ACTION: return 'アイテムで遊んでる';
             case STATE.USER_INTERACTING: return 'ふれあい中';
