@@ -21,8 +21,8 @@
             <div class="logo-container">
                 <img src="assets/backgrounds/trickal_logo.jpg" alt="Trickal Logo" class="main-logo">
             </div>
-            <p>ここはあなただけの小さな飼育スペース (開発中)。<br>
-                不思議な生き物(?) ｽﾋﾟｷたちと触れ合って癒されよう。
+            <p>ここはあなただけの小さな飼育スペース<br>
+                不思議な生き物(?) ｽﾋﾟｷたちと触れ合って癒されよう
             </p>
             <button id="start-button">ｽﾋﾟｷに会いに行く</button>
         </div>
@@ -52,31 +52,64 @@
                 <div id="speaki-status">
                     <h3>スピキたちの状態</h3>
                     <p class="status-hint">ｽﾋﾟｷと仲良くなると何か持ってきてもらえるかも？</p>
+                    <p class="status-hint evolution-hint">こどもｽﾋﾟｷは、誕生から100秒経過し、満腹度が75以上になると成長するよ！</p>
                     <div id="speaki-list">
                         <!-- スピキごとのエントリが動的に生成されます -->
                         <p class="empty-list">スピキはいません...</p>
                     </div>
                 </div>
-                <div id="memo-section">
-                    <h3>開発メモ: 今後やりたいこと</h3>
-                    <div id="dev-roadmap">
-                        ・ランダムギフトの種類をもっと増やす(現状4種)<br>
-                        ・距離の近いｽﾋﾟｷどうしがおしゃべりする<br>
-                        ・動き回る子供のｽﾋﾟｷ<br>
-                        ・ｽﾋﾟｷ以外も出演<br>
-                    </div>
-                </div>
 
-                <!-- 素材クレジット表示エリア -->
-                <div id="credits-section">
-                    <h3>使用素材</h3>
-                    <div id="material-credits">
-                        ・キャラクター・背景・BGM・サウンド: EPID Games 様<br>
-                        ・イラスト: x(旧Twitter) @RyO03374506 様<br>
-                        その他は登場時に表記
-                    </div>
+                <div id="footer-section">
+                    <button id="open-info-btn" class="secondary-mini-btn">開発メモ・引用</button>
                 </div>
             </aside>
+        </div>
+    </div>
+
+    <!-- 情報・引用素材 モーダル -->
+    <div id="info-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="close-info-btn" class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h3>My Sweet Speaki - 情報・引用素材</h3>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info-block">
+                    <h4>開発メモ: 実装したいこと</h4>
+                    <div class="modal-text">
+                        ・ランダムギフトの種類をもっと増やす(現状4種)<br>
+                        ・距離の近いｽﾋﾟｷどうしがおしゃべりする<br>
+                        ・給餌係と掃除係<br>
+                        ・親子関係<br>
+                        ・家出<br>
+                        ・アイテムによる感情変化<br>
+                        ・個体差(性格・サイズなど)<br>
+                        ・ｽﾋﾟｷにアクセサリーをつける（つけたものに応じて性質が変わるとか）<br>
+                        ・赤ちゃんスピキを撫でられる（叩くことはできない）<br>
+                        ・ナデナデとげんこつ時サウンド<br>
+                        ・ほっぺ引っ張り（本家みたいなちゃんとした奴は無理）<br>
+                        ・ドラッグでスピキを移動<br>
+                        ・ある程度空腹で移動速度低下<br>
+                    </div>
+                </div>
+                <hr>
+                <div class="modal-info-block">
+                    <h4>使用素材</h4>
+                    <div class="modal-text">
+                        ・キャラクター・背景・BGM・サウンド: EPID Games 様<br>
+                        ・イラスト: x(旧Twitter) @RyO03374506 様<br>
+                        ・イラスト: pixiv 마신멜로우様(https://www.pixiv.net/artworks/140508635)<br>
+                        その他は登場時に表記<br>
+                    </div>
+                </div>
+                <hr>
+                <div class="modal-info-block">
+                    <h4>ご意見ご感想いただけますとﾍﾞﾘｰﾍﾞﾘｰﾁｮﾜﾖです!</h4>
+                    <div class="modal-text">
+                        x(旧Twitter): ユー @Pp8bA
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -94,7 +127,7 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 
 </html>
