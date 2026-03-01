@@ -381,16 +381,14 @@ body.mode-relaxed #happiness-container {
 /* グローバルオーバーレイ (ギフトイベント等) */
 #room-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     pointer-events: none;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    /* 全ての上に来るように */
 }
 
 /* メニュー (20%) */
@@ -811,6 +809,8 @@ button {
     font-family: inherit;
     font-weight: 600;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     transition: opacity 0.2s, transform 0.2s;
 }
 
@@ -1480,6 +1480,8 @@ button:hover {
     border-radius: 12px;
     padding: 0 15px;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     transition: all 0.2s;
     box-shadow: 0 4px 0 #2c3e50;
     overflow: hidden;
@@ -1529,6 +1531,8 @@ button:hover {
     font-weight: 800;
     color: #2c3e50;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     transition: all 0.2s;
     box-shadow: 0 4px 0 #2c3e50;
     flex-shrink: 0;

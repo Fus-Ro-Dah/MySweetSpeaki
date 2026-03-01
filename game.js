@@ -64,13 +64,9 @@ export class Game {
         this.lastTime = performance.now();
 
         // モード選択ボタンの待機
-        const relaxedBtn = document.getElementById('start-relaxed-btn');
-        const challengeBtn = document.getElementById('start-challenge-btn');
-        const confirmBtn = document.getElementById('confirm-start-btn');
-
-        if (relaxedBtn) relaxedBtn.addEventListener('click', () => this.selectMode('relaxed'));
-        if (challengeBtn) challengeBtn.addEventListener('click', () => this.selectMode('challenge'));
-        if (confirmBtn) confirmBtn.addEventListener('click', () => {
+        this._bindButton('start-relaxed-btn', () => this.selectMode('relaxed'));
+        this._bindButton('start-challenge-btn', () => this.selectMode('challenge'));
+        this._bindButton('confirm-start-btn', () => {
             if (this.isGameStarted) {
                 // ゲーム開始後にヘルプとして開いた場合は閉じるだけ
                 const modal = document.getElementById('mode-info-modal');
@@ -81,6 +77,31 @@ export class Game {
         });
 
         requestAnimationFrame((t) => this.loop(t));
+    }
+
+    /** iOS Safari対策: clickとtouchend両方を安全に処理するヘルパー */
+    _bindButton(id, callback) {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        this._bindElement(btn, callback);
+    }
+
+    _bindElement(btn, callback) {
+        if (!btn) return;
+        let lastExecution = 0;
+        const execute = (e) => {
+            const now = Date.now();
+            if (now - lastExecution < 400) return; // 重複発火防止
+            lastExecution = now;
+
+            // touchend経由の場合は、ブラウザによる300ms後のclick自動発火を可能な限り防ぐ
+            if (e.type === 'touchend') {
+                if (e.cancelable) e.preventDefault();
+            }
+            callback(e);
+        };
+        btn.addEventListener('touchend', execute);
+        btn.addEventListener('click', execute);
     }
 
     /** モード選択時の処理 */
@@ -193,21 +214,16 @@ export class Game {
         this.updatePlasticStockUI();
 
         // アンロックメニューのリスナー
-        const openUnlockBtn = document.getElementById('open-unlock-btn');
-        const closeUnlockBtn = document.getElementById('close-unlock-btn');
         const unlockModal = document.getElementById('unlock-modal');
 
-        if (openUnlockBtn && unlockModal) {
-            openUnlockBtn.addEventListener('click', () => {
-                this.initUnlockMenu();
-                unlockModal.classList.remove('hidden');
-            });
-        }
-        if (closeUnlockBtn && unlockModal) {
-            closeUnlockBtn.addEventListener('click', () => {
-                unlockModal.classList.add('hidden');
-            });
-        }
+        this._bindButton('open-unlock-btn', () => {
+            this.initUnlockMenu();
+            if (unlockModal) unlockModal.classList.remove('hidden');
+        });
+
+        this._bindButton('close-unlock-btn', () => {
+            if (unlockModal) unlockModal.classList.add('hidden');
+        });
     }
 
     /** タイトル画面を閉じてゲームを開始する */
@@ -358,58 +374,41 @@ export class Game {
         // タッチイベント・紛失対応
         this.canvas.addEventListener('pointercancel', (e) => this.handleMouseUp(e));
 
-        document.getElementById('gift-btn-receive')?.addEventListener('click', () => this.receiveGift());
-        document.getElementById('reaction-btn-1')?.addEventListener('click', () => this.handleReaction(1));
-        document.getElementById('reaction-btn-2')?.addEventListener('click', () => this.handleReaction(2));
+        this._bindButton('gift-btn-receive', () => this.receiveGift());
+        this._bindButton('reaction-btn-1', () => this.handleReaction(1));
+        this._bindButton('reaction-btn-2', () => this.handleReaction(2));
 
         // モーダルの制御（共通化）
         const setupModal = (btnId, closeId, modalId) => {
-            const btn = document.getElementById(btnId);
-            const close = document.getElementById(closeId);
             const modal = document.getElementById(modalId);
-            if (btn && modal) {
-                btn.onclick = (e) => {
-                    e.stopPropagation();
-                    modal.classList.remove('hidden');
-                };
-            }
-            if (close && modal) {
-                close.onclick = (e) => {
-                    e.stopPropagation();
-                    modal.classList.add('hidden');
-                };
-            }
+
+            this._bindButton(btnId, () => {
+                if (modal) modal.classList.remove('hidden');
+            });
+
+            this._bindButton(closeId, () => {
+                if (modal) modal.classList.add('hidden');
+            });
+
             if (modal) {
-                modal.onclick = (e) => {
+                this._bindElement(modal, (e) => {
                     if (e.target === modal) modal.classList.add('hidden');
-                };
+                });
             }
         };
 
-        // setupModal('open-tutorial-btn', 'close-tutorial-btn', 'tutorial-modal'); // 以前の汎用チュートリアルは無効化
-
         // 「？」ボタンで現在のモードの説明を再表示する
-        const helpBtn = document.getElementById('open-tutorial-btn');
-        if (helpBtn) {
-            helpBtn.onclick = (e) => {
-                e.stopPropagation();
-                // すでに selectMode でコンテンツの出し分けは設定されているので、モーダルを開くだけでOK
-                const modal = document.getElementById('mode-info-modal');
-                if (modal) modal.classList.remove('hidden');
-            };
-        }
+        this._bindButton('open-tutorial-btn', () => {
+            const modal = document.getElementById('mode-info-modal');
+            if (modal) modal.classList.remove('hidden');
+        });
 
-        // モード説明モーダルの「OK」ボタンや背景クリックでの閉じ処理を明示的に追加（既存のsetupModalのロジックを流用可だが、個別に書く方が安全）
+        // モード説明モーダルの「OK」ボタンや背景クリックでの閉じ処理を明示的に追加
         const modeModal = document.getElementById('mode-info-modal');
-        const confirmBtn = document.getElementById('confirm-start-btn');
         if (modeModal) {
-            modeModal.onclick = (e) => {
+            this._bindElement(modeModal, (e) => {
                 if (e.target === modeModal) modeModal.classList.add('hidden');
-            };
-            if (confirmBtn) {
-                // startGame内で本来呼ばれるが、ヘルプとして開いた場合は閉じるだけにする必要がある
-                // startGame自体に「すでに開始していたら閉じるだけ」のロジックを入れるか、ここで上書きするか
-            }
+            });
         }
 
         setupModal('open-memo-btn', 'close-memo-btn', 'memo-modal');
