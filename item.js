@@ -68,8 +68,10 @@ export class Item {
         const img = images[imgKey] || images[`assets/images/${def.imagefile}`];
 
         if (img) {
-            ctx.save();
+            // 画像が破損している（読み込み失敗）場合はスキップしてエラーを防ぐ
+            if (!img.complete || img.naturalWidth === 0) return;
 
+            ctx.save();
             // 耐久度に応じた視覚フィードバック (薄くなっていく)
             if (this.maxDurability > 0 && this.durability < this.maxDurability) {
                 ctx.globalAlpha = 0.2 + (this.durability / this.maxDurability) * 0.8;

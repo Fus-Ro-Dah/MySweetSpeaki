@@ -72,6 +72,7 @@ body {
     z-index: 10;
 }
 
+
 .logo-container {
     margin-bottom: 2rem;
     filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
@@ -92,11 +93,18 @@ body {
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
-#start-button {
-    font-size: 1.3rem;
-    padding: 1.2rem 4rem;
+.mode-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: center;
+}
+
+.mode-btn {
+    font-size: 1.2rem;
+    padding: 1rem 3rem;
     background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-    box-shadow: 0 10px 20px rgba(255, 154, 158, 0.4);
+    box-shadow: 0 8px 16px rgba(255, 154, 158, 0.3);
     border: none;
     color: #fff;
     font-family: inherit;
@@ -105,21 +113,170 @@ body {
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 280px;
 }
 
-#start-button:hover {
+.mode-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 12px 24px rgba(255, 154, 158, 0.5);
+    filter: brightness(1.05);
+}
+
+/* のんびりモードは青系にしてみる */
+#start-relaxed-btn {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    box-shadow: 0 8px 16px rgba(161, 196, 253, 0.3);
+}
+
+#start-relaxed-btn:hover {
+    box-shadow: 0 12px 24px rgba(161, 196, 253, 0.5);
+}
+
+/* モードによるUI制御 */
+body.mode-relaxed #happiness-container {
+    display: none !important;
+}
+
+#start-button {
     transform: translateY(-8px) scale(1.05);
     box-shadow: 0 15px 30px rgba(255, 154, 158, 0.6);
     filter: brightness(1.05);
 }
 
-/* 雲のスタイリング */
+.project-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 4.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #ff9a9e, #fecfef, #a1c4fd, #fecfef, #ff9a9e);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 5s linear infinite;
+    filter: drop-shadow(0 5px 15px rgba(255, 154, 158, 0.4));
+    letter-spacing: -2px;
+    text-transform: uppercase;
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+.fan-disclaimer {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* ｽﾋﾟｷたちが流れるアニメーション */
+#speaki-flow-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.flowing-speaki {
+    position: absolute;
+    height: 120px;
+    width: auto;
+    opacity: 0.4;
+    filter: blur(1px);
+    pointer-events: none;
+    will-change: transform;
+}
+
+@keyframes speakiFlowLeft {
+    from {
+        transform: translateX(110vw) rotate(5deg);
+    }
+
+    to {
+        transform: translateX(-20vw) rotate(-5deg);
+    }
+}
+
+@keyframes speakiFlowRight {
+    from {
+        transform: translateX(-20vw) rotate(-5deg);
+    }
+
+    to {
+        transform: translateX(110vw) rotate(5deg);
+    }
+}
+
+/* 個別の調整（速度と高さ） */
+.flowing-speaki.s1 {
+    top: 10%;
+    animation: speakiFlowLeft 25s linear infinite;
+}
+
+.flowing-speaki.s2 {
+    top: 25%;
+    animation: speakiFlowRight 30s linear infinite;
+    animation-delay: -5s;
+}
+
+.flowing-speaki.s3 {
+    top: 40%;
+    animation: speakiFlowLeft 20s linear infinite;
+    animation-delay: -2s;
+    height: 80px;
+}
+
+.flowing-speaki.s4 {
+    top: 60%;
+    animation: speakiFlowRight 35s linear infinite;
+    animation-delay: -10s;
+}
+
+.flowing-speaki.s5 {
+    top: 75%;
+    animation: speakiFlowLeft 28s linear infinite;
+    animation-delay: -15s;
+}
+
+.flowing-speaki.s6 {
+    top: 15%;
+    animation: speakiFlowRight 22s linear infinite;
+    animation-delay: -8s;
+    height: 80px;
+}
+
+.flowing-speaki.s7 {
+    top: 85%;
+    animation: speakiFlowRight 40s linear infinite;
+}
+
+.flowing-speaki.s8 {
+    top: 50%;
+    animation: speakiFlowLeft 32s linear infinite;
+    animation-delay: -12s;
+}
+
+/* 既存の雲のスタイリング */
 .title-cloud {
     position: absolute;
     background: white;
     border-radius: 100px;
     opacity: 0.8;
-    z-index: 1;
+    z-index: 2;
+    /* ｽﾋﾟｷより手前に */
     filter: blur(2px);
 }
 
@@ -238,7 +395,10 @@ body {
 
 /* メニュー (20%) */
 #side-menu {
-    flex: 0 0 22%;
+    flex: 0 0 20%;
+    /* 22%から20%に戻す、または環境に合わせて調整 */
+    min-width: 250px;
+    /* 極端に狭くなるのを防ぐ */
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -246,10 +406,65 @@ body {
     padding: 1.2rem;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1.5rem;
     box-shadow: var(--shadow);
     overflow-y: auto;
-    /* メニュー全体が溢れた場合にスクロール可能に */
+    overflow-x: hidden;
+    /* 横スクロールの発生を抑止 */
+}
+
+.menu-block {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 1rem;
+    border-radius: 20px;
+    border: 1px solid #ffe4e1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+    /* カウンター配置用 */
+}
+
+/* サイドメニュー上部のリソース表示エリア */
+.resource-displays {
+    display: flex;
+    justify-content: space-around;
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+}
+
+#gift-stock-display {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.3rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ffe4e1;
+}
+
+.stock-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.mini-icon {
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    margin-top: -2px;
+}
+
+/* ｽﾋﾟｷたちのリストのみ可変長で他は固定気味に */
+#speaki-status {
+    flex: 1;
 }
 
 .menu-description {
@@ -267,11 +482,40 @@ h3 {
     color: var(--accent-color);
 }
 
-#item-list {
+#item-list,
+#job-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem;
-    margin-bottom: 1rem;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.horizontal-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.job-buttons-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    flex: 1;
+}
+
+.primary-btn.mini-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+    width: auto;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.job-item {
+    flex: 1;
+    min-width: 100px;
 }
 
 .draggable-item {
@@ -292,18 +536,18 @@ h3 {
     border-color: var(--accent-color);
 }
 
-#speaki-status {
-    flex: 1;
-    /* 残りのスペースをすべて使う */
-    background: rgba(255, 255, 255, 0.6);
-    padding: 1.2rem;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    /* flex内のスクロールを有効にするために必要 */
-    border: 1px solid #ffe4e1;
+.draggable-item.active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 12px rgba(255, 20, 147, 0.3);
 }
+
+.draggable-item.active:hover {
+    filter: brightness(1.1);
+}
+
+/* #speaki-status block 固有のスタイルがあればここに書くが、基本は .menu-block で統一 */
 
 .status-hint {
     font-size: 0.8rem;
@@ -317,7 +561,7 @@ h3 {
     flex-direction: column;
     gap: 0.8rem;
     overflow-y: auto;
-    padding-right: 5px;
+    overflow-x: hidden;
     flex: 1;
 }
 
@@ -381,9 +625,11 @@ h3 {
 
 .speaki-entry-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    /* 左寄せに変更 */
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
+    /* 少し広げる */
 }
 
 .header-left,
@@ -399,8 +645,10 @@ h3 {
     font-weight: 700;
     font-size: 0.85rem;
     color: #2c3e50;
-    width: 70px;
-    /* 少し短く */
+    flex: 1;
+    /* 可能な限り広がるように変更 */
+    min-width: 0;
+    /* flexアイテムが見切れるのを防ぐ */
     padding: 1px 2px;
 }
 
@@ -445,20 +693,45 @@ h3 {
     overflow: hidden;
 }
 
+.icon-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.gauge-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.gauge-value {
+    position: absolute;
+    font-size: 9px;
+    font-weight: 800;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 3px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    line-height: 1;
+    /* アイコンの形状に合わせて微調整が必要な場合がある */
+    transform: translateY(1px);
+}
+
 .gauge-item.mini-row {
     display: flex;
+    flex-direction: row;
+    /* 横並びに明示指定 */
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.8rem;
+    /* 少し広げる */
     line-height: 1;
 }
 
-.mini-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: #5d6d7e;
-    min-width: 65px;
-    /* ラベルの幅を固定してバーの開始位置を揃える */
-}
+/* mini-label はアイコンに置き換わったため削除可 */
 
 .gauge-fill {
     height: 100%;
@@ -467,11 +740,13 @@ h3 {
 }
 
 .gauge-fill.friendship {
-    background: linear-gradient(90deg, #3498db, #2ecc71);
+    background: linear-gradient(90deg, #ffc0cb, #ff69b4);
+    /* ピンク */
 }
 
 .gauge-fill.hunger {
-    background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+    background: linear-gradient(90deg, #ffd700, #ff8c00);
+    /* オレンジがかった黄色 */
 }
 
 .speaki-detail-footer {
@@ -579,10 +854,32 @@ button:hover {
 .speaki-emoji-overlay,
 .char-emoji-overlay {
     position: absolute;
-    top: -40px;
+    top: -50px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) scale(0.5);
     font-size: 32px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 150;
+    pointer-events: none;
+}
+
+.char-emoji-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1.2);
+    animation: bounceEmoji 0.5s ease infinite alternate;
+}
+
+@keyframes bounceEmoji {
+    from {
+        transform: translateX(-50%) scale(1.1) translateY(0);
+    }
+
+    to {
+        transform: translateX(-50%) scale(1.2) translateY(-5px);
+    }
 }
 
 .speaki-gift-overlay,
@@ -810,6 +1107,22 @@ button:hover {
     }
 }
 
+#unlock-shop-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+    background: rgba(255, 140, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
 .modal-close {
     position: absolute;
     top: 1.5rem;
@@ -854,6 +1167,430 @@ button:hover {
     border-radius: 15px;
 }
 
+.modal-body-scrollable {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.modal-body-scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body-scrollable::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 10px;
+}
+
+.modal-image-placeholder {
+    width: 100%;
+    max-height: none;
+    /* 高さを固定せず、縦長画像も全体が表示されるようにする */
+    object-fit: contain;
+    /* 見切れを防ぐ */
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    background: #f0f0f0;
+    display: block;
+}
+
 .modal-overlay.hidden {
     display: none;
+}
+
+/* しあわせスピキのエフェクト */
+.char-sprite-container.is-happy .char-sprite {
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 1));
+    animation: happy-shimmer 2s infinite alternate ease-in-out;
+}
+
+@keyframes happy-shimmer {
+    from {
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));
+    }
+
+    to {
+        filter: drop-shadow(0 0 25px rgba(255, 215, 0, 1)) brightness(1.2);
+    }
+}
+
+/* 疑似要素での後光が重なる問題を避けるため、メインのspriteにフィルターをかける方式に変更 */
+
+/* 幸福度ゲージ UI */
+#happiness-container {
+    position: absolute;
+    top: 50px;
+    /* 少し下に下げてゲージが画面外に出ないように調整 */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    /* ゲージとかぼちゃの間の余白を広めに確保 */
+    z-index: 100;
+    pointer-events: none;
+}
+
+#happiness-bar-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 説明モーダルのグリッドレイアウト */
+.description-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.description-item {
+    background: #fdf2f2;
+    border-radius: 15px;
+    padding: 15px;
+    border: 2px solid #ffe4e1;
+}
+
+.description-item img {
+    width: 100%;
+    max-height: none;
+    /* 高さを固定せず、画像全体が表示されるようにする */
+    object-fit: contain;
+    /* 見切れを防ぐ */
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.description-item p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #444;
+}
+
+#happiness-sun-icon {
+    width: 30px;
+    height: 30px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    flex-shrink: 0;
+}
+
+/* のんびりモードでは幸福度関連を非表示 */
+.mode-relaxed #happiness-container {
+    display: none !important;
+}
+
+#happiness-pumpkin {
+    width: 300px;
+    height: 300px;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+    margin-top: 10px;
+    margin-bottom: 5px;
+    z-index: -1;
+    position: relative;
+}
+
+#happiness-bar-wrapper {
+    width: 200px;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    border: 2px solid #fff;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#happiness-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ffd700, #ff4500);
+    transition: width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ゲームクリア画面 */
+#game-clear-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 1s;
+    pointer-events: auto;
+}
+
+#game-clear-overlay:not(.hidden) {
+    opacity: 1;
+}
+
+.clear-content {
+    text-align: center;
+    background: white;
+    padding: 3rem 5rem;
+    border-radius: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    border: 4px solid #ffd700;
+}
+
+#continue-game-btn {
+    margin-top: 2rem;
+    padding: 1rem 2.5rem;
+    font-size: 1.4rem;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 700;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #ff9ff3, #feca57);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 159, 243, 0.4);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#continue-game-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 159, 243, 0.6);
+}
+
+.clear-content h1 {
+    font-size: 3rem;
+    color: #ff4500;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 0px #ffd700;
+}
+
+/* アンロックモーダル特有 */
+.unlock-modal-content {
+    max-width: 800px !important;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#unlock-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.unlock-item {
+    background: white;
+    border: 2px solid #ffe4e1;
+    border-radius: 16px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.unlock-item.unlocked {
+    border-color: #4ae281;
+    background: #f0fff4;
+}
+
+.unlock-item.locked {
+    filter: grayscale(0.5);
+    opacity: 0.8;
+}
+
+.unlock-item h4 {
+    margin: 0;
+    color: var(--accent-color);
+}
+
+.unlock-item .price {
+    font-weight: bold;
+    color: #e67e22;
+    font-size: 0.9rem;
+}
+
+.unlock-btn {
+    margin-top: auto;
+}
+
+/* クールダウン表示 */
+.draggable-item.cooldown {
+    filter: grayscale(0.8) brightness(0.7);
+    cursor: wait;
+    position: relative;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.draggable-item.cooldown::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    animation: cooldown-anim linear forwards;
+}
+
+@keyframes cooldown-anim {
+    from {
+        height: 100%;
+    }
+
+    to {
+        height: 0%;
+    }
+}
+
+.cooldown-timer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+}
+
+/* サイドメニューヘッダー */
+#side-menu-header {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    margin-bottom: 5px;
+    align-items: center;
+    /* 上下のずれを解消 */
+    justify-content: space-between;
+}
+
+.header-main-btn {
+    flex: 1;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* 両端に寄せる */
+    background: white;
+    /* 白に戻す */
+    border: 2px solid #2c3e50;
+    border-radius: 12px;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 0 #2c3e50;
+    overflow: hidden;
+}
+
+.header-main-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #2c3e50;
+}
+
+.header-main-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #2c3e50;
+}
+
+.header-btn-icon-wrapper {
+    width: 50px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.header-icon-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.header-btn-text {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #2c3e50;
+}
+
+.header-square-btn {
+    width: 54px;
+    height: 54px;
+    background: white;
+    border: 2px solid #2c3e50;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 0 #2c3e50;
+    flex-shrink: 0;
+}
+
+.header-square-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #2c3e50;
+}
+
+.header-square-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #2c3e50;
+}
+
+/* ゲームクリア画面の装飾 */
+#game-clear-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5000;
+}
+
+.clear-content {
+    background: white;
+    padding: 3rem;
+    border-radius: 40px;
+    text-align: center;
+    max-width: 800px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: floatingUI 4s ease-in-out infinite;
+}
+
+.clear-content h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #ff9a9e, #fecfef);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.clear-content p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.clear-credits {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    background: #f8f9fa;
+    padding: 1.2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    text-align: left;
+    border: 1px solid #eee;
 }

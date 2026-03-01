@@ -9,9 +9,14 @@ export class BaseCharacter {
         this.parentElement = parentElement;
         this.characterType = options.characterType || 'speaki'; // アセットのプレフィックス (speaki, mob 等)
         // const defaultNamePrefix = (this.characterType === 'baby') ? '赤ちゃんスピキ' : 'ｽﾋﾟｷ';
-        // ユーザー要望により、赤ちゃんでも大人でも「ｽﾋﾟｷ_番号」で統一
+        // こどもでも大人でも「ｽﾋﾟｷ_番号」で統一
         const defaultNamePrefix = 'ｽﾋﾟｷ';
-        this.name = options.name || `${defaultNamePrefix}_${id}`;
+        this.name = options.name || `${id + 1}ﾋﾟｷめの${defaultNamePrefix}`;
+
+        // 0. 機能フラグ
+        this.canInteract = options.canInteract !== undefined ? options.canInteract : true;
+        this.hasHunger = options.hasHunger !== undefined ? options.hasHunger : true;
+        this.hasEmotion = options.hasEmotion !== undefined ? options.hasEmotion : true;
 
         // 1. 位置と物理状態
         this.pos = {
@@ -32,10 +37,15 @@ export class BaseCharacter {
             friendship: options.friendship || 0,
             hunger: options.hunger || 50,
             emotion: 'happy',
+            forcedEmotion: null, // NEW: アイテム等による強制感情
             action: 'idle',
+            socialTurnCount: 0, // 交流中の再生回数
+            isMySocialTurn: false, // 自分の喋る番かどうか
             size: options.size || 160,
-            voicePitch: options.voicePitch || 1.0
+            voicePitch: options.voicePitch || 1.0,
+            deathProgress: 0, // 死亡演出の進行度 (0.0 - 1.0)
         };
+        this.isPendingDeletion = false; // 死亡演出完了後に削除するためのフラグ
 
         // 3. 表示とアニメーション
         this.visual = {
@@ -65,7 +75,8 @@ export class BaseCharacter {
             actionDuration: 0,
             interactStart: 0,
             waitDuration: 1000 + Math.random() * 4000,
-            lastHeartTime: 0
+            lastHeartTime: 0,
+            forcedEmotionUntil: 0 // NEW: 強制感情の終了時刻
         };
 
         if (this.parentElement) {
@@ -131,26 +142,66 @@ export class BaseCharacter {
         // 4. 実行フェーズ：現在のSTATEに応じた行動をとる
         this._executeStateAction(dt);
 
-        // 5. 社会的相互作用（他のキャラを検知）
-        this._checkSocialInteractions();
+        // 5. 社会的相互作用（中央管理に移行したため削除）
 
         // 空腹度の進行
-        this.status.hunger = Math.max(0, this.status.hunger - dt / 5000); // テストとして500としている
+        if (this.hasHunger) {
+            const hungerDecayLv = (window.game && window.game.unlocks.hungerDecayLv) || 0;
+            const secondsPerPoint = 2 + hungerDecayLv;
+            this.status.hunger = Math.max(0, this.status.hunger - (dt / (secondsPerPoint * 1000)));
+        }
+
+        // 死亡判定 (DYING状態でないときのみ判定)
+        if (this.status.state !== STATE.DYING) {
+            const isStarving = this.hasHunger && this.status.hunger <= 0;
+            const isDespaired = this.status.friendship <= -49.5; // 自動回復に食われないよう少し余裕を持たせる
+
+            if (isStarving || isDespaired) {
+                this.status.state = STATE.DYING;
+                this.status.deathProgress = 0;
+                this.timers.stateStart = Date.now();
+                // 死亡時は他の音を止める
+                if (this.visual.currentVoice) {
+                    this.visual.currentVoice.pause();
+                }
+                console.log(`[BaseCharacter] ${this.name} is dying. (Starving: ${isStarving}, Despaired: ${isDespaired})`);
+            }
+        }
 
         // 好感度の自動回復 (負の値の場合のみ 0 に向かって回復)
         if (this.status.friendship < 0) {
             this.status.friendship = Math.min(0, this.status.friendship + dt / 10000); // 10秒で1回復
         }
 
+        // 好感度の自然減少 (正の値の場合)
+        if (this.status.friendship > 0) {
+            const affectionDecayLv = (window.game && window.game.unlocks.affectionDecayLv) || 0;
+            const secondsPerPoint = 2 + affectionDecayLv;
+            // 指定された秒数で 1ポイント下がるよう計算 (dt / (秒数 * 1000))
+            this.status.friendship = Math.max(0, this.status.friendship - (dt / (secondsPerPoint * 1000)));
+        }
+
         // 表情の基本更新（オーバーライド可能）
         this._updateAppearanceByStatus();
+
+        // しあわせスピキ状態の視覚効果用フラグ更新
+        if (this.visual.dom.container) {
+            const isRelaxed = window.game && window.game.gameMode === 'relaxed';
+            const isHappySpeaki = !isRelaxed && this.canInteract && this.status.friendship >= 40 && this.status.hunger >= 80;
+            if (isHappySpeaki) {
+                this.visual.dom.container.classList.add('is-happy');
+            } else {
+                this.visual.dom.container.classList.remove('is-happy');
+            }
+        }
     }
 
     /** 状態遷移の判定 (サブクラスで拡張可能) */
     _updateStateTransition() {
+        if (this.status.state === STATE.DYING) return; // 死亡中は遷移しない
         const now = Date.now();
         const dist = this.pos.destinationSet ? Math.sqrt(Math.pow(this.pos.targetX - this.pos.x, 2) + Math.pow(this.pos.targetY - this.pos.y, 2)) : 999;
-        const arrived = dist <= 10;
+        const arrived = !this.pos.destinationSet || dist <= 10;
 
         // 空腹時の挙動
         if (this.status.hunger <= 0) {
@@ -245,16 +296,77 @@ export class BaseCharacter {
                 break;
 
             case STATE.GAME_APPROACHING:
-                if (arrived) {
-                    this.status.state = STATE.GAME_REACTION;
-                    this.timers.actionStart = Date.now();
-                    this.timers.actionDuration = 4000;
+            case STATE.GAME_REACTION:
+                // 安全策: パートナーがいない、または削除されている場合はIDLEに戻す
+                const socialPartner = this.socialConfig ? this.socialConfig.partner : null;
+                const isPartnerValid = socialPartner && socialPartner.visual && socialPartner.visual.dom && socialPartner.visual.dom.container;
+                const isPartnerInSocialState = socialPartner && [STATE.GAME_APPROACHING, STATE.GAME_REACTION].includes(socialPartner.status.state);
+
+                if (!isPartnerValid || !isPartnerInSocialState) {
+                    console.warn(`[BaseCharacter] Social partner lost or invalid for ${this.id}. Resetting to IDLE.`);
+                    this.status.state = (this.status.stateStack.length > 0) ? this.status.stateStack.pop() : STATE.IDLE;
+                    this.status.socialTurnCount = 0;
+                    this.status.isMySocialTurn = false;
                     this._onStateChanged(this.status.state);
+                    return;
+                }
+
+                if (this.status.state === STATE.GAME_APPROACHING) {
+                    if (arrived) {
+                        this.status.state = STATE.GAME_REACTION;
+                        this.timers.actionStart = Date.now();
+                        // game.jsで設定されたactionDurationを維持（なければデフォルト9秒）
+                        if (!this.timers.actionDuration) this.timers.actionDuration = 9000;
+                        this._onStateChanged(this.status.state);
+                    }
+                } else {
+                    // STATE.GAME_REACTION の処理
+                    // 自分の番でない場合はタイマーをリセットし続けて待機
+                    if (!this.status.isMySocialTurn) {
+                        this.timers.actionStart = now;
+                        return;
+                    }
+
+                    const timeInAction = now - this.timers.actionStart;
+                    const currentDuration = this.timers.actionDuration || 3000;
+
+                    if (timeInAction > currentDuration) {
+                        this.status.socialTurnCount++;
+                        this.status.isMySocialTurn = false;
+
+                        const partner = this.socialConfig.partner; // ここでは存在が保証されている
+                        const bothFinished = (this.status.socialTurnCount >= 3 && (!partner || partner.status.socialTurnCount >= 3));
+
+                        if (!bothFinished) {
+                            if (partner) {
+                                partner.status.isMySocialTurn = true;
+                                partner.timers.actionStart = Date.now();
+                                partner._applySelectedAsset(STATE.GAME_REACTION);
+                            } else {
+                                this.status.isMySocialTurn = true;
+                                this.timers.actionStart = Date.now();
+                                this._applySelectedAsset(STATE.GAME_REACTION);
+                            }
+                        } else {
+                            // 終了処理
+                            this.status.state = (this.status.stateStack.length > 0) ? this.status.stateStack.pop() : STATE.IDLE;
+                            this.status.socialTurnCount = 0;
+                            this.status.isMySocialTurn = false;
+                            this._onStateChanged(this.status.state);
+
+                            if (partner) {
+                                partner.status.state = (partner.status.stateStack.length > 0) ? partner.status.stateStack.pop() : STATE.IDLE;
+                                partner.status.socialTurnCount = 0;
+                                partner.status.isMySocialTurn = false;
+                                partner._onStateChanged(partner.status.state);
+                            }
+                        }
+                    }
                 }
                 break;
 
-            case STATE.GAME_REACTION:
-                if (now - this.timers.actionStart > (this.timers.actionDuration || 4000)) {
+            case STATE.ABILITY_ACTION:
+                if (now - this.timers.actionStart > (this.timers.actionDuration || 3000)) {
                     this.status.state = (this.status.stateStack.length > 0) ? this.status.stateStack.pop() : STATE.IDLE;
                     this._onStateChanged(this.status.state);
                 }
@@ -264,6 +376,7 @@ export class BaseCharacter {
 
     /** ステータスに基づ外見の決定 */
     _updateAppearanceByStatus() {
+        if (!this.hasEmotion) return;
         const isStarving = this.status.hunger <= 0;
         const isSpecialState = [STATE.ITEM_ACTION, STATE.GAME_REACTION].includes(this.status.state);
 
@@ -278,13 +391,26 @@ export class BaseCharacter {
 
     /** 現在の状態に応じた行動の実行 */
     _executeStateAction(dt) {
+        if (this.status.state === STATE.DYING) {
+            // 死亡演出: 3秒かけて真っ黒になる
+            const duration = 3000;
+            const elapsed = Date.now() - this.timers.stateStart;
+            this.status.deathProgress = Math.min(1.0, elapsed / duration);
+
+            if (this.status.deathProgress >= 1.0) {
+                this.isPendingDeletion = true;
+            }
+            return;
+        }
+
         const movementStates = [
             STATE.WALKING, STATE.ITEM_APPROACHING, STATE.GAME_APPROACHING,
             STATE.GIFT_LEAVING, STATE.GIFT_RETURNING
         ];
         const staticStates = [
             STATE.IDLE, STATE.USER_INTERACTING, STATE.ITEM_ACTION, STATE.GAME_REACTION,
-            STATE.GIFT_SEARCHING, STATE.GIFT_WAIT_FOR_USER_REACTION, STATE.GIFT_TIMEOUT
+            STATE.GIFT_SEARCHING, STATE.GIFT_WAIT_FOR_USER_REACTION, STATE.GIFT_TIMEOUT,
+            STATE.ABILITY_ACTION
         ];
 
         if (movementStates.includes(this.status.state)) {
@@ -321,6 +447,17 @@ export class BaseCharacter {
             }
         }
 
+        // 死亡演出の反映 (真っ黒にする)
+        if (this.status.deathProgress > 0) {
+            const p = this.status.deathProgress;
+            // 進行度に合わせて明るさを下げ、グレースケールを上げる
+            const brightness = 1.0 - p;
+            const grayscale = p;
+            dom.sprite.style.filter = `brightness(${brightness}) grayscale(${grayscale})`;
+        } else {
+            dom.sprite.style.filter = '';
+        }
+
         // 位置とサイズ
         dom.container.style.width = `${this.status.size}px`;
         dom.container.style.height = `${this.status.size}px`;
@@ -336,7 +473,8 @@ export class BaseCharacter {
         dom.sprite.style.transform = transform;
 
         // セリフ表示
-        dom.chatText.textContent = (this.visual.currentAsset && this.visual.currentAsset.text) || '';
+        let displayText = (this.visual.currentAsset && this.visual.currentAsset.text) || '';
+        dom.chatText.textContent = displayText;
 
         // 名前表示
         if (dom.nameTag) {
@@ -348,6 +486,7 @@ export class BaseCharacter {
     _handleArrival() {
         this.timers.stateStart = Date.now();
         this.pos.destinationSet = false;
+        this.pos.socialSpeed = null; // 同期移動が終わったらクリア
         this.timers.waitDuration = 2000 + Math.random() * 6000;
         if (this.status.state === STATE.WALKING) {
             this.status.action = 'idle';
@@ -447,8 +586,11 @@ export class BaseCharacter {
             return;
         }
 
-        // 好感度が低い(怯えている)場合は常に高速移動
-        const moveSpeed = (this.status.friendship <= -31) ? 8.0 : this.pos.speed;
+        // 好感度が低い(怯えている)場合は常に高速移動。交流時は計算された同期速度を使用。
+        let moveSpeed = (this.status.friendship <= -31) ? 8.0 : this.pos.speed;
+        if (this.status.state === STATE.GAME_APPROACHING) {
+            moveSpeed = this.pos.socialSpeed || (moveSpeed * 1.5);
+        }
 
         const angle = Math.atan2(dy, dx);
         this.pos.x += Math.cos(angle) * moveSpeed;
@@ -467,8 +609,29 @@ export class BaseCharacter {
         this.pos.destinationSet = false; // 状態が変わったら（または再設定されたら）必ずリセットして、次の実行フレームで目的地を再計算させる
 
         this._applyStateAppearance(newState);
-        this._applySelectedAsset(newState);
         this.visual.motionTimer = 0;
+
+        // 状態リセット
+        if (newState === STATE.GAME_REACTION) {
+            this.status.socialTurnCount = 0;
+            // 自分の番の時だけアセットを適用する（後攻はここでは再生しない）
+            if (this.status.isMySocialTurn) {
+                this._applySelectedAsset(newState);
+            } else {
+                // 自分の番でない時はIDLEポーズで待機
+                this.status.action = 'idle';
+                this._applySelectedAsset(newState);
+                this._stopCurrentVoice(); // 余分な音声が鳴らないように念のため
+            }
+        } else {
+            this._applySelectedAsset(newState);
+        }
+
+        // 交流開始時、パートナーの方を向く
+        if ([STATE.GAME_APPROACHING, STATE.GAME_REACTION].includes(newState) && this.socialConfig && this.socialConfig.partner) {
+            const partner = this.socialConfig.partner;
+            this.pos.facingLeft = (this.pos.x > partner.pos.x);
+        }
     }
 
     /** 音声の停止 */
@@ -501,21 +664,50 @@ export class BaseCharacter {
                 break;
             case STATE.GAME_REACTION:
                 this.status.action = 'idle';
-                this.status.emotion = 'happy';
+                // 交流リアクション中は感情をランダムに（sad: 20%, happy: 60%, normal: 20%）
+                const r1 = Math.random();
+                if (r1 < 0.2) this.status.emotion = 'sad';
+                else if (r1 < 0.8) this.status.emotion = 'happy';
+                else this.status.emotion = 'normal';
                 break;
         }
     }
 
     /** 好感度に基づく基本感情更新 */
     _updateBaseEmotion() {
-        const oldEmotion = this.status.emotion;
-        if (this.status.friendship <= -11 || this.status.hunger <= 0) {
-            this.status.emotion = 'sad';
-        } else if (this.status.friendship <= 10) {
+        if (!this.hasEmotion) {
             this.status.emotion = 'normal';
-        } else {
-            this.status.emotion = 'happy';
+            return false;
         }
+        const oldEmotion = this.status.emotion;
+        const now = Date.now();
+
+        // 優先度 1: 空腹 (最優先)
+        if (this.status.hunger <= 0) {
+            this.status.emotion = 'sad';
+            // 空腹時は強制感情タイマーを無効化する
+            this.timers.forcedEmotionUntil = 0;
+            this.status.forcedEmotion = null;
+        }
+        // 優先度 2: アイテム等による強制感情 (10秒間など)
+        else if (this.status.forcedEmotion && now < this.timers.forcedEmotionUntil) {
+            this.status.emotion = this.status.forcedEmotion;
+        }
+        // 優先度 3: 通常の好感度ロジック
+        else {
+            if (this.status.friendship <= -11) {
+                this.status.emotion = 'sad';
+            } else if (this.status.friendship <= 10) {
+                this.status.emotion = 'normal';
+            } else {
+                this.status.emotion = 'happy';
+            }
+            // 強制感情が終了した場合はクリア
+            if (this.status.forcedEmotion) {
+                this.status.forcedEmotion = null;
+            }
+        }
+
         return this.status.emotion !== oldEmotion;
     }
 
@@ -524,42 +716,78 @@ export class BaseCharacter {
         // 状態変更時は必ず以前の音声を停止する (Strict Stop)
         this._stopCurrentVoice();
 
-        const type = [STATE.ITEM_ACTION, STATE.USER_INTERACTING, STATE.GAME_REACTION, STATE.GIFT_REACTION, STATE.GIFT_TIMEOUT].includes(state) ? 'performance' : 'mood';
+        const type = [
+            STATE.ITEM_ACTION,
+            STATE.USER_INTERACTING,
+            STATE.GAME_REACTION,
+            STATE.GIFT_REACTION,
+            STATE.GIFT_TIMEOUT,
+            STATE.ABILITY_ACTION // NEW: 特殊能力もパフォーマンス扱いに
+        ].includes(state) ? 'performance' : 'mood';
 
-        const emotion = this.status.emotion;
-        const action = this.status.action;
+        let emotion = this.status.emotion;
+        let action = this.status.action;
+
+        // 【修正】アイテム実行中は、専用演出(ITEMカテゴリ)を優先的に探しに行くようにする。
+        // ただし、actionが'idle'（横取りガッカリ状態）の場合は、設定されたsad感情を優先する。
+        if (state === STATE.ITEM_ACTION && action !== 'idle') {
+            emotion = 'ITEM';
+        }
+
+        // 交流リアクション中は常に（毎ターン）感情とアクションをランダムに決定する
+        if (state === STATE.GAME_REACTION) {
+            const r2 = Math.random();
+            if (r2 < 0.2) emotion = this.status.emotion = 'sad';
+            else if (r2 < 0.8) emotion = this.status.emotion = 'happy';
+            else emotion = this.status.emotion = 'normal';
+            action = this.status.action = 'idle';
+        }
 
         // アセット取得の内部ヘルパー
-        const getVariations = (charType, e, a) => {
+        const getVariations = (charType, category, e, a) => {
             const charAssets = ASSETS[charType];
-            if (charAssets && charAssets[type] && charAssets[type][e] && charAssets[type][e][a]) {
-                return charAssets[type][e][a];
+            if (charAssets && charAssets[category] && charAssets[category][e] && charAssets[category][e][a]) {
+                return charAssets[category][e][a];
             }
             return null;
         };
 
         // 1. 指定されたキャラ・感情・アクションで検索
-        let variations = getVariations(this.characterType, emotion, action);
+        let variations = getVariations(this.characterType, type, emotion, action);
 
         // 2. なければ 'normal' 感情で再試行
         if (!variations) {
-            variations = getVariations(this.characterType, 'normal', action);
+            variations = getVariations(this.characterType, type, 'normal', action);
+        }
+
+        // 2.5 【NEW】 performanceで見つからない場合、moodカテゴリで再試行 (同じキャラタイプ内でのフォールバックを優先)
+        if (!variations && type === 'performance') {
+            variations = getVariations(this.characterType, 'mood', emotion, action) ||
+                getVariations(this.characterType, 'mood', 'normal', action);
         }
 
         // 3. それでもなければ汎用アイテムリアクション
         if (!variations && state === STATE.ITEM_ACTION) {
-            variations = getVariations(this.characterType, 'ITEM', 'generic');
+            variations = getVariations(this.characterType, 'performance', 'ITEM', 'generic'); // performanceカテゴリ内
         }
 
         // 4. 【NEW】 キャラ指定で見つからない場合、基本の 'speaki' アセットで再試行 (継承)
         if (!variations && this.characterType !== 'speaki') {
-            variations = getVariations('speaki', emotion, action) ||
-                getVariations('speaki', 'normal', action);
+            variations = getVariations('speaki', type, emotion, action) ||
+                getVariations('speaki', type, 'normal', action);
+
+            // speakiのperformanceにもなければ、speakiのmoodを探す
+            if (!variations && type === 'performance') {
+                variations = getVariations('speaki', 'mood', emotion, action) ||
+                    getVariations('speaki', 'mood', 'normal', action);
+            }
 
             if (!variations && state === STATE.ITEM_ACTION) {
-                variations = getVariations('speaki', 'ITEM', 'generic');
+                variations = getVariations('speaki', 'performance', 'ITEM', 'generic');
             }
         }
+
+
 
         if (!variations || variations.length === 0) {
             this.visual.currentAsset = null;
@@ -599,7 +827,9 @@ export class BaseCharacter {
         if (voice) {
             const updateDur = () => {
                 if (isNaN(voice.duration) || voice.duration <= 0) return;
-                this.timers.actionDuration = (voice.duration / (data.pitch || 1.0)) * 1000;
+                // 交流リアクション中も、ボイスの長さに合わせてカウントを進めるために時間を反映させる
+                // (少しだけ余韻を持たせるために 500ms 追加)
+                this.timers.actionDuration = (voice.duration / (data.pitch || 1.0)) * 1000 + 500;
             };
             if (voice.readyState >= 1) updateDur();
             else voice.addEventListener('loadedmetadata', updateDur, { once: true });
@@ -616,7 +846,6 @@ export class BaseCharacter {
 
         if (!isStillThere) {
             // アイテムが既になかった場合 (ガッカリ)
-            // STATE.ITEM_ACTION のまま、アクションを 'idle' にリセットして汎用の悲しい動作をさせる
             this.status.emotion = 'sad';
             this.status.action = 'idle';
             this.timers.actionDuration = 3000;
@@ -624,6 +853,19 @@ export class BaseCharacter {
             // 2. アイテムが存在する場合の動作
             this.status.emotion = 'ITEM';
             this.status.action = item.id;
+
+            // 【NEW】好感度変化の適用 (手動配置の初回のみ)
+            if (item.isInitialGift && def && def.friendshipChange !== undefined) {
+                this.status.friendship = Math.max(-100, Math.min(100, this.status.friendship + def.friendshipChange));
+                item.isInitialGift = false; // 適用済みフラグ
+            }
+
+            // 【NEW】強制感情の発動 (10秒間)
+            if (def && def.forcedEmotion) {
+                this.status.forcedEmotion = def.forcedEmotion;
+                this.timers.forcedEmotionUntil = Date.now() + 10000;
+                this._updateBaseEmotion(); // 即座に反映
+            }
 
             if (def && def.isFood) {
                 // 食べ物なら食べる (ステータス回復)
@@ -637,11 +879,12 @@ export class BaseCharacter {
                         if (idx !== -1) game.placedItems.splice(idx, 1);
                     }
                 }
-                // 食べられたので「うれしい」状態をセット (次回のアセット選択に影響)
-                this.status.emotion = 'happy';
+                // 食べられたので「うれしい」状態をセット (forcedEmotionがなければこちらが優先される)
+                if (!def.forcedEmotion) {
+                    this.status.emotion = 'happy';
+                }
             } else {
                 // 食べ物でないなら遊ぶだけ (消費しない)
-                // emotion=ITEM, action=item.id のまま
             }
             this.timers.actionDuration = 0; // _applySelectedAsset 等で設定される
         }
@@ -676,35 +919,15 @@ export class BaseCharacter {
         this.pos.destinationSet = true;
     }
 
-    /** 近くのキャラを検知して交流を開始する */
-    _checkSocialInteractions() {
-        if (![STATE.IDLE, STATE.WALKING].includes(this.status.state)) return;
-
-        const now = Date.now();
-        if (now - (this.timers.lastSocialCheck || 0) < 8000) return;
-        this.timers.lastSocialCheck = now;
-
-        const game = window.game;
-        if (!game || game.speakis.length < 2) return;
-
-        // 低確率で発動
-        if (Math.random() > 0.3) return;
-
-        const other = game.speakis.find(s => s !== this && [STATE.IDLE, STATE.WALKING].includes(s.status.state));
-        if (other) {
-            const dist = Math.sqrt((other.pos.x - this.pos.x) ** 2 + (other.pos.y - this.pos.y) ** 2);
-            if (dist < 400 && dist > 100) {
-                this.status.state = STATE.GAME_APPROACHING;
-                this.pos.targetX = other.pos.x + (Math.random() * 80 - 40);
-                this.pos.targetY = other.pos.y + (Math.random() * 80 - 40);
-                this.pos.destinationSet = true;
-                this._onStateChanged(this.status.state);
-            }
-        }
-    }
-
     /** 歪みアニメーション更新 */
     _updateDistortion(dt) {
+        const isGameReaction = this.status.state === STATE.GAME_REACTION;
+
+        // 交流中で自分の番でない場合は動きを「凍結」させる
+        if (isGameReaction && !this.status.isMySocialTurn) {
+            return; // motionTimerも進めないし、distortionも更新しない
+        }
+
         this.visual.motionTimer += dt || 16;
         if (this.interaction.isPetting) {
             this.visual.distortion.skewX += (this.visual.targetDistortion.skewX - this.visual.distortion.skewX) * 0.15;
@@ -712,6 +935,9 @@ export class BaseCharacter {
             this.visual.distortion.scale += (this.visual.targetDistortion.scale - this.visual.distortion.scale) * 0.15;
             return;
         }
+
+        // 交流リアクション中はアセットの設定に基づいた動きを常に使用
+        // (_applySelectedAsset で毎ターン抽選されるため、ここでは上書きしない)
 
         switch (this.visual.motionType) {
             case 'shake':
@@ -746,6 +972,19 @@ export class BaseCharacter {
         this._applySelectedAsset(this.status.state);
     }
 
+    /** 絵文字（吹き出し）を表示 */
+    showEmoji(text, duration = 3000) {
+        if (!this.visual.dom.emoji) return;
+        this.visual.dom.emoji.textContent = text;
+        this.visual.dom.emoji.classList.add('visible');
+
+        if (this.timers.emojiTimer) clearTimeout(this.timers.emojiTimer);
+        this.timers.emojiTimer = setTimeout(() => {
+            this.visual.dom.emoji.classList.remove('visible');
+            this.timers.emojiTimer = null;
+        }, duration);
+    }
+
     /** 現在ボイスが再生中かどうか */
     isVoicePlaying() {
         const v = this.visual.currentVoice;
@@ -753,5 +992,27 @@ export class BaseCharacter {
             // console.log(`[Debug] Voice check: ended=${v.ended}, paused=${v.paused}, readyState=${v.readyState}, currentTime=${v.currentTime}`);
         }
         return (v && !v.ended);
+    }
+
+    /**
+     * 特殊能力を実行する
+     * @param {string} abilityId 能力のID
+     * @param {Object} options オプション (targetPos, itemType等)
+     */
+    executeAbility(abilityId, options = {}) {
+        this.status.state = STATE.ABILITY_ACTION;
+        this.status.action = abilityId;
+        this.timers.actionStart = Date.now();
+        this.timers.actionDuration = options.duration || 3000;
+
+        // 実際の効果（アイテム配置など）をトリガーするフック
+        this._onAbilityEffect(abilityId, options);
+
+        this._onStateChanged(this.status.state);
+    }
+
+    /** 能力の効果を実際に発生させる (サブクラスで要実装) */
+    _onAbilityEffect(abilityId, options) {
+        // デフォルトでは何もしない
     }
 }

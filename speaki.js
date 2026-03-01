@@ -7,12 +7,13 @@ import { BaseCharacter } from './base-character.js';
  */
 export class Speaki extends BaseCharacter {
     constructor(id, parentElement, x, y, options = {}) {
-        options.characterType = 'speaki';
+        options.characterType = options.characterType || 'speaki';
         super(id, parentElement, x, y, options);
     }
 
     /** 状態遷移の判定 (Speaki固有のギフトイベント、隠れ行動を追加) */
     _updateStateTransition() {
+        if (this.status.state === STATE.DYING) return; // 死亡中は遷移しない
         const now = Date.now();
         const dist = this.pos.destinationSet ? Math.sqrt(Math.pow(this.pos.targetX - this.pos.x, 2) + Math.pow(this.pos.targetY - this.pos.y, 2)) : 999;
         const arrived = dist <= 10;
@@ -181,7 +182,8 @@ export class Speaki extends BaseCharacter {
         const nonInterruptibleStates = [
             STATE.GIFT_LEAVING, STATE.GIFT_SEARCHING, STATE.GIFT_RETURNING,
             STATE.GIFT_WAIT_FOR_USER_REACTION, STATE.GIFT_REACTION, STATE.GIFT_TIMEOUT,
-            STATE.USER_INTERACTING
+            STATE.USER_INTERACTING,
+            STATE.GAME_APPROACHING, STATE.GAME_REACTION // 交流中もお土産イベントで離席しないようにする
         ];
 
         if (nonInterruptibleStates.includes(this.status.state)) {
@@ -215,17 +217,6 @@ export class Speaki extends BaseCharacter {
 
     /** UI表示用のラベル取得 */
     getStateLabel() {
-        switch (this.status.state) {
-            case STATE.IDLE: return "のんびり";
-            case STATE.WALKING: return "お散歩";
-            case STATE.GIFT_LEAVING:
-            case STATE.GIFT_SEARCHING:
-            case STATE.GIFT_RETURNING: return "お土産探し";
-            case STATE.GIFT_WAIT_FOR_USER_REACTION: return "お土産！";
-            case STATE.ITEM_APPROACHING: return "発見！";
-            case STATE.ITEM_ACTION: return "遊び中";
-            case STATE.USER_INTERACTING: return "ふれあい中";
-            default: return "ぼーっと";
-        }
+        return "ｽﾋﾟｷ";
     }
 }

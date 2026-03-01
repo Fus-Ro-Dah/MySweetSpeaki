@@ -257,26 +257,21 @@ describe('Speaki Character Logic', () => {
         expect(speaki.pos.x).toBeCloseTo(102, 0);
     });
 
-    it('should evolve baby when age > 30s and hunger >= 75', async () => {
+    it('should evolve baby when age > 60s', async () => {
         const { BabySpeaki } = await import('../baby-speaki.js'); // Dynamic import for test
         const baby = new BabySpeaki(2, mockParent, 0, 0);
-        global.window.game.evolveBaby = vi.fn();
+        global.window.game.evolveBabyToChild = vi.fn();
 
         // Case 1: Just born (Age 0) -> No evolution
         baby._updateStateTransition();
-        expect(global.window.game.evolveBaby).not.toHaveBeenCalled();
+        expect(global.window.game.evolveBabyToChild).not.toHaveBeenCalled();
 
-        // Case 2: Age > 60s but Hunger < 75
+        // Case 2: Age > 60s -> Evolution
         baby.bornTime = Date.now() - 61000;
-        baby.status.hunger = 74;
         baby._updateStateTransition();
-        expect(global.window.game.evolveBaby).not.toHaveBeenCalled();
-
-        // Case 3: Age > 60s and Hunger >= 75 -> Evolution
-        baby.status.hunger = 75;
-        baby._updateStateTransition();
-        expect(global.window.game.evolveBaby).toHaveBeenCalledWith(baby);
+        expect(global.window.game.evolveBabyToChild).toHaveBeenCalledWith(baby);
     });
+
 
     it('should clear giftPartner if zombie state detected (self-healing)', () => {
         // Setup zombie state:
