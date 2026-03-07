@@ -19,7 +19,9 @@ export class BabySpeaki extends BaseCharacter {
     /** フレーム更新: IDLE時のみ成長タイマーを進める */
     update(dt) {
         // IDLE状態、かつユーザーと直接触れ合っていない（なでられていない）間だけ成長
-        if (this.status.state === STATE.IDLE && !this.interaction.isInteracting) {
+        // 成長停止設定がONの場合はカウントを進めない
+        const isGrowthStopped = window.game && window.game.settings && window.game.settings.growthStopEnabled;
+        if (this.status.state === STATE.IDLE && !this.interaction.isInteracting && !isGrowthStopped) {
             this.idleGrowthTime += dt;
         }
         super.update(dt);

@@ -68,9 +68,9 @@ describe('Asset Selection and Fallback Logic', () => {
         char.status.emotion = 'sad';
 
         // baby.performance.sad.gifttimeout は未定義 -> speaki.performance.sad.gifttimeout を見つけるはず
-        // STATE.GAME_REACTION は type = 'performance' になる
+        // STATE.GIFT_TIMEOUT は type = 'performance' になり、action を 'idle' に上書きしない
         char.status.action = 'gifttimeout';
-        char._applySelectedAsset(STATE.GAME_REACTION);
+        char._applySelectedAsset(STATE.GIFT_TIMEOUT);
 
         expect(char.visual.currentAsset).not.toBeNull();
         expect(char.visual.currentAsset.imagefile).toBe(ASSETS.speaki.performance.sad.gifttimeout[0].imagefile);

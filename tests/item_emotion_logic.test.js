@@ -15,6 +15,9 @@ vi.spyOn(Game.prototype, '_loadBGM').mockImplementation(() => Promise.resolve())
 // loadResources はリソース読み込み（fetch/Audio）を伴うため完全に無効化する
 vi.spyOn(Game.prototype, 'loadResources').mockImplementation(() => { });
 
+// Mock unlocks
+Game.prototype.unlocks = { hungerDecayLv: 0, affectionDecayLv: 0 };
+
 // Mock DOM
 const mockCanvas = {
     getContext: vi.fn(() => ({})),
@@ -79,6 +82,7 @@ global.document = {
             clientHeight: 800,
             dataset: {},
             contains: vi.fn(() => false), // Mock contains
+            querySelectorAll: vi.fn(() => []), // NEW: querySelectorAll
         };
         if (id === 'game-canvas') {
             return { ...baseElement, ...mockCanvas };

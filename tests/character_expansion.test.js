@@ -32,6 +32,7 @@ describe('Character Expansion Logic', () => {
                 playSound: vi.fn(),
                 images: {},
                 speakis: [],
+                unlocks: { hungerDecayLv: 0, affectionDecayLv: 0 }
             },
             innerWidth: 1000,
             innerHeight: 800,

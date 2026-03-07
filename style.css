@@ -1418,6 +1418,40 @@ button:hover {
     margin-top: auto;
 }
 
+/* トグルボタン */
+.toggle-btn {
+    margin-top: auto;
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+    border: 2px solid #2c3e50;
+}
+
+.toggle-btn.active {
+    background: #4ae281;
+    color: white;
+    box-shadow: 0 4px 0 #2d8a4f;
+}
+
+.toggle-btn.inactive {
+    background: #bdc3c7;
+    color: #7f8c8d;
+    box-shadow: 0 4px 0 #7f8c8d;
+}
+
+.toggle-btn:hover {
+    transform: translateY(-2px);
+    opacity: 1;
+}
+
+.toggle-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
 /* クールダウン表示 */
 .draggable-item.cooldown {
     filter: grayscale(0.8) brightness(0.7);

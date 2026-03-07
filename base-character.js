@@ -64,6 +64,7 @@ export class BaseCharacter {
             isInteracting: false,
             isPetting: false,
             isActuallyDragging: false,
+            isMoving: false, // 移動（ドラッグ移動）中フラグ
             targetItem: null,
             lastMouseX: 0,
             lastMouseY: 0
@@ -160,6 +161,12 @@ export class BaseCharacter {
                 this.status.state = STATE.DYING;
                 this.status.deathProgress = 0;
                 this.timers.stateStart = Date.now();
+
+                // 死に際のサウンド再生 (プラン1: ピッチを個体設定に合わせる)
+                if (window.game) {
+                    window.game.playSound('ヌンデ.mp3', this.status.voicePitch);
+                }
+
                 // 死亡時は他の音を止める
                 if (this.visual.currentVoice) {
                     this.visual.currentVoice.pause();
@@ -575,7 +582,7 @@ export class BaseCharacter {
 
     /** 移動処理 */
     _processMovement() {
-        if (!this.pos.destinationSet) return;
+        if (!this.pos.destinationSet || this.interaction.isMoving) return;
 
         const dx = this.pos.targetX - this.pos.x;
         const dy = this.pos.targetY - this.pos.y;

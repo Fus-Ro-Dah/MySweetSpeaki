@@ -48,7 +48,15 @@ export class Game {
             affectionDecayLv: 0, // NEW: 0から始まり、解放ごとに+1
             autoReceive: false,
             mocaronUnlocked: false,
-            reloadReductionLv: 0
+            reloadReductionLv: 0,
+            growthStop: false
+        };
+
+        // ON/OFF設定 (初期値はアンロック時にtrueになる)
+        this.settings = {
+            feederEnabled: false,
+            autoReceiveEnabled: false,
+            growthStopEnabled: false
         };
         this.itemCooldowns = {}; // { itemId: endTimestamp }
         this.isGameCleared = false;
@@ -175,10 +183,13 @@ export class Game {
 
     /** 音声の再生（インスタンスを返す） */
     playSound(fileName, pitch = 1.0) {
-        if (!this.audioEnabled || !this.sounds[fileName]) return null;
+        if (!this.audioEnabled) return null;
 
-        const audio = this.sounds[fileName];
-        const playClone = new Audio(audio.src);
+        let audio = this.sounds[fileName];
+        let src = audio ? audio.src : `assets/sounds/${fileName}`;
+
+        // 未ロードの音源の場合は、new Audio して再生を試みる
+        const playClone = new Audio(src);
         playClone.volume = 0.5;
 
         // ピッチ（再生速度）の設定
@@ -197,7 +208,14 @@ export class Game {
                 if (pitch !== 1.0) {
                     playClone.playbackRate = pitch;
                 }
-            }).catch(e => console.log("[Audio] Playback failed:", e));
+            }).catch(e => {
+                // ファイルが存在しないなどのエラー
+                if (!audio) {
+                    console.warn(`[Audio] Playback failed for unregistered sound: ${fileName}`, e);
+                } else {
+                    console.log("[Audio] Playback failed:", e);
+                }
+            });
         }
 
         return playClone;
@@ -365,11 +383,7 @@ export class Game {
         this.canvas.addEventListener('pointerdown', (e) => this.handleMouseDown(e));
         window.addEventListener('pointermove', (e) => this.handleMouseMove(e));
         window.addEventListener('pointerup', (e) => this.handleMouseUp(e));
-        // 右クリックでのアイテム削除を無効化するため、イベントリスナーを削除
-        // this.canvas.addEventListener('contextmenu', (e) => this.handleContextMenu(e));
-
-        // 代わりにブラウザのデフォルトメニューを抑制するだけにする（オプション）
-        this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+        this.canvas.addEventListener('contextmenu', (e) => this.handleContextMenu(e));
 
         // タッチイベント・紛失対応
         this.canvas.addEventListener('pointercancel', (e) => this.handleMouseUp(e));
@@ -608,12 +622,23 @@ export class Game {
 
     handleMouseDown(e) {
         const { x, y } = this._getMousePos(e);
-        const target = this._findSpeakiAt(x, y);
-        if (!target) return;
+        const result = this._findSpeakiAt(x, y);
+        if (!result) return;
 
-        if (!this._isInteractable(target)) return;
+        const { speaki, hitArea } = result;
 
-        this._prepareInteraction(target, x, y);
+        if (!this._isInteractable(speaki)) return;
+
+        // 移動可能なキャラクター（スピキ、子供、赤ちゃん）かつ「胴体」がクリックされた場合
+        const movableSpecies = ['speaki', 'child', 'baby'];
+        const isMovableSpecie = movableSpecies.includes(speaki.characterType);
+        const canMoveState = [STATE.IDLE, STATE.WALKING].includes(speaki.status.state);
+
+        if (hitArea === 'body' && isMovableSpecie && canMoveState) {
+            this._startMovement(speaki, x, y);
+        } else if (hitArea === 'head') {
+            this._prepareInteraction(speaki, x, y);
+        }
     }
 
     _getMousePos(e) {
@@ -638,11 +663,35 @@ export class Game {
     _findSpeakiAt(x, y) {
         for (let i = this.speakis.length - 1; i >= 0; i--) {
             const s = this.speakis[i];
-            const dist = Math.sqrt((x - s.pos.x) ** 2 + (y - s.pos.y) ** 2);
-            const isHeadHit = (y < s.pos.y - s.status.size / 5);
-            if (dist < s.status.size / 2 && isHeadHit) return s;
+            const dx = x - s.pos.x;
+            const dy = y - s.pos.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            // スピキのサイズに基づいた判定
+            if (dist < s.status.size / 2) {
+                // Y座標の相対位置で「頭」か「胴体」かを判定
+                // 中心より上（size/5以上のマイナス方向）を頭とする
+                const isHeadHit = (y < s.pos.y - s.status.size / 5);
+                return {
+                    speaki: s,
+                    hitArea: isHeadHit ? 'head' : 'body'
+                };
+            }
         }
         return null;
+    }
+
+    /** ｽﾋﾟｷの移動開始（ドラッグ） */
+    _startMovement(speaki, x, y) {
+        speaki.interaction.isInteracting = true;
+        speaki.interaction.isMoving = true; // 移動中フラグ
+        speaki.timers.stateStart = Date.now();
+        speaki.interaction.lastMouseX = x;
+        speaki.interaction.lastMouseY = y;
+        this.interactTarget = speaki;
+
+        // ドラッグ開始時の演出（少し浮く等）
+        speaki.visual.targetDistortion.scale = 1.1;
     }
 
     _prepareInteraction(speaki, x, y) {
@@ -679,7 +728,6 @@ export class Game {
             const dist = Math.sqrt((it.x - x) ** 2 + (it.y - y) ** 2);
             if (dist < it.size / 2) {
                 this.placedItems.splice(i, 1);
-                this.playSound('アーウ.mp3', 0.8);
                 console.log(`Item ${it.id} removed by user.`);
                 return;
             }
@@ -698,7 +746,13 @@ export class Game {
 
         if (dist <= 5) return;
 
-        if (speaki.status.state === STATE.USER_INTERACTING) {
+        if (speaki.interaction.isMoving) {
+            // 移動（ドラッグ）処理
+            speaki.pos.x = x;
+            speaki.pos.y = y;
+            speaki.pos.destinationSet = false;
+        } else if (speaki.status.state === STATE.USER_INTERACTING) {
+            // なでなで処理
             speaki.interaction.isPetting = true;
             speaki.status.friendship = Math.min(50, speaki.status.friendship + 0.2);
             if (speaki.visual.currentVoice) speaki.visual.currentVoice.loop = true;
@@ -783,12 +837,21 @@ export class Game {
     }
 
     _cleanupInteraction(speaki) {
+        const wasMoving = speaki.interaction.isMoving;
         speaki.interaction.isInteracting = false;
         speaki.interaction.isPetting = false;
         speaki.interaction.isActuallyDragging = false;
+        speaki.interaction.isMoving = false;
         speaki.timers.stateStart = Date.now();
         speaki.pos.destinationSet = false;
-        speaki.status.state = (speaki.status.stateStack.length > 0) ? speaki.status.stateStack.pop() : STATE.IDLE;
+
+        // 移動後、またはスタックが空の場合はIDLEにする
+        if (wasMoving) {
+            speaki.status.state = STATE.IDLE;
+        } else {
+            speaki.status.state = (speaki.status.stateStack.length > 0) ? speaki.status.stateStack.pop() : STATE.IDLE;
+        }
+
         speaki._stopCurrentVoice();
         speaki._onStateChanged(speaki.status.state); // 追加：復帰後のアニメーション/アセットを適用
         this.interactTarget = null;
@@ -919,8 +982,8 @@ export class Game {
     startGiftReceiveEvent(speaki) {
         this.giftPartner = speaki;
 
-        // 自動回収が有効な場合
-        if (this.unlocks.autoReceive) {
+        // 自動回収が解放済み かつ 設定がONの場合
+        if (this.unlocks.autoReceive && this.settings.autoReceiveEnabled) {
             this.handleReaction('auto');
             return;
         }
@@ -986,7 +1049,7 @@ export class Game {
             s.update(dt);
 
             if (s.isPendingDeletion) {
-                // 削除前にその場に「かぼちゃ（Pumpkin）」を配置
+                // 削除前にその場に「死んだ時用のウィンプル」を配置
                 console.log(`[Game] Speaki ${s.id} died and returned to DeathWimple.`);
                 this.addItem('DeathWimple', 'item', s.pos.x, s.pos.y);
 
@@ -1487,10 +1550,10 @@ export class Game {
             }
         }
 
-        // 自動ごはん係の処理
-        if (this.unlocks.feeder) {
+        // 自動ごはん係の処理 (設定がONの場合のみ)
+        if (this.unlocks.feeder && this.settings.feederEnabled) {
             // ポーシャーがいないか、または帰宅中/帰宅直後などでないかチェック
-            const posher = this.speakis.find(s => s instanceof Posher);
+            const posher = this.speakis.find(s => s.characterType === 'posher');
             if (!posher) {
                 // お腹を空かせたスピキがいるか (満腹度30以下)
                 const hungryOne = this.speakis.find(s => s.canInteract && s.status.hunger <= 30);
@@ -1511,9 +1574,10 @@ export class Game {
         const nextHungerSec = currentHungerSec + 1;
 
         const unlockDefs = [
-            { id: 'feeder', name: 'ごはん係 (給餌係)', price: 1, desc: '満腹度30以下のｽﾋﾟｷにごはんをあげる係を呼びます。', current: this.unlocks.feeder },
+            { id: 'feeder', name: 'ごはん係 (給餌係)', price: 1, desc: '満腹度30以下のｽﾋﾟｷにごはんをあげる係を呼びます', current: this.unlocks.feeder },
             { id: 'autoReceive', name: 'プレゼント自動回収', price: 1, desc: 'スピキが持ってきたプレゼントを自動で受け取ります', current: this.unlocks.autoReceive },
-            { id: 'unlockMocaron', name: 'モカロン解放', price: 1, desc: 'より栄養価の高い食べ物「モカロン」が置けるようになります。', current: this.unlocks.mocaronUnlocked }
+            { id: 'growthStop', name: 'ｽﾋﾟｷの成長停止', price: 1, desc: 'スピキが成長しなくなります。赤ちゃんは赤ちゃんのまま、子供は子供のままの姿を維持します', current: this.unlocks.growthStop },
+            { id: 'unlockMocaron', name: 'モカロン解放', price: 1, desc: 'より栄養価の高い食べ物「モカロン」が置けるようになります', current: this.unlocks.mocaronUnlocked }
         ];
 
         // チャレンジモードのみ表示する項目
@@ -1551,17 +1615,74 @@ export class Game {
             const div = document.createElement('div');
             // isUpgrade の場合は unlocked クラスをつけない（常にボタンを押せるように）
             div.className = `unlock-item ${def.current ? 'unlocked' : 'locked'}`;
+
+            let buttonHTML = '';
+            if (def.id === 'feeder' || def.id === 'autoReceive' || def.id === 'growthStop') {
+                if (def.current) {
+                    let isEnabled = false;
+                    if (def.id === 'feeder') isEnabled = this.settings.feederEnabled;
+                    else if (def.id === 'autoReceive') isEnabled = this.settings.autoReceiveEnabled;
+                    else if (def.id === 'growthStop') isEnabled = this.settings.growthStopEnabled;
+
+                    let toggleText = isEnabled ? 'ON' : 'OFF';
+                    if (def.id === 'feeder') toggleText = isEnabled ? 'お手伝い中' : '今はいない';
+                    else if (def.id === 'growthStop') toggleText = isEnabled ? '成長停止中' : '今は自然に成長する';
+                    else if (def.id === 'autoReceive') toggleText = isEnabled ? '自動回収中' : '自動回収停止';
+
+                    buttonHTML = `
+                        <button class="toggle-btn ${isEnabled ? 'active' : 'inactive'}" 
+                            onclick="window.game.toggleFeature('${def.id}')">
+                            ${toggleText}
+                        </button>
+                    `;
+                } else {
+                    buttonHTML = `
+                        <button class="primary-btn unlock-btn" ${this.plastics < def.price ? 'disabled' : ''} 
+                            onclick="window.game.unlockFeature('${def.id}', ${def.price})">
+                            解放する
+                        </button>
+                    `;
+                }
+            } else {
+                buttonHTML = `
+                    <button class="primary-btn unlock-btn" ${(def.current || this.plastics < def.price) ? 'disabled' : ''} 
+                        onclick="window.game.unlockFeature('${def.id}', ${def.price})">
+                        ${def.current ? '解放済み' : (def.isUpgrade ? '強化する' : '解放する')}
+                    </button>
+                `;
+            }
+
             div.innerHTML = `
                 <h4>${def.name}</h4>
                 <p>${def.desc}</p>
                 <div class="price">${def.current ? '解放済み' : `消費: ${def.price} 個`}</div>
-                <button class="primary-btn unlock-btn" ${(def.current || this.plastics < def.price) ? 'disabled' : ''} 
-                    onclick="window.game.unlockFeature('${def.id}', ${def.price})">
-                    ${def.current ? '解放済み' : (def.isUpgrade ? '強化する' : '解放する')}
-                </button>
+                ${buttonHTML}
             `;
             list.appendChild(div);
         });
+    }
+
+    toggleFeature(id) {
+        if (id === 'feeder') {
+            this.settings.feederEnabled = !this.settings.feederEnabled;
+            // 指定のNPCを取得
+            const posher = this.speakis.find(s => s.characterType === 'posher');
+
+            if (!this.settings.feederEnabled) {
+                // OFFにした場合は、出動中なら退勤させる
+                if (posher) this.removeSpeaki(posher.id);
+            } else {
+                // ONにした場合は、まだいなければ即座に呼び出す
+                if (!posher) this.callNPC('posher');
+            }
+        } else if (id === 'autoReceive') {
+            this.settings.autoReceiveEnabled = !this.settings.autoReceiveEnabled;
+        } else if (id === 'growthStop') {
+            this.settings.growthStopEnabled = !this.settings.growthStopEnabled;
+        }
+
+        this.playSound('happy', 1.1);
+        this.initUnlockMenu(); // 再描画
     }
 
     /** 実際のアンロック処理 */
@@ -1572,11 +1693,19 @@ export class Game {
         switch (id) {
             case 'feeder':
                 this.unlocks.feeder = true;
+                this.settings.feederEnabled = true; // 解放時はON
                 this.callNPC('posher'); // アンロックした瞬間に呼び出す
                 break;
             case 'hungerDecay': this.unlocks.hungerDecayLv++; break;
             case 'affectionDecay': this.unlocks.affectionDecayLv++; break;
-            case 'autoReceive': this.unlocks.autoReceive = true; break;
+            case 'autoReceive':
+                this.unlocks.autoReceive = true;
+                this.settings.autoReceiveEnabled = true; // 解放時はON
+                break;
+            case 'growthStop':
+                this.unlocks.growthStop = true;
+                this.settings.growthStopEnabled = true;
+                break;
             case 'unlockMocaron':
                 this.unlocks.mocaronUnlocked = true;
                 ITEMS.Mocaron.showInMenu = true;

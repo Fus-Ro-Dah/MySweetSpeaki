@@ -12,14 +12,25 @@ export class ChildSpeaki extends BaseCharacter {
         options.voicePitch = options.voicePitch || 1.6; // 高い声
         options.speed = options.speed || (1.0 + Math.random() * 2.0);
         super(id, parentElement, x, y, options);
-        this.childStartTime = Date.now(); // 成長開始時刻の記録
+        this.growthTime = 0; // NEW: 累積時間方式に変更
+    }
+
+    /** フレーム更新: 成長タイマーを進める */
+    update(dt) {
+        // IDLE状態またはWALKING状態で一定の条件下で成長（赤ちゃんよりは成長しにくい設定も可能だが一旦単純加算）
+        // 成長停止設定がONの場合はカウントを進めない
+        const isGrowthStopped = window.game && window.game.settings && window.game.settings.growthStopEnabled;
+        if (!isGrowthStopped) {
+            this.growthTime += dt;
+        }
+        super.update(dt);
     }
 
     /** 状態遷移の拡張: 自律的な行動を追加 */
     _updateStateTransition() {
         if (this.status.state === STATE.DYING) return; // 死亡中は遷移しない
-        // 0. 進化チェック (60秒経過 && 満腹度75以上)
-        if (Date.now() - this.childStartTime > 60000 && this.status.hunger >= 75) {
+        // 0. 進化チェック (累積時間が60秒経過 && 満腹度75以上)
+        if (this.growthTime > 60000 && this.status.hunger >= 75) {
             if (window.game && window.game.evolveChildToAdult) {
                 window.game.evolveChildToAdult(this);
                 return; // 進化したら以降の処理は不要
