@@ -1,0 +1,628 @@
+﻿
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mC:/Users/minat/Documents/MyProjects/MySweetSpeaki_dev[39m
+
+[90mstdout[2m | tests/speaki.test.js[2m > [22m[2mSpeaki Character Logic[2m > [22m[2mshould set sad emotion when starving
+[22m[39m[BaseCharacter] 2・具ｾ滂ｽｷ繧√・・ｽ・具ｾ滂ｽｷ is dying. (Starving: true, Despaired: false)
+
+ [32m笨・[39m tests/assets.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+[90mstdout[2m | tests/speaki.test.js[2m > [22m[2mSpeaki Character Logic[2m > [22m[2mshould stay in USER_INTERACTING after tap until voice ends
+[22m[39m[Debug][1] Transitioning to IDLE. isVoice=false, isPreparing=undefined, elapsed=2501
+
+node.exe : [90mstderr[2m | tests/speaki.test.js[2m > [
+22m[2mSpeaki Character Logic[2m > [22m[2mshould clear 
+giftPartner if zombie state detected (self-healing)
+発生場所 行:1 文字:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\n
+odejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([90mstderr 
+   [2m... (self-healing):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[22m[39m[Speaki] Self-healing: Cleared zombie gift partn
+er state for 1
+
+ [32m笨・[39m tests/character_expansion.test.js [2m([22m[2m11 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+ [32m笨・[39m tests/speaki.test.js [2m([22m[2m29 tests[22m[2m)[22m[32m 76[2mms[22m[39m
+ [32m笨・[39m tests/syntax_check.test.js [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/game_features.test.js
+[22m[39m[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+
+[90mstdout[2m | tests/item_emotion_logic.test.js
+[22m[39m[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+
+ [31m笶ｯ[39m tests/game_features.test.js [2m([22m[2m5 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 34[2mms[22m[39m
+     [32m笨・[39m should initialize settings correctly[32m 6[2mms[22m[39m
+     [32m笨・[39m should toggle autoReceive setting[32m 4[2mms[22m[39m
+[31m     [31mﾃ・[31m should toggle feeder setting and handle Posher npc[39m[32m 8[2mms[22m[39m
+[31m     [31mﾃ・[31m should prevent BabySpeaki growth when growthStopEnabled is true[39m[32m 10[2mms[22m[39m
+[31m     [31mﾃ・[31m should prevent ChildSpeaki growth when growthStopEnabled is true[39m[32m 4[2mms[22m[39m
+ [32m笨・[39m tests/item_emotion_logic.test.js [2m([22m[2m7 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Failed Tests 3 [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+
+[41m[1m FAIL [22m[49m tests/game_features.test.js[2m 
+> [22mGame Features Toggle[2m > [22mshould toggle feede
+r setting and handle Posher npc
+[31m[1mAssertionError[22m: expected "removeSpeaki" to b
+e called with arguments: [ 'posher-1' ][90m
+
+Number of calls: [1m0[22m
+[31m[39m
+[36m [2m笶ｯ[22m tests/game_features.test.js:[2m133:27[
+22m[39m
+    [90m131| [39m        game[33m.[39m[34mtoggleFeatu
+re[39m([32m'feeder'[39m)[33m;[39m
+    [90m132| [39m        [34mexpect[39m(game[33m.[39
+msettings[33m.[39mfeederEnabled)[33m.[39m[34mtoBe[39
+m([35mfalse[39m)[33m;[39m
+    [90m133| [39m        [34mexpect[39m(removeSpy)[33
+m.[39m[34mtoHaveBeenCalledWith[39m([32m'posher-1'[39m
+)[33m;[39m
+    [90m   | [39m                          [31m^[39m
+    [90m134| [39m
+    [90m135| [39m        [90m// Toggle ON[39m
+
+[31m[2m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[
+1/3]竡ｯ[22m[39m
+
+[41m[1m FAIL [22m[49m tests/game_features.test.js[2m 
+> [22mGame Features Toggle[2m > [22mshould prevent Baby
+Speaki growth when growthStopEnabled is true
+[31m[1mTypeError[22m: Cannot read properties of undefin
+ed (reading 'baby_normal_idle_1.png')[39m
+[36m [2m笶ｯ[22m BabySpeaki.syncDOM base-character.js:[2
+m540:36[22m[39m
+    [90m538| [39m        if (this.visual.currentAsset &&
+ this.visual.currentAsset.image窶ｦ
+    [90m539| [39m            [35mconst[39m game [33m=
+[39m window[33m.[39mgame[33m;[39m
+    [90m540| [39m            const img = game.images[thi
+s.visual.currentAsset.imagefile窶ｦ
+    [90m   | [39m                                   [31
+m^[39m
+    [90m541| [39m            [35mif[39m (img [33m&&[
+39m dom[33m.[39msprite[33m.[39msrc [33m!==[39m img[
+33m.[39msrc) {
+    [90m542| [39m                dom[33m.[39msprite[3
+3m.[39msrc [33m=[39m img[33m.[39msrc[33m;[39m
+[90m [2m笶ｯ[22m BabySpeaki.update base-character.js:[2m
+147:14[22m[39m
+[90m [2m笶ｯ[22m BabySpeaki.update baby-speaki.js:[2m27:
+15[22m[39m
+[90m [2m笶ｯ[22m tests/game_features.test.js:[2m156:14[
+22m[39m
+
+[31m[2m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[
+2/3]竡ｯ[22m[39m
+
+[41m[1m FAIL [22m[49m tests/game_features.test.js[2m 
+> [22mGame Features Toggle[2m > [22mshould prevent Chil
+dSpeaki growth when growthStopEnabled is true
+[31m[1mTypeError[22m: Cannot read properties of undefin
+ed (reading 'speaki_normal_idle_1.png')[39m
+[36m [2m笶ｯ[22m ChildSpeaki.syncDOM base-character.js:[
+2m540:36[22m[39m
+    [90m538| [39m        if (this.visual.currentAsset &&
+ this.visual.currentAsset.image窶ｦ
+    [90m539| [39m            [35mconst[39m game [33m=
+[39m window[33m.[39mgame[33m;[39m
+    [90m540| [39m            const img = game.images[thi
+s.visual.currentAsset.imagefile窶ｦ
+    [90m   | [39m                                   [31
+m^[39m
+    [90m541| [39m            [35mif[39m (img [33m&&[
+39m dom[33m.[39msprite[33m.[39msrc [33m!==[39m img[
+33m.[39msrc) {
+    [90m542| [39m                dom[33m.[39msprite[3
+3m.[39msrc [33m=[39m img[33m.[39msrc[33m;[39m
+[90m [2m笶ｯ[22m ChildSpeaki.update base-character.js:[2
+m147:14[22m[39m
+[90m [2m笶ｯ[22m ChildSpeaki.update child-speaki.js:[2m2
+6:15[22m[39m
+[90m [2m笶ｯ[22m tests/game_features.test.js:[2m178:15[
+22m[39m
+
+[31m[2m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[
+3/3]竡ｯ[22m[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Unhandled Errors [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1m
+Vitest caught 12 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled e
+rrors to make sure your tests are not affected.[22m[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: document.querySelectorAll is not 
+a function[39m
+[36m [2m笶ｯ[22m UIManager.updateCooldownUI managers/UIMa
+nager.js:[2m269:32[22m[39m
+    [90m267| [39m        [35mconst[39m game [33m=[39
+m [35mthis[39m[33m.[39mgame[33m;[39m
+    [90m268| [39m        [35mconst[39m now [33m=[39m
+ [33mDate[39m[33m.[39m[34mnow[39m()[33m;[39m
+    [90m269| [39m        [35mconst[39m items [33m=[3
+9m document[33m.[39m[34mquerySelectorAll[39m([32m'.dr
+aggable-item'[39m)[33m;[39m
+    [90m   | [39m                               [31m^[
+39m
+    [90m270| [39m        items[33m.[39m[34mforEach[3
+9m(el [33m=>[39m {
+    [90m271| [39m            [35mconst[39m id [33m=[
+39m el[33m.[39mdataset[33m.[39mid[33m;[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m298:14[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m345:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: document.querySelectorAll is not 
+a function[39m
+[36m [2m笶ｯ[22m UIManager.updateCooldownUI managers/UIMa
+nager.js:[2m269:32[22m[39m
+    [90m267| [39m        [35mconst[39m game [33m=[39
+m [35mthis[39m[33m.[39mgame[33m;[39m
+    [90m268| [39m        [35mconst[39m now [33m=[39m
+ [33mDate[39m[33m.[39m[34mnow[39m()[33m;[39m
+    [90m269| [39m        [35mconst[39m items [33m=[3
+9m document[33m.[39m[34mquerySelectorAll[39m([32m'.dr
+aggable-item'[39m)[33m;[39m
+    [90m   | [39m                               [31m^[
+39m
+    [90m270| [39m        items[33m.[39m[34mforEach[3
+9m(el [33m=>[39m {
+    [90m271| [39m            [35mconst[39m id [33m=[
+39m el[33m.[39mdataset[33m.[39mid[33m;[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m298:14[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m345:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: document.querySelectorAll is not 
+a function[39m
+[36m [2m笶ｯ[22m UIManager.updateCooldownUI managers/UIMa
+nager.js:[2m269:32[22m[39m
+    [90m267| [39m        [35mconst[39m game [33m=[39
+m [35mthis[39m[33m.[39mgame[33m;[39m
+    [90m268| [39m        [35mconst[39m now [33m=[39m
+ [33mDate[39m[33m.[39m[34mnow[39m()[33m;[39m
+    [90m269| [39m        [35mconst[39m items [33m=[3
+9m document[33m.[39m[34mquerySelectorAll[39m([32m'.dr
+aggable-item'[39m)[33m;[39m
+    [90m   | [39m                               [31m^[
+39m
+    [90m270| [39m        items[33m.[39m[34mforEach[3
+9m(el [33m=>[39m {
+    [90m271| [39m            [35mconst[39m id [33m=[
+39m el[33m.[39mdataset[33m.[39mid[33m;[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m298:14[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m345:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/game_features.tes
+t.js[22m" test file. It doesn't mean the error was thrown
+ inside the file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: document.querySelectorAll is not 
+a function[39m
+[36m [2m笶ｯ[22m UIManager.updateCooldownUI managers/UIMa
+nager.js:[2m269:32[22m[39m
+    [90m267| [39m        [35mconst[39m game [33m=[39
+m [35mthis[39m[33m.[39mgame[33m;[39m
+    [90m268| [39m        [35mconst[39m now [33m=[39m
+ [33mDate[39m[33m.[39m[34mnow[39m()[33m;[39m
+    [90m269| [39m        [35mconst[39m items [33m=[3
+9m document[33m.[39m[34mquerySelectorAll[39m([32m'.dr
+aggable-item'[39m)[33m;[39m
+    [90m   | [39m                               [31m^[
+39m
+    [90m270| [39m        items[33m.[39m[34mforEach[3
+9m(el [33m=>[39m {
+    [90m271| [39m            [35mconst[39m id [33m=[
+39m el[33m.[39mdataset[33m.[39mid[33m;[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m298:14[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m345:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/game_features.tes
+t.js[22m" test file. It doesn't mean the error was thrown
+ inside the file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: document.querySelectorAll is not 
+a function[39m
+[36m [2m笶ｯ[22m UIManager.updateCooldownUI managers/UIMa
+nager.js:[2m269:32[22m[39m
+    [90m267| [39m        [35mconst[39m game [33m=[39
+m [35mthis[39m[33m.[39mgame[33m;[39m
+    [90m268| [39m        [35mconst[39m now [33m=[39m
+ [33mDate[39m[33m.[39m[34mnow[39m()[33m;[39m
+    [90m269| [39m        [35mconst[39m items [33m=[3
+9m document[33m.[39m[34mquerySelectorAll[39m([32m'.dr
+aggable-item'[39m)[33m;[39m
+    [90m   | [39m                               [31m^[
+39m
+    [90m270| [39m        items[33m.[39m[34mforEach[3
+9m(el [33m=>[39m {
+    [90m271| [39m            [35mconst[39m id [33m=[
+39m el[33m.[39mdataset[33m.[39mid[33m;[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m298:14[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m345:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/game_features.tes
+t.js[22m" test file. It doesn't mean the error was thrown
+ inside the file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: document.querySelectorAll is not 
+a function[39m
+[36m [2m笶ｯ[22m UIManager.updateCooldownUI managers/UIMa
+nager.js:[2m269:32[22m[39m
+    [90m267| [39m        [35mconst[39m game [33m=[39
+m [35mthis[39m[33m.[39mgame[33m;[39m
+    [90m268| [39m        [35mconst[39m now [33m=[39m
+ [33mDate[39m[33m.[39m[34mnow[39m()[33m;[39m
+    [90m269| [39m        [35mconst[39m items [33m=[3
+9m document[33m.[39m[34mquerySelectorAll[39m([32m'.dr
+aggable-item'[39m)[33m;[39m
+    [90m   | [39m                               [31m^[
+39m
+    [90m270| [39m        items[33m.[39m[34mforEach[3
+9m(el [33m=>[39m {
+    [90m271| [39m            [35mconst[39m id [33m=[
+39m el[33m.[39mdataset[33m.[39mid[33m;[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m298:14[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m345:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/game_features.tes
+t.js[22m" test file. It doesn't mean the error was thrown
+ inside the file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: document.querySelectorAll is not 
+a function[39m
+[36m [2m笶ｯ[22m UIManager.updateCooldownUI managers/UIMa
+nager.js:[2m269:32[22m[39m
+    [90m267| [39m        [35mconst[39m game [33m=[39
+m [35mthis[39m[33m.[39mgame[33m;[39m
+    [90m268| [39m        [35mconst[39m now [33m=[39m
+ [33mDate[39m[33m.[39m[34mnow[39m()[33m;[39m
+    [90m269| [39m        [35mconst[39m items [33m=[3
+9m document[33m.[39m[34mquerySelectorAll[39m([32m'.dr
+aggable-item'[39m)[33m;[39m
+    [90m   | [39m                               [31m^[
+39m
+    [90m270| [39m        items[33m.[39m[34mforEach[3
+9m(el [33m=>[39m {
+    [90m271| [39m            [35mconst[39m id [33m=[
+39m el[33m.[39mdataset[33m.[39mid[33m;[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m298:14[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m345:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout.<anonymous> node_modules/jsdom/l
+ib/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/game_features.tes
+t.js[22m" test file. It doesn't mean the error was thrown
+ inside the file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: Cannot read properties of undefin
+ed (reading 'speaki_normal_walking_1.png')[39m
+[36m [2m笶ｯ[22m BaseCharacter.syncDOM base-character.js:
+[2m540:36[22m[39m
+    [90m538| [39m        if (this.visual.currentAsset &&
+ this.visual.currentAsset.image窶ｦ
+    [90m539| [39m            [35mconst[39m game [33m=
+[39m window[33m.[39mgame[33m;[39m
+    [90m540| [39m            const img = game.images[thi
+s.visual.currentAsset.imagefile窶ｦ
+    [90m   | [39m                                   [31
+m^[39m
+    [90m541| [39m            [35mif[39m (img [33m&&[
+39m dom[33m.[39msprite[33m.[39msrc [33m!==[39m img[
+33m.[39msrc) {
+    [90m542| [39m                dom[33m.[39msprite[3
+3m.[39msrc [33m=[39m img[33m.[39msrc[33m;[39m
+[90m [2m笶ｯ[22m BaseCharacter.update base-character.js:
+[2m147:14[22m[39m
+[90m [2m笶ｯ[22m CharacterManager.update managers/Charact
+erManager.js:[2m169:15[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m333:25[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: document.querySelectorAll is not 
+a function[39m
+[36m [2m笶ｯ[22m UIManager.updateCooldownUI managers/UIMa
+nager.js:[2m269:32[22m[39m
+    [90m267| [39m        [35mconst[39m game [33m=[39
+m [35mthis[39m[33m.[39mgame[33m;[39m
+    [90m268| [39m        [35mconst[39m now [33m=[39m
+ [33mDate[39m[33m.[39m[34mnow[39m()[33m;[39m
+    [90m269| [39m        [35mconst[39m items [33m=[3
+9m document[33m.[39m[34mquerySelectorAll[39m([32m'.dr
+aggable-item'[39m)[33m;[39m
+    [90m   | [39m                               [31m^[
+39m
+    [90m270| [39m        items[33m.[39m[34mforEach[3
+9m(el [33m=>[39m {
+    [90m271| [39m            [35mconst[39m id [33m=[
+39m el[33m.[39mdataset[33m.[39mid[33m;[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m298:14[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m345:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: Cannot read properties of undefin
+ed (reading 'speaki_normal_idle_2.png')[39m
+[36m [2m笶ｯ[22m BaseCharacter.syncDOM base-character.js:
+[2m540:36[22m[39m
+    [90m538| [39m        if (this.visual.currentAsset &&
+ this.visual.currentAsset.image窶ｦ
+    [90m539| [39m            [35mconst[39m game [33m=
+[39m window[33m.[39mgame[33m;[39m
+    [90m540| [39m            const img = game.images[thi
+s.visual.currentAsset.imagefile窶ｦ
+    [90m   | [39m                                   [31
+m^[39m
+    [90m541| [39m            [35mif[39m (img [33m&&[
+39m dom[33m.[39msprite[33m.[39msrc [33m!==[39m img[
+33m.[39msrc) {
+    [90m542| [39m                dom[33m.[39msprite[3
+3m.[39msrc [33m=[39m img[33m.[39msrc[33m;[39m
+[90m [2m笶ｯ[22m BaseCharacter.update base-character.js:
+[2m147:14[22m[39m
+[90m [2m笶ｯ[22m CharacterManager.update managers/Charact
+erManager.js:[2m169:15[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m333:25[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: Cannot read properties of undefin
+ed (reading 'speaki_normal_walking_1.png')[39m
+[36m [2m笶ｯ[22m BaseCharacter.syncDOM base-character.js:
+[2m540:36[22m[39m
+    [90m538| [39m        if (this.visual.currentAsset &&
+ this.visual.currentAsset.image窶ｦ
+    [90m539| [39m            [35mconst[39m game [33m=
+[39m window[33m.[39mgame[33m;[39m
+    [90m540| [39m            const img = game.images[thi
+s.visual.currentAsset.imagefile窶ｦ
+    [90m   | [39m                                   [31
+m^[39m
+    [90m541| [39m            [35mif[39m (img [33m&&[
+39m dom[33m.[39msprite[33m.[39msrc [33m!==[39m img[
+33m.[39msrc) {
+    [90m542| [39m                dom[33m.[39msprite[3
+3m.[39msrc [33m=[39m img[33m.[39msrc[33m;[39m
+[90m [2m笶ｯ[22m BaseCharacter.update base-character.js:
+[2m147:14[22m[39m
+[90m [2m笶ｯ[22m CharacterManager.update managers/Charact
+erManager.js:[2m169:15[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m333:25[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: document.querySelectorAll is not 
+a function[39m
+[36m [2m笶ｯ[22m UIManager.updateCooldownUI managers/UIMa
+nager.js:[2m269:32[22m[39m
+    [90m267| [39m        [35mconst[39m game [33m=[39
+m [35mthis[39m[33m.[39mgame[33m;[39m
+    [90m268| [39m        [35mconst[39m now [33m=[39m
+ [33mDate[39m[33m.[39m[34mnow[39m()[33m;[39m
+    [90m269| [39m        [35mconst[39m items [33m=[3
+9m document[33m.[39m[34mquerySelectorAll[39m([32m'.dr
+aggable-item'[39m)[33m;[39m
+    [90m   | [39m                               [31m^[
+39m
+    [90m270| [39m        items[33m.[39m[34mforEach[3
+9m(el [33m=>[39m {
+    [90m271| [39m            [35mconst[39m id [33m=[
+39m el[33m.[39mdataset[33m.[39mid[33m;[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m298:14[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m345:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m325:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m84:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout.<anonymous> node_modules/jsdom/l
+ib/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (6)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m55 passed[39m[22m[90m (58)[39m
+[2m     Errors [22m [1m[31m12 errors[39m[22m
+[2m   Start at [22m 23:00:41
+[2m   Duration [22m 2.30s[2m (transform 791ms, setup 0ms, import 1.27s, tests 200ms, environment 10.04s)[22m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡
+ｯ竡ｯ竡ｯ竡ｯ[39m
+

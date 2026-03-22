@@ -6,9 +6,9 @@ import { BaseCharacter } from './base-character.js';
  * BaseCharacter を継承し、お土産イベントや特定の好感度行動を保持
  */
 export class Speaki extends BaseCharacter {
-    constructor(id, parentElement, x, y, options = {}) {
+    constructor(game, id, parentElement, x, y, options = {}) {
         options.characterType = options.characterType || 'speaki';
-        super(id, parentElement, x, y, options);
+        super(game, id, parentElement, x, y, options);
     }
 
     /** 状態遷移の判定 (Speaki固有のギフトイベント、隠れ行動を追加) */
@@ -46,19 +46,17 @@ export class Speaki extends BaseCharacter {
 
             case STATE.GIFT_RETURNING:
                 if (arrived) {
-                    this.status.state = STATE.GIFT_WAIT_FOR_USER_REACTION;
-                    if (typeof window !== 'undefined' && window.game) {
-                        window.game.startGiftReceiveEvent(this);
+                    if (this.game) {
+                        this.game.startGiftReceiveEvent(this);
                     }
-                    this._onStateChanged(this.status.state);
                 }
                 break;
 
             case STATE.GIFT_WAIT_FOR_USER_REACTION:
                 if (now - this.timers.stateStart > 10000) {
                     this.status.state = STATE.GIFT_TIMEOUT;
-                    if (typeof window !== 'undefined' && window.game) {
-                        window.game.updateGiftUI('hide');
+                    if (this.game) {
+                        this.game.updateGiftUI('hide');
                     }
                     this._onStateChanged(this.status.state);
                 }
@@ -70,8 +68,8 @@ export class Speaki extends BaseCharacter {
                 if (now - this.timers.stateStart > dur) {
                     // 完了処理 (IDLEへ戻る)
                     this.status.state = STATE.IDLE;
-                    if (typeof window !== 'undefined' && window.game) {
-                        window.game.completeGiftEvent(this);
+                    if (this.game) {
+                        this.game.completeGiftEvent(this);
                     }
                     this._onStateChanged(this.status.state);
                 }
@@ -194,8 +192,8 @@ export class Speaki extends BaseCharacter {
     }
 
     _tryStartGiftEvent(now) {
-        if (typeof window === 'undefined' || !window.game) return false;
-        const game = window.game;
+        if (!this.game) return false;
+        const game = this.game;
 
         // 【自己修復】もし自分がギフト担当になっているのに、このメソッドが呼ばれた（＝ギフト状態ではない）場合、
         // 状態不整合（ゾンビ）とみなして担当を解除する

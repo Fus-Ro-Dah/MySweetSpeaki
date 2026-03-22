@@ -4,8 +4,8 @@ import { STATE, ASSETS } from '../config.js';
 
 // BaseCharacterをテスト用に具体化したクラス
 class TestCharacter extends BaseCharacter {
-    constructor(id, parent, x, y, options) {
-        super(id, parent, x, y, options);
+    constructor(game, id, parent, x, y, options) {
+        super(game, id, parent, x, y, options);
     }
 }
 
@@ -30,7 +30,7 @@ describe('Asset Selection and Fallback Logic', () => {
             clientHeight: 1000
         };
 
-        char = new TestCharacter('test-1', mockParent, 0, 0, { characterType: 'speaki' });
+        char = new TestCharacter(global.window.game, 'test-1', mockParent, 0, 0, { characterType: 'speaki' });
     });
 
     it('should select direct hierarchical asset', () => {

@@ -1,0 +1,730 @@
+﻿
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mC:/Users/minat/Documents/MyProjects/MySweetSpeaki_dev[39m
+
+[90mstdout[2m | tests/speaki.test.js[2m > [22m[2mSpeaki Character Logic[2m > [22m[2mshould set sad emotion when starving
+[22m[39m[BaseCharacter] 2・具ｾ滂ｽｷ繧√・・ｽ・具ｾ滂ｽｷ is dying. (Starving: true, Despaired: false)
+
+ [32m笨・[39m tests/assets.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+[90mstdout[2m | tests/speaki.test.js[2m > [22m[2mSpeaki Character Logic[2m > [22m[2mshould stay in USER_INTERACTING after tap until voice ends
+[22m[39m[Debug][1] Transitioning to IDLE. isVoice=false, isPreparing=undefined, elapsed=2501
+
+node.exe : [90mstderr[2m | tests/speaki.test.js[2m > [
+22m[2mSpeaki Character Logic[2m > [22m[2mshould clear 
+giftPartner if zombie state detected (self-healing)
+発生場所 行:1 文字:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\n
+odejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([90mstderr[
+2    m... (self-healing):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[22m[39m[Speaki] Self-healing: Cleared zombie gift partn
+er state for 1
+
+ [32m笨・[39m tests/character_expansion.test.js [2m([22m[2m11 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m笨・[39m tests/speaki.test.js [2m([22m[2m29 tests[22m[2m)[22m[32m 69[2mms[22m[39m
+ [32m笨・[39m tests/syntax_check.test.js [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/game_features.test.js[2m > [22m[2mGame Features Toggle[2m > [22m[2mshould toggle feeder setting and handle Posher npc
+[22m[39mPosher {
+  id: [33m0[39m,
+  parentElement: {
+    appendChild: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    innerHTML: [32m''[39m,
+    getBoundingClientRect: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    addEventListener: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    removeEventListener: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    classList: { add: [36m[Function][39m, remove: [36m[Function][39m },
+    style: {},
+    onclick: [1mnull[22m,
+    clientWidth: [33m1000[39m,
+    clientHeight: [33m800[39m,
+    dataset: {},
+    contains: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    querySelectorAll: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    querySelector: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    }
+  },
+  characterType: [32m'posher'[39m,
+  name: [32m'繝昴・繧ｷ繝｣繝ｼ'[39m,
+  canInteract: [33mfalse[39m,
+  hasHunger: [33mfalse[39m,
+  hasEmotion: [33mfalse[39m,
+  pos: {
+    x: [33m500[39m,
+    y: [33m100[39m,
+    targetX: [33m500[39m,
+    targetY: [33m100[39m,
+    angle: [33m0[39m,
+    speed: [33m1.5[39m,
+    facingLeft: [33mtrue[39m,
+    destinationSet: [33mfalse[39m
+  },
+  status: {
+    state: [32m'idle'[39m,
+    stateStack: [],
+    friendship: [33m0[39m,
+    hunger: [33m50[39m,
+    emotion: [32m'normal'[39m,
+    forcedEmotion: [1mnull[22m,
+    action: [32m'idle'[39m,
+    socialTurnCount: [33m0[39m,
+    isMySocialTurn: [33mfalse[39m,
+    size: [33m300[39m,
+    voicePitch: [33m1[39m,
+    deathProgress: [33m0[39m
+  },
+  isPendingDeletion: [33mfalse[39m,
+  visual: {
+    dom: {
+      container: [36m[Object][39m,
+      sprite: [36m[Object][39m,
+      gift: [36m[Object][39m,
+      footEffect: [36m[Object][39m,
+      emoji: [36m[Object][39m,
+      chatText: [36m[Object][39m,
+      nameTag: [36m[Object][39m
+    },
+    distortion: { skewX: [33m0[39m, rotateX: [33m0[39m, scale: [33m1[39m },
+    targetDistortion: { skewX: [33m0[39m, rotateX: [33m0[39m, scale: [33m1[39m },
+    motionType: [32m'bounce'[39m,
+    motionTimer: [33m0[39m,
+    currentAssetKey: [32m'posher_mood_normal_idle'[39m,
+    currentAsset: {
+      imagefile: [32m'posher_idle_2.png'[39m,
+      soundfile: [32m'縺・ｂ繧ゅ°縺ｼ縺｡繧・・縺ｪ縺九∪縺ｧ縺励ｇ.mp3'[39m,
+      text: [32m'縺・ｂ繧ゅ°縺ｼ縺｡繧・・縺ｪ縺九∪縺ｧ縺励ｇ・・[39m,
+      movePattern: [32m'bounce'[39m
+    },
+    currentVoice: [1mnull[22m
+  },
+  interaction: {
+    isInteracting: [33mfalse[39m,
+    isPetting: [33mfalse[39m,
+    isActuallyDragging: [33mfalse[39m,
+    isMoving: [33mfalse[39m,
+    targetItem: [1mnull[22m,
+    socialFootImage: [1mnull[22m,
+    socialOnComplete: [1mnull[22m,
+    socialNextAction: [1mnull[22m,
+    lastMouseX: [33m0[39m,
+    lastMouseY: [33m0[39m
+  },
+  timers: {
+    stateStart: [33m1773327356135[39m,
+    actionStart: [33m0[39m,
+    actionDuration: [33m0[39m,
+    interactStart: [33m0[39m,
+    waitDuration: [33m4730.442509852775[39m,
+    lastHeartTime: [33m0[39m,
+    forcedEmotionUntil: [33m0[39m,
+    lastMoveTime: [33m1773327356135[39m,
+    lastX: [33m500[39m,
+    lastY: [33m100[39m
+  },
+  baseSpeed: [33m1.5[39m,
+  rescueItemType: [32m'Poteto'[39m,
+  dashSpeedMultiplier: [33m3[39m,
+  dashSpeed: [33m4.5[39m,
+  targetSpeaki: [1mnull[22m
+}
+[Game] Called NPC: posher
+
+[90mstdout[2m | tests/game_features.test.js
+[22m[39m[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: -1.4820% (Expect 1 event every 120s for 1 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+
+ [31m笶ｯ[39m tests/game_features.test.js [2m([22m[2m5 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 31[2mms[22m[39m
+     [32m笨・[39m should initialize settings correctly[32m 6[2mms[22m[39m
+     [32m笨・[39m should toggle autoReceive setting[32m 4[2mms[22m[39m
+[31m     [31mﾃ・[31m should toggle feeder setting and handle Posher npc[39m[32m 13[2mms[22m[39m
+     [32m笨・[39m should prevent BabySpeaki growth when growthStopEnabled is true[32m 4[2mms[22m[39m
+     [32m笨・[39m should prevent ChildSpeaki growth when growthStopEnabled is true[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/item_emotion_logic.test.js
+[22m[39m[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: -1.5018% (Expect 1 event every 120s for 1 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: -1.5085% (Expect 1 event every 120s for 1 speakis)
+[Debug] Social Prob/frame: -1.5115% (Expect 1 event every 120s for 1 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+
+ [32m笨・[39m tests/item_emotion_logic.test.js [2m([22m[2m7 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Failed Tests 1 [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+
+[41m[1m FAIL [22m[49m tests/game_features.test.js[2m 
+> [22mGame Features Toggle[2m > [22mshould toggle feede
+r setting and handle Posher npc
+[31m[1mAssertionError[22m: expected "addSpeaki" to be c
+alled at least once[39m
+[36m [2m笶ｯ[22m tests/game_features.test.js:[2m144:24[
+22m[39m
+    [90m142| [39m        [34mexpect[39m(game[33m.[39
+msettings[33m.[39mfeederEnabled)[33m.[39m[34mtoBe[39
+m([35mtrue[39m)[33m;[39m
+    [90m143| [39m        [90m// Should call callNPC('po
+sher') which calls addSpeaki[39m
+    [90m144| [39m        [34mexpect[39m(addSpy)[33m.
+[39m[34mtoHaveBeenCalled[39m()[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m145| [39m    })[33m;[39m
+    [90m146| [39m
+
+[31m[2m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[
+1/1]竡ｯ[22m[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Unhandled Errors [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1m
+Vitest caught 12 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled e
+rrors to make sure your tests are not affected.[22m[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: this.ctx.clearRect is not a funct
+ion[39m
+[36m [2m笶ｯ[22m Game.draw game.js:[2m368:18[22m[39m
+    [90m366| [39m
+    [90m367| [39m    [34mdraw[39m() {
+    [90m368| [39m        this.ctx.clearRect(0, 0, this.c
+anvas.width, this.canvas.height窶ｦ
+    [90m   | [39m                 [31m^[39m
+    [90m369| [39m        [35mthis[39m[33m.[39mitems
+[33m.[39m[34mdraw[39m([35mthis[39m[33m.[39mctx)[33
+m;[39m
+    [90m370| [39m    }
+[90m [2m笶ｯ[22m Game.loop game.js:[2m345:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/game_features.tes
+t.js[22m" test file. It doesn't mean the error was thrown
+ inside the file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: this.ctx.clearRect is not a funct
+ion[39m
+[36m [2m笶ｯ[22m Game.draw game.js:[2m368:18[22m[39m
+    [90m366| [39m
+    [90m367| [39m    [34mdraw[39m() {
+    [90m368| [39m        this.ctx.clearRect(0, 0, this.c
+anvas.width, this.canvas.height窶ｦ
+    [90m   | [39m                 [31m^[39m
+    [90m369| [39m        [35mthis[39m[33m.[39mitems
+[33m.[39m[34mdraw[39m([35mthis[39m[33m.[39mctx)[33
+m;[39m
+    [90m370| [39m    }
+[90m [2m笶ｯ[22m Game.loop game.js:[2m345:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/game_features.tes
+t.js[22m" test file. It doesn't mean the error was thrown
+ inside the file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: this.ctx.clearRect is not a funct
+ion[39m
+[36m [2m笶ｯ[22m Game.draw game.js:[2m368:18[22m[39m
+    [90m366| [39m
+    [90m367| [39m    [34mdraw[39m() {
+    [90m368| [39m        this.ctx.clearRect(0, 0, this.c
+anvas.width, this.canvas.height窶ｦ
+    [90m   | [39m                 [31m^[39m
+    [90m369| [39m        [35mthis[39m[33m.[39mitems
+[33m.[39m[34mdraw[39m([35mthis[39m[33m.[39mctx)[33
+m;[39m
+    [90m370| [39m    }
+[90m [2m笶ｯ[22m Game.loop game.js:[2m345:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/game_features.tes
+t.js[22m" test file. It doesn't mean the error was thrown
+ inside the file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: this.ctx.clearRect is not a funct
+ion[39m
+[36m [2m笶ｯ[22m Game.draw game.js:[2m368:18[22m[39m
+    [90m366| [39m
+    [90m367| [39m    [34mdraw[39m() {
+    [90m368| [39m        this.ctx.clearRect(0, 0, this.c
+anvas.width, this.canvas.height窶ｦ
+    [90m   | [39m                 [31m^[39m
+    [90m369| [39m        [35mthis[39m[33m.[39mitems
+[33m.[39m[34mdraw[39m([35mthis[39m[33m.[39mctx)[33
+m;[39m
+    [90m370| [39m    }
+[90m [2m笶ｯ[22m Game.loop game.js:[2m345:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: this.ctx.clearRect is not a funct
+ion[39m
+[36m [2m笶ｯ[22m Game.draw game.js:[2m368:18[22m[39m
+    [90m366| [39m
+    [90m367| [39m    [34mdraw[39m() {
+    [90m368| [39m        this.ctx.clearRect(0, 0, this.c
+anvas.width, this.canvas.height窶ｦ
+    [90m   | [39m                 [31m^[39m
+    [90m369| [39m        [35mthis[39m[33m.[39mitems
+[33m.[39m[34mdraw[39m([35mthis[39m[33m.[39mctx)[33
+m;[39m
+    [90m370| [39m    }
+[90m [2m笶ｯ[22m Game.loop game.js:[2m345:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/game_features.tes
+t.js[22m" test file. It doesn't mean the error was thrown
+ inside the file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: this.ctx.clearRect is not a funct
+ion[39m
+[36m [2m笶ｯ[22m Game.draw game.js:[2m368:18[22m[39m
+    [90m366| [39m
+    [90m367| [39m    [34mdraw[39m() {
+    [90m368| [39m        this.ctx.clearRect(0, 0, this.c
+anvas.width, this.canvas.height窶ｦ
+    [90m   | [39m                 [31m^[39m
+    [90m369| [39m        [35mthis[39m[33m.[39mitems
+[33m.[39m[34mdraw[39m([35mthis[39m[33m.[39mctx)[33
+m;[39m
+    [90m370| [39m    }
+[90m [2m笶ｯ[22m Game.loop game.js:[2m345:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout.<anonymous> node_modules/jsdom/l
+ib/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/game_features.tes
+t.js[22m" test file. It doesn't mean the error was thrown
+ inside the file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: this.ctx.clearRect is not a funct
+ion[39m
+[36m [2m笶ｯ[22m Game.draw game.js:[2m368:18[22m[39m
+    [90m366| [39m
+    [90m367| [39m    [34mdraw[39m() {
+    [90m368| [39m        this.ctx.clearRect(0, 0, this.c
+anvas.width, this.canvas.height窶ｦ
+    [90m   | [39m                 [31m^[39m
+    [90m369| [39m        [35mthis[39m[33m.[39mitems
+[33m.[39m[34mdraw[39m([35mthis[39m[33m.[39mctx)[33
+m;[39m
+    [90m370| [39m    }
+[90m [2m笶ｯ[22m Game.loop game.js:[2m345:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: s.getStateLabel is not a function
+[39m
+[36m [2m笶ｯ[22m managers/UIManager.js:[2m201:29[22m[3
+9m
+    [90m199| [39m        displaySpeakis[33m.[39m[34mf
+orEach[39m(s [33m=>[39m {
+    [90m200| [39m            [35mconst[39m isHighlight
+ed [33m=[39m (s[33m.[39mid [33m===[39m game[33m.[3
+9mhighlightedCharId)[33m;[39m
+    [90m201| [39m            [35mconst[39m state [33m
+=[39m s[33m.[39m[34mgetStateLabel[39m()[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m202| [39m            [35mconst[39m emotionLabe
+l [33m=[39m [35mthis[39m[33m.[39m[34m_getEmotionLab
+el[39m(s)[33m;[39m
+    [90m203| [39m
+[90m [2m笶ｯ[22m UIManager.updateSpeakiList managers/UIMa
+nager.js:[2m199:24[22m[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m296:18[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m364:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m344:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: this.ctx.clearRect is not a funct
+ion[39m
+[36m [2m笶ｯ[22m Game.draw game.js:[2m368:18[22m[39m
+    [90m366| [39m
+    [90m367| [39m    [34mdraw[39m() {
+    [90m368| [39m        this.ctx.clearRect(0, 0, this.c
+anvas.width, this.canvas.height窶ｦ
+    [90m   | [39m                 [31m^[39m
+    [90m369| [39m        [35mthis[39m[33m.[39mitems
+[33m.[39m[34mdraw[39m([35mthis[39m[33m.[39mctx)[33
+m;[39m
+    [90m370| [39m    }
+[90m [2m笶ｯ[22m Game.loop game.js:[2m345:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: s.getStateLabel is not a function
+[39m
+[36m [2m笶ｯ[22m managers/UIManager.js:[2m201:29[22m[3
+9m
+    [90m199| [39m        displaySpeakis[33m.[39m[34mf
+orEach[39m(s [33m=>[39m {
+    [90m200| [39m            [35mconst[39m isHighlight
+ed [33m=[39m (s[33m.[39mid [33m===[39m game[33m.[3
+9mhighlightedCharId)[33m;[39m
+    [90m201| [39m            [35mconst[39m state [33m
+=[39m s[33m.[39m[34mgetStateLabel[39m()[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m202| [39m            [35mconst[39m emotionLabe
+l [33m=[39m [35mthis[39m[33m.[39m[34m_getEmotionLab
+el[39m(s)[33m;[39m
+    [90m203| [39m
+[90m [2m笶ｯ[22m UIManager.updateSpeakiList managers/UIMa
+nager.js:[2m199:24[22m[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m296:18[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m364:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m344:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: s.getStateLabel is not a function
+[39m
+[36m [2m笶ｯ[22m managers/UIManager.js:[2m201:29[22m[3
+9m
+    [90m199| [39m        displaySpeakis[33m.[39m[34mf
+orEach[39m(s [33m=>[39m {
+    [90m200| [39m            [35mconst[39m isHighlight
+ed [33m=[39m (s[33m.[39mid [33m===[39m game[33m.[3
+9mhighlightedCharId)[33m;[39m
+    [90m201| [39m            [35mconst[39m state [33m
+=[39m s[33m.[39m[34mgetStateLabel[39m()[33m;[39m
+    [90m   | [39m                            [31m^[39m
+    [90m202| [39m            [35mconst[39m emotionLabe
+l [33m=[39m [35mthis[39m[33m.[39m[34m_getEmotionLab
+el[39m(s)[33m;[39m
+    [90m203| [39m
+[90m [2m笶ｯ[22m UIManager.updateSpeakiList managers/UIMa
+nager.js:[2m199:24[22m[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic managers/UIMana
+ger.js:[2m296:18[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m364:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m344:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_modules/jsdom/li
+b/jsdom/browser/Window.js:[2m613:11[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Exception [49m[22
+m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: this.ctx.clearRect is not a funct
+ion[39m
+[36m [2m笶ｯ[22m Game.draw game.js:[2m368:18[22m[39m
+    [90m366| [39m
+    [90m367| [39m    [34mdraw[39m() {
+    [90m368| [39m        this.ctx.clearRect(0, 0, this.c
+anvas.width, this.canvas.height窶ｦ
+    [90m   | [39m                 [31m^[39m
+    [90m369| [39m        [35mthis[39m[33m.[39mitems
+[33m.[39m[34mdraw[39m([35mthis[39m[33m.[39mctx)[33
+m;[39m
+    [90m370| [39m    }
+[90m [2m笶ｯ[22m Game.loop game.js:[2m345:18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction node_modules/j
+sdom/lib/generated/idl/Function.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks node_modules/
+jsdom/lib/jsdom/browser/Window.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout.<anonymous> node_modules/jsdom/l
+ib/jsdom/browser/Window.js:[2m613:11[22m[39m
+[90m [2m笶ｯ[22m listOnTimeout node:internal/timers:[2m6
+05:17[22m[39m
+[90m [2m笶ｯ[22m processTimers node:internal/timers:[2m5
+41:7[22m[39m
+
+[31mThis error originated in "[1mtests/item_emotion_logi
+c.test.js[22m" test file. It doesn't mean the error was t
+hrown inside the file itself, but while it was running.[3
+9m
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡
+ｯ竡ｯ竡ｯ竡ｯ[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m5 passed[39m[22m[90m (6)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m57 passed[39m[22m[90m (58)[39m
+[2m     Errors [22m [1m[31m12 errors[39m[22m
+[2m   Start at [22m 23:55:53
+[2m   Duration [22m 2.18s[2m (transform 710ms, setup 0ms, import 1.19s, tests 191ms, environment 9.61s)[22m
+

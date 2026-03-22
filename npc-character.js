@@ -6,7 +6,7 @@ import { BaseCharacter } from './base-character.js';
  * プレイヤーが直接操作できず、独自のAIロジックで行動するキャラクター
  */
 export class NPCCharacter extends BaseCharacter {
-    constructor(id, parentElement, x, y, options = {}) {
+    constructor(game, id, parentElement, x, y, options = {}) {
         // NPCのデフォルト設定
         options.canInteract = false;
         options.hasHunger = false;
@@ -14,7 +14,7 @@ export class NPCCharacter extends BaseCharacter {
         options.characterType = options.characterType || 'npc_wizard';
         options.speed = options.speed || 1.2;
 
-        super(id, parentElement, x, y, options);
+        super(game, id, parentElement, x, y, options);
     }
 
     /** 状態遷移の判定 (NPC独自の行動ロジック) */

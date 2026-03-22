@@ -1,0 +1,140 @@
+﻿
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mC:/Users/minat/Documents/MyProjects/MySweetSpeaki_dev[39m
+
+[90mstdout[2m | tests/game_features.test.js
+[22m[39m[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+
+ [31m笶ｯ[39m tests/game_features.test.js [2m([22m[2m5 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 41[2mms[22m[39m
+     [32m笨・[39m should initialize settings correctly[32m 5[2mms[22m[39m
+     [32m笨・[39m should toggle autoReceive setting[32m 4[2mms[22m[39m
+[31m     [31mﾃ・[31m should toggle feeder setting and handle Posher npc[39m[32m 24[2mms[22m[39m
+[31m     [31mﾃ・[31m should prevent BabySpeaki growth when growthStopEnabled is true[39m[32m 4[2mms[22m[39m
+[31m     [31mﾃ・[31m should prevent ChildSpeaki growth when growthStopEnabled is true[39m[32m 3[2mms[22m[39m
+node.exe : 
+発生場所 行:1 文字:1
++ & "C:\Program Files\nodejs/node.exe" "C:
+\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecifie 
+   d: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeComma 
+   ndError
+ 
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Failed T
+ests 3 [49m[22m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+
+[41m[1m FAIL [22m[49m tests/game_featu
+res.test.js[2m > [22mGame Features Toggl
+e[2m > [22mshould toggle feeder setting 
+and handle Posher npc
+[31m[1mTypeError[22m: Cannot set proper
+ties of undefined (setting 'lastSocialRequ
+estAttempt')[39m
+[36m [2m笶ｯ[22m new BaseCharacter base-c
+haracter.js:[2m14:46[22m[39m
+    [90m 12| [39m
+    [90m 13| [39m        [90m// 莠､豬√Μ繧ｯ
+繧ｨ繧ｹ繝育畑縺ｮ蛻ｶ蠕｡[39m
+    [90m 14| [39m        this.timers.las
+tSocialRequestAttempt = Date.now() + Math.
+rando窶ｦ
+    [90m   | [39m                       
+                      [31m^[39m
+    [90m 15| [39m        // const defaul
+tNamePrefix = (this.characterType === 'bab
+y') ?窶ｦ
+    [90m 16| [39m        [90m// 縺薙←繧ゅ〒繧
+ょ､ｧ莠ｺ縺ｧ繧ゅ鯉ｽｽ・具ｾ滂ｽｷ_逡ｪ蜿ｷ縲阪〒邨ｱ荳[39m
+[90m [2m笶ｯ[22m new NPCCharacter npc-cha
+racter.js:[2m17:9[22m[39m
+[90m [2m笶ｯ[22m new FeederNPC feeder-npc
+.js:[2m10:9[22m[39m
+[90m [2m笶ｯ[22m new Posher posher.js:[2
+m18:9[22m[39m
+[90m [2m笶ｯ[22m CharacterManager.addSpea
+ki managers/CharacterManager.js:[2m37:20
+[22m[39m
+[90m [2m笶ｯ[22m Game.addSpeaki game.js:
+[2m128:25[22m[39m
+[90m [2m笶ｯ[22m CharacterManager.callNPC
+ managers/CharacterManager.js:[2m93:14[2
+2m[39m
+[90m [2m笶ｯ[22m Game.callNPC game.js:[2
+m138:25[22m[39m
+[90m [2m笶ｯ[22m Game.toggleFeature game.
+js:[2m448:35[22m[39m
+
+[31m[2m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡
+ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[1/3]竡ｯ[22m[39m
+
+[41m[1m FAIL [22m[49m tests/game_featu
+res.test.js[2m > [22mGame Features Toggl
+e[2m > [22mshould prevent BabySpeaki gro
+wth when growthStopEnabled is true
+[31m[1mTypeError[22m: Cannot set proper
+ties of undefined (setting 'lastSocialRequ
+estAttempt')[39m
+[36m [2m笶ｯ[22m new BaseCharacter base-c
+haracter.js:[2m14:46[22m[39m
+    [90m 12| [39m
+    [90m 13| [39m        [90m// 莠､豬√Μ繧ｯ
+繧ｨ繧ｹ繝育畑縺ｮ蛻ｶ蠕｡[39m
+    [90m 14| [39m        this.timers.las
+tSocialRequestAttempt = Date.now() + Math.
+rando窶ｦ
+    [90m   | [39m                       
+                      [31m^[39m
+    [90m 15| [39m        // const defaul
+tNamePrefix = (this.characterType === 'bab
+y') ?窶ｦ
+    [90m 16| [39m        [90m// 縺薙←繧ゅ〒繧
+ょ､ｧ莠ｺ縺ｧ繧ゅ鯉ｽｽ・具ｾ滂ｽｷ_逡ｪ蜿ｷ縲阪〒邨ｱ荳[39m
+[90m [2m笶ｯ[22m new BabySpeaki baby-spea
+ki.js:[2m14:9[22m[39m
+[90m [2m笶ｯ[22m tests/game_features.test
+.js:[2m164:22[22m[39m
+
+[31m[2m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡
+ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[2/3]竡ｯ[22m[39m
+
+[41m[1m FAIL [22m[49m tests/game_featu
+res.test.js[2m > [22mGame Features Toggl
+e[2m > [22mshould prevent ChildSpeaki gr
+owth when growthStopEnabled is true
+[31m[1mTypeError[22m: Cannot set proper
+ties of undefined (setting 'lastSocialRequ
+estAttempt')[39m
+[36m [2m笶ｯ[22m new BaseCharacter base-c
+haracter.js:[2m14:46[22m[39m
+    [90m 12| [39m
+    [90m 13| [39m        [90m// 莠､豬√Μ繧ｯ
+繧ｨ繧ｹ繝育畑縺ｮ蛻ｶ蠕｡[39m
+    [90m 14| [39m        this.timers.las
+tSocialRequestAttempt = Date.now() + Math.
+rando窶ｦ
+    [90m   | [39m                       
+                      [31m^[39m
+    [90m 15| [39m        // const defaul
+tNamePrefix = (this.characterType === 'bab
+y') ?窶ｦ
+    [90m 16| [39m        [90m// 縺薙←繧ゅ〒繧
+ょ､ｧ莠ｺ縺ｧ繧ゅ鯉ｽｽ・具ｾ滂ｽｷ_逡ｪ蜿ｷ縲阪〒邨ｱ荳[39m
+[90m [2m笶ｯ[22m new ChildSpeaki child-sp
+eaki.js:[2m14:9[22m[39m
+[90m [2m笶ｯ[22m tests/game_features.test
+.js:[2m187:23[22m[39m
+
+[31m[2m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡
+ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[3/3]竡ｯ[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 01:01:06
+[2m   Duration [22m 1.48s[2m (transform 211ms, setup 0ms, import 269ms, tests 41ms, environment 965ms)[22m
+

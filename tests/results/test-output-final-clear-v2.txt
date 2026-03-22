@@ -1,0 +1,366 @@
+﻿
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mC:/Users/minat/Documents/MyProjects/MySweetSpeaki_dev[39m
+
+[90mstdout[2m | tests/game_features.test.js[2m > [22m[2mGame Features Toggle[2m > [22m[2mshould toggle feeder setting and handle Posher npc
+[22m[39m[36m<ref *1>[39m Posher {
+  game: [36m<ref *2>[39m Game {
+    canvas: {
+      appendChild: [36m[Function][39m,
+      innerHTML: [32m''[39m,
+      getBoundingClientRect: [36m[Function][39m,
+      addEventListener: [36m[Function][39m,
+      removeEventListener: [36m[Function][39m,
+      classList: [36m[Object][39m,
+      style: {},
+      onclick: [1mnull[22m,
+      clientWidth: [33m1000[39m,
+      clientHeight: [33m800[39m,
+      dataset: {},
+      contains: [36m[Function][39m,
+      querySelectorAll: [36m[Function][39m,
+      querySelector: [36m[Function][39m,
+      getContext: [36m[Function][39m,
+      parentElement: [36m[Object][39m,
+      width: [33m1000[39m,
+      height: [33m800[39m
+    },
+    ctx: {
+      clearRect: [36m[Function][39m,
+      drawImage: [36m[Function][39m,
+      beginPath: [36m[Function][39m,
+      arc: [36m[Function][39m,
+      fill: [36m[Function][39m
+    },
+    speakiRoom: {
+      appendChild: [36m[Function][39m,
+      innerHTML: [32m''[39m,
+      getBoundingClientRect: [36m[Function][39m,
+      addEventListener: [36m[Function][39m,
+      removeEventListener: [36m[Function][39m,
+      classList: [36m[Object][39m,
+      style: {},
+      onclick: [1mnull[22m,
+      clientWidth: [33m1000[39m,
+      clientHeight: [33m800[39m,
+      dataset: {},
+      contains: [36m[Function][39m,
+      querySelectorAll: [36m[Function][39m,
+      querySelector: [36m[Function][39m
+    },
+    speakis: [ [36m[Circular *1][39m ],
+    nextCharId: [33m1[39m,
+    highlightedCharId: [1mnull[22m,
+    furniture: [],
+    placedItems: [],
+    interactTarget: [1mnull[22m,
+    lastGiftTime: [33m1773331398862[39m,
+    giftPartner: [1mnull[22m,
+    plastics: [33m0[39m,
+    happiness: [33m0[39m,
+    maxHappiness: [33m5000[39m,
+    isGameCleared: [33mfalse[39m,
+    isGameStarted: [33mfalse[39m,
+    isPausedForDebug: [33mfalse[39m,
+    itemCooldowns: {},
+    lastTime: [33m1796.3324[39m,
+    unlocks: {
+      feeder: [33mtrue[39m,
+      hungerDecayLv: [33m0[39m,
+      affectionDecayLv: [33m0[39m,
+      autoReceive: [33mtrue[39m,
+      mocaronUnlocked: [33mfalse[39m,
+      reloadReductionLv: [33m0[39m,
+      growthStop: [33mtrue[39m
+    },
+    settings: {
+      feederEnabled: [33mtrue[39m,
+      autoReceiveEnabled: [33mtrue[39m,
+      growthStopEnabled: [33mfalse[39m
+    },
+    sound: SoundManager {
+      images: {},
+      sounds: {},
+      audioEnabled: [33mfalse[39m,
+      audioCtx: [1mnull[22m,
+      bgmBuffer: [1mnull[22m,
+      bgmSource: [1mnull[22m,
+      bgmFallback: [1mnull[22m
+    },
+    input: InputManager { game: [36m[Circular *2][39m },
+    items: ItemManager { game: [36m[Circular *2][39m },
+    characters: CharacterManager { game: [36m[Circular *2][39m },
+    social: SocialSystem {
+      game: [36m[Circular *2][39m,
+      lastSocialTime: [33m0[39m,
+      lastSocialDebugTime: [33m0[39m
+    },
+    ui: UIManager { game: [36m[Circular *2][39m, lastUIUpdate: [33m0[39m }
+  },
+  id: [33m0[39m,
+  parentElement: {
+    appendChild: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    innerHTML: [32m''[39m,
+    getBoundingClientRect: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    addEventListener: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    removeEventListener: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    classList: { add: [36m[Function][39m, remove: [36m[Function][39m },
+    style: {},
+    onclick: [1mnull[22m,
+    clientWidth: [33m1000[39m,
+    clientHeight: [33m800[39m,
+    dataset: {},
+    contains: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    querySelectorAll: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    },
+    querySelector: [Function: Mock] {
+      _isMockFunction: [33mtrue[39m,
+      getMockImplementation: [36m[Function (anonymous)][39m,
+      mock: [36m[Object][39m,
+      mockImplementation: [36m[Function: mockImplementation][39m,
+      mockImplementationOnce: [36m[Function: mockImplementationOnce][39m,
+      withImplementation: [36m[Function: withImplementation][39m,
+      mockReturnThis: [36m[Function: mockReturnThis][39m,
+      mockReturnValue: [36m[Function: mockReturnValue][39m,
+      mockReturnValueOnce: [36m[Function: mockReturnValueOnce][39m,
+      mockResolvedValue: [36m[Function: mockResolvedValue][39m,
+      mockResolvedValueOnce: [36m[Function: mockResolvedValueOnce][39m,
+      mockRejectedValue: [36m[Function: mockRejectedValue][39m,
+      mockRejectedValueOnce: [36m[Function: mockRejectedValueOnce][39m,
+      mockClear: [36m[Function: mockClear][39m,
+      mockReset: [36m[Function: mockReset][39m,
+      mockRestore: [36m[Function: mockRestore][39m,
+      mockName: [36m[Function: mockName][39m,
+      getMockName: [36m[Function: getMockName][39m,
+      [32mSymbol(Symbol.dispose)[39m: [36m[Function (anonymous)][39m
+    }
+  },
+  characterType: [32m'posher'[39m,
+  name: [32m'繝昴・繧ｷ繝｣繝ｼ'[39m,
+  canInteract: [33mfalse[39m,
+  hasHunger: [33mfalse[39m,
+  hasEmotion: [33mfalse[39m,
+  pos: {
+    x: [33m500[39m,
+    y: [33m100[39m,
+    targetX: [33m500[39m,
+    targetY: [33m100[39m,
+    angle: [33m0[39m,
+    speed: [33m1.5[39m,
+    facingLeft: [33mtrue[39m,
+    destinationSet: [33mfalse[39m
+  },
+  status: {
+    state: [32m'idle'[39m,
+    stateStack: [],
+    friendship: [33m0[39m,
+    hunger: [33m50[39m,
+    emotion: [32m'normal'[39m,
+    forcedEmotion: [1mnull[22m,
+    action: [32m'idle'[39m,
+    socialTurnCount: [33m0[39m,
+    isMySocialTurn: [33mfalse[39m,
+    size: [33m300[39m,
+    voicePitch: [33m1[39m,
+    deathProgress: [33m0[39m
+  },
+  isPendingDeletion: [33mfalse[39m,
+  visual: {
+    dom: {
+      container: [36m[Object][39m,
+      sprite: [36m[Object][39m,
+      gift: [36m[Object][39m,
+      footEffect: [36m[Object][39m,
+      emoji: [36m[Object][39m,
+      chatText: [36m[Object][39m,
+      nameTag: [36m[Object][39m
+    },
+    distortion: { skewX: [33m0[39m, rotateX: [33m0[39m, scale: [33m1[39m },
+    targetDistortion: { skewX: [33m0[39m, rotateX: [33m0[39m, scale: [33m1[39m },
+    motionType: [32m'bounce'[39m,
+    motionTimer: [33m0[39m,
+    currentAssetKey: [32m'posher_mood_normal_idle'[39m,
+    currentAsset: {
+      imagefile: [32m'posher_idle_2.png'[39m,
+      soundfile: [32m'縺・ｂ繧ゅ°縺ｼ縺｡繧・・縺ｪ縺九∪縺ｧ縺励ｇ.mp3'[39m,
+      text: [32m'縺・ｂ繧ゅ°縺ｼ縺｡繧・・縺ｪ縺九∪縺ｧ縺励ｇ・・[39m,
+      movePattern: [32m'bounce'[39m
+    },
+    currentVoice: [1mnull[22m
+  },
+  interaction: {
+    isInteracting: [33mfalse[39m,
+    isPetting: [33mfalse[39m,
+    isActuallyDragging: [33mfalse[39m,
+    isMoving: [33mfalse[39m,
+    targetItem: [1mnull[22m,
+    socialFootImage: [1mnull[22m,
+    socialOnComplete: [1mnull[22m,
+    socialNextAction: [1mnull[22m,
+    lastMouseX: [33m0[39m,
+    lastMouseY: [33m0[39m
+  },
+  timers: {
+    stateStart: [33m1773331418868[39m,
+    actionStart: [33m0[39m,
+    actionDuration: [33m0[39m,
+    interactStart: [33m0[39m,
+    waitDuration: [33m1556.6736384341075[39m,
+    lastHeartTime: [33m0[39m,
+    forcedEmotionUntil: [33m0[39m,
+    lastMoveTime: [33m1773331418867[39m,
+    lastX: [33m500[39m,
+    lastY: [33m100[39m,
+    lastSocialRequestAttempt: [33m1773331419285.1797[39m
+  },
+  baseSpeed: [33m1.5[39m,
+  rescueItemType: [32m'Poteto'[39m,
+  dashSpeedMultiplier: [33m3[39m,
+  dashSpeed: [33m4.5[39m,
+  targetSpeaki: [1mnull[22m
+}
+[Game] Called NPC: posher
+
+[90mstdout[2m | tests/game_features.test.js
+[22m[39m[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: -0.2386% (Expect 1 event every 600s for 1 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+
+ [32m笨・[39m tests/game_features.test.js [2m([22m[2m5 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+[90mstdout[2m | tests/item_emotion_logic.test.js
+[22m[39m[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: -0.2409% (Expect 1 event every 600s for 1 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: -0.2421% (Expect 1 event every 600s for 1 speakis)
+[Debug] Social Prob/frame: -0.2425% (Expect 1 event every 600s for 1 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+
+ [32m笨・[39m tests/item_emotion_logic.test.js [2m([22m[2m8 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m13 passed[39m[22m[90m (13)[39m
+[2m   Start at [22m 01:03:37
+[2m   Duration [22m 1.87s[2m (transform 438ms, setup 0ms, import 579ms, tests 64ms, environment 2.58s)[22m
+

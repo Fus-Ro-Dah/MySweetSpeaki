@@ -40,9 +40,9 @@
                 <button id="start-relaxed-btn" class="mode-btn">のんびり育成モード</button>
                 <button id="start-challenge-btn" class="mode-btn">チャレンジモード</button>
             </div>
-        </div>
-        <div class="fan-disclaimer">
-            本作は EPID GAMES様の「トリッカル・もちもちほっペ大作戦」と、その二次発生物である「ｽﾋﾟｷ」のファンゲームです。
+            <div class="fan-disclaimer">
+                本作は EPID GAMES様の「トリッカル・もちもちほっペ大作戦」と、その二次発生物である「ｽﾋﾟｷ」のファンゲームです。
+            </div>
         </div>
         <!-- 装飾的な雲 -->
         <div class="title-cloud cloud-1"></div>
@@ -99,28 +99,45 @@
                     <button id="open-tutorial-btn" class="header-square-btn">?</button>
                 </div>
 
-                <section id="item-section" class="menu-block">
-                    <h2>アイテム</h2>
-                    <p class="menu-description">ドラッグでアイテムを配置できるよ</p>
-                    <div id="item-list" class="draggable-container">
-                        <!-- Dynamic Items -->
-                    </div>
-                    <div class="resource-displays">
-                        <div id="gift-stock-display">
-                            <img src="assets/images/gift.png" alt="gift" class="stock-icon" title="プラスチック">
-                            <span>x <span id="gift-stock-count">0</span></span>
-                        </div>
-                    </div>
-                </section>
+                <!-- タブ切り替えボタン -->
+                <div class="menu-tabs">
+                    <button class="tab-btn active" data-tab="item-tab">アイテム</button>
+                    <button class="tab-btn" data-tab="list-tab">ｽﾋﾟｷ一覧</button>
+                </div>
 
-
-                <section id="speaki-status" class="menu-block">
-                    <h2>ｽﾋﾟｷたち</h2>
-                    <div id="speaki-list">
-                        <!-- Dynamic Speaki List -->
-                        <p class="empty-list">ｽﾋﾟｷはいません...</p>
+                <div class="tab-content-container">
+                    <!-- アイテムタブ -->
+                    <div id="item-tab" class="tab-content active">
+                        <section id="item-section" class="menu-block">
+                            <h2>アイテム</h2>
+                            <p class="menu-description">ドラッグでアイテムを配置できるよ</p>
+                            <div id="item-list" class="draggable-container">
+                                <!-- Dynamic Items -->
+                            </div>
+                            <div class="resource-displays">
+                                <div id="gift-stock-display">
+                                    <img src="assets/images/gift.png" alt="gift" class="stock-icon" title="プラスチック">
+                                    <span>x <span id="gift-stock-count">0</span></span>
+                                </div>
+                            </div>
+                        </section>
                     </div>
-                </section>
+
+                    <!-- ｽﾋﾟｷ一覧タブ -->
+                    <div id="list-tab" class="tab-content">
+                        <section id="speaki-status" class="menu-block">
+                            <h2>ｽﾋﾟｷたち</h2>
+                            <div class="observe-btn-container">
+                                <button id="observe-speaki-btn" class="observe-btn primary-btn">観察ウィンドウを開く</button>
+                            </div>
+                            <div id="speaki-list">
+                                <!-- Dynamic Speaki List -->
+                                <p class="empty-list">ｽﾋﾟｷはいません...</p>
+                            </div>
+                        </section>
+                    </div>
+
+                </div>
 
                 <div id="footer-section">
                     <button id="open-memo-btn" class="secondary-mini-btn">開発メモ・引用</button>
@@ -264,8 +281,7 @@
                 <div class="modal-info-block">
                     <h4>開発メモ: 実装したいこと</h4>
                     <div class="modal-text">
-                        ・ランダムギフトの種類をもっと増やす(現状4種)<br>
-                        ・ｽﾋﾟｷのバリエーションを増やす<br>
+                        良い素材があれば許可を得てアイテムとして使用したい。
                     </div>
                 </div>
                 <hr>
@@ -277,7 +293,8 @@
                         ・イラスト: pixiv 마신멜로우様(https://www.pixiv.net/artworks/140508635)<br>
                         ・イラスト: x(旧Twitter) @kaniman_jp 様<br>
                         ・イラスト: x(旧Twitter) @TANAKAATSUSHI6 様<br>
-                        その他は登場時に表記<br>
+                        ・一部 google geminiを使用<br>
+                        その他は機能解放メニューに表記<br>
                     </div>
                 </div>
                 <hr>
@@ -295,11 +312,7 @@
     <div id="room-overlay">
         <div id="gift-event-ui" class="hidden">
             <p id="gift-message">何かを持ってきてくれたようだ</p>
-            <div class="button-group">
-                <button id="gift-btn-receive">うけとる</button>
-            </div>
             <div id="reaction-group" class="hidden">
-                <button id="reaction-btn-1">ﾁｮﾜﾖ!</button>
                 <button id="reaction-btn-2">ｱﾘｶﾞﾄｳ!</button>
             </div>
         </div>
@@ -310,12 +323,26 @@
         <div class="modal-content unlock-modal-content">
             <button id="close-unlock-btn" class="modal-close">&times;</button>
             <div class="modal-header">
-                <h3>機能解放 (プラスチックを消費します)</h3>
-                <div class="current-seeds">所持: <span id="modal-plastic-count">0</span> 個</div>
+                <h3>機能解放 (プラスチック<img src="assets/images/icon_prastic.png" class="mini-icon" alt="plastic">を消費します)</h3>
+                <div class="current-seeds">所持<img src="assets/images/icon_prastic.png" class="mini-icon" alt="plastic">:
+                    <span id="modal-plastic-count">0</span> 個
+                </div>
             </div>
             <div class="modal-body" id="unlock-list">
                 <!-- Dynamic unlock items -->
             </div>
+        </div>
+    </div>
+
+    <!-- 観察メッセージウィンドウ (ドラッグ可能) -->
+    <div id="message-window" class="draggable-window hidden">
+        <div id="message-window-header" class="window-header">
+            <span id="window-speaki-name">観察中: なし</span>
+            <button id="close-window-btn" class="close-btn">&times;</button>
+        </div>
+        <div id="message-window-content" class="window-content">
+            <!-- 直近3件のメッセージ -->
+            <div class="window-placeholder">ｽﾋﾟｷ一覧タブからｽﾋﾟｷを選択（★マークをクリック）して観察を開始</div>
         </div>
     </div>
 

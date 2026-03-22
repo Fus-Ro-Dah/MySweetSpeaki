@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Game } from '../game.js';
+import { SoundManager } from '../managers/SoundManager.js';
 import { STATE, JOBS } from '../config.js';
 
 // Mock Fetch and Audio APIs
@@ -7,15 +8,21 @@ global.fetch = vi.fn(() => Promise.resolve({
     ok: true,
     arrayBuffer: () => Promise.resolve(new ArrayBuffer(0))
 }));
-vi.spyOn(Game.prototype, '_loadBGM').mockImplementation(() => Promise.resolve());
-vi.spyOn(Game.prototype, 'loadResources').mockImplementation(() => { });
+vi.spyOn(SoundManager.prototype, '_loadBGM').mockImplementation(() => Promise.resolve());
+vi.spyOn(SoundManager.prototype, 'loadResources').mockImplementation(() => { });
 
 // Mock unlocks
 Game.prototype.unlocks = { hungerDecayLv: 0, affectionDecayLv: 0, autoReceive: true, feeder: true };
 
 // Mock DOM
 const mockCanvas = {
-    getContext: vi.fn(() => ({})),
+    getContext: vi.fn(() => ({
+        clearRect: vi.fn(),
+        drawImage: vi.fn(),
+        beginPath: vi.fn(),
+        arc: vi.fn(),
+        fill: vi.fn(),
+    })),
     getBoundingClientRect: vi.fn(() => ({ left: 0, top: 0, width: 1000, height: 800 })),
     parentElement: {
         getBoundingClientRect: vi.fn(() => ({ left: 0, top: 0, width: 1000, height: 800 })),
@@ -62,6 +69,8 @@ global.document = {
         setAttribute: vi.fn(),
         className: '',
         addEventListener: vi.fn(),
+        querySelectorAll: vi.fn(() => []),
+        querySelector: vi.fn(() => null),
     })),
     getElementById: vi.fn((id) => {
         const baseElement = {
@@ -78,12 +87,15 @@ global.document = {
             dataset: {},
             contains: vi.fn(() => false),
             querySelectorAll: vi.fn(() => []),
+            querySelector: vi.fn(() => null),
         };
         if (id === 'game-canvas') {
             return { ...baseElement, ...mockCanvas };
         }
         return baseElement;
     }),
+    querySelectorAll: vi.fn(() => []),
+    querySelector: vi.fn(() => null),
 };
 
 describe('Game Features Toggle', () => {
@@ -123,7 +135,10 @@ describe('Game Features Toggle', () => {
         const mockPosher = {
             id: 'posher-1',
             characterType: 'posher',
-            visual: { dom: { container: { remove: vi.fn() } } }
+            visual: { dom: { container: { remove: vi.fn() } } },
+            getStateLabel: () => 'idle',
+            getName: () => 'Posher',
+            status: { friendship: 0, hunger: 100, state: STATE.IDLE }
         };
         game.speakis.push(mockPosher);
 
@@ -146,7 +161,7 @@ describe('Game Features Toggle', () => {
             clientWidth: 1000,
             clientHeight: 800
         };
-        const baby = new BabySpeaki(5, parent, 0, 0);
+        const baby = new BabySpeaki(game, 5, parent, 0, 0);
 
         game.settings.growthStopEnabled = true;
         const initialGrowth = baby.idleGrowthTime;
@@ -169,7 +184,7 @@ describe('Game Features Toggle', () => {
             clientWidth: 1000,
             clientHeight: 800
         };
-        const child = new ChildSpeaki(6, parent, 0, 0);
+        const child = new ChildSpeaki(game, 6, parent, 0, 0);
 
         game.settings.growthStopEnabled = true;
         const initialGrowth = child.growthTime;

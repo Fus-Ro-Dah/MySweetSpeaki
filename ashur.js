@@ -5,7 +5,7 @@ import { FeederNPC } from './feeder-npc.js';
  * 満腹度が低い(30以下)スピキを見つけ、近くに移動してモカロンを配置するNPC
  */
 export class Ashur extends FeederNPC {
-    constructor(id, parentElement, x, y, options = {}) {
+    constructor(game, id, parentElement, x, y, options = {}) {
         options.characterType = options.characterType || 'ashur';
         options.speed = options.speed || 1.5;
         options.size = options.size || 200;
@@ -15,7 +15,7 @@ export class Ashur extends FeederNPC {
         options.rescueItemType = 'Mocaron';
         options.dashSpeedMultiplier = 2.0;
 
-        super(id, parentElement, x, y, options);
+        super(game, id, parentElement, x, y, options);
     }
 
     /** UI表示用ラベル (エシュール固有) */

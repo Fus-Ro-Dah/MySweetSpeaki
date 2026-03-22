@@ -95,6 +95,13 @@ export class Item {
         return this.durability <= 0; // trueなら消滅
     }
 
+    /** 当たり判定 (削除用など) */
+    isHit(x, y) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return (Math.abs(dx) < this.size / 2 && Math.abs(dy) < this.size / 2);
+    }
+
     /** テキスト描画ヘルパー */
     _drawText(ctx) {
         ctx.save();

@@ -6,8 +6,8 @@ import { NPCCharacter } from './npc-character.js';
  * 共通の「空腹スピキを探索し、アイテムを配る」ロジックを持つ基底クラス
  */
 export class FeederNPC extends NPCCharacter {
-    constructor(id, parentElement, x, y, options = {}) {
-        super(id, parentElement, x, y, options);
+    constructor(game, id, parentElement, x, y, options = {}) {
+        super(game, id, parentElement, x, y, options);
 
         this.baseSpeed = this.pos.speed;
         this.rescueItemType = options.rescueItemType || 'Mocaron';
@@ -94,7 +94,7 @@ export class FeederNPC extends NPCCharacter {
     /** 能力の効果実行 */
     _onAbilityEffect(abilityId, options) {
         if (abilityId === 'place_item') {
-            const game = window.game;
+            const game = this.game;
             if (game) {
                 let placeX = this.pos.x;
                 let placeY = this.pos.y + 20;
@@ -112,12 +112,13 @@ export class FeederNPC extends NPCCharacter {
 
     /** 救助対象（空腹のスピキ）を探す */
     _findHungrySpeaki() {
-        const game = window.game;
+        const game = this.game;
         if (!game) return null;
         return game.speakis.find(s =>
             s !== this &&
             s.hasHunger &&
-            s.status.hunger <= 30
+            s.status.hunger <= 30 &&
+            (s.status.state === STATE.IDLE || s.status.state === STATE.WALKING)
         );
     }
 }

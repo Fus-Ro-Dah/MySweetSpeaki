@@ -6,12 +6,12 @@ import { BaseCharacter } from './base-character.js';
  * BaseCharacterを継承し、小さく高い声、および自律的なアイテム配置ロジックを持つ
  */
 export class ChildSpeaki extends BaseCharacter {
-    constructor(id, parentElement, x, y, options = {}) {
+    constructor(game, id, parentElement, x, y, options = {}) {
         options.characterType = 'child';
         options.size = options.size || 80;             // 通常の半分程度のサイズ
         options.voicePitch = options.voicePitch || 1.6; // 高い声
         options.speed = options.speed || (1.0 + Math.random() * 2.0);
-        super(id, parentElement, x, y, options);
+        super(game, id, parentElement, x, y, options);
         this.growthTime = 0; // NEW: 累積時間方式に変更
     }
 
@@ -19,7 +19,7 @@ export class ChildSpeaki extends BaseCharacter {
     update(dt) {
         // IDLE状態またはWALKING状態で一定の条件下で成長（赤ちゃんよりは成長しにくい設定も可能だが一旦単純加算）
         // 成長停止設定がONの場合はカウントを進めない
-        const isGrowthStopped = window.game && window.game.settings && window.game.settings.growthStopEnabled;
+        const isGrowthStopped = this.game && this.game.settings && this.game.settings.growthStopEnabled;
         if (!isGrowthStopped) {
             this.growthTime += dt;
         }
@@ -30,11 +30,12 @@ export class ChildSpeaki extends BaseCharacter {
     _updateStateTransition() {
         if (this.status.state === STATE.DYING) return; // 死亡中は遷移しない
         // 0. 進化チェック (累積時間が60秒経過 && 満腹度75以上)
-        if (this.growthTime > 60000 && this.status.hunger >= 75) {
-            if (window.game && window.game.evolveChildToAdult) {
-                window.game.evolveChildToAdult(this);
-                return; // 進化したら以降の処理は不要
-            }
+        // 直接evolveChildToAdult()を呼ぶと、destroy()後もupdate()が続行してクラッシュする。
+        // isPendingEvolutionフラグを立て、CharacterManagerのループで安全に処理する。
+        const canEvolve = [STATE.IDLE, STATE.WALKING].includes(this.status.state);
+        if (canEvolve && this.growthTime > 60000 && this.status.hunger >= 75) {
+            this.isPendingEvolution = true;
+            return; // 進化フラグを立てたら以降の処理は不要
         }
 
         super._updateStateTransition();
@@ -44,11 +45,34 @@ export class ChildSpeaki extends BaseCharacter {
             this._tryHideWhenFriendshipLow();
         }
 
-        const now = Date.now();
-        // IDLE状態で一定時間経過後、低確率でアイテムを配置する（遊び）
+        // 2. IDLE状態で一定時間経過後、低確率でアイテムを配置する（遊び）
+        /* const now = Date.now();
         if (this.status.state === STATE.IDLE && now - this.timers.stateStart > 10000) {
             if (Math.random() < 0.005) { // 約 0.5% の確率
                 this._placeRandomCandy();
+            }
+        } */
+    }
+
+    /** 自律的な交流リクエストの更新 */
+    _updateSocialRequest(dt) {
+        super._updateSocialRequest(dt);
+
+        if (!this.canInteract || this.status.state === STATE.DYING) return;
+        if (this.status.state !== STATE.IDLE) return;
+        if (this.interaction.isInteracting) return;
+
+        const now = Date.now();
+        if (!this.timers.lastChildSocialAttempt) this.timers.lastChildSocialAttempt = 0;
+        if (now - this.timers.lastChildSocialAttempt < 15000) return;
+        this.timers.lastChildSocialAttempt = now;
+
+        // 一定確率（約5〜10%）で周囲の誰かと交流しようとする
+        const chance = this._getSocialProbability(0.15);
+        if (Math.random() < chance) {
+            if (this.game && this.game.social) {
+                // アクションを指定せずにリクエスト（自動選択）
+                this.game.social.requestSocialAction(this, null);
             }
         }
     }
@@ -86,10 +110,10 @@ export class ChildSpeaki extends BaseCharacter {
 
     /** キャンディを自律的に配置する */
     _placeRandomCandy() {
-        if (!window.game) return;
+        if (!this.game) return;
 
         // 自分の足元にキャンディを置く
-        window.game.addItem('Candy', 'item', this.pos.x, this.pos.y);
+        this.game.addItem('Candy', 'item', this.pos.x, this.pos.y);
 
         // 置いた後は少し離れる
         this.status.state = STATE.WALKING;

@@ -166,16 +166,13 @@ body.mode-relaxed #happiness-container {
 }
 
 .fan-disclaimer {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: rgba(44, 62, 80, 0.6); /* セカンダリカラー */
     z-index: 10;
     pointer-events: none;
-    white-space: nowrap;
+    line-height: 1.4;
+    text-shadow: none; /* 白背景なのでシャドウは不要 */
 }
 
 /* ｽﾋﾟｷたちが流れるアニメーション */
@@ -421,6 +418,122 @@ body.mode-relaxed #happiness-container {
     min-height: 0;
     position: relative;
     /* カウンター配置用 */
+}
+
+/* タブナビゲーション */
+.menu-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: -1px;
+    padding: 0 0.5rem;
+    z-index: 2;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 0.7rem 0.3rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid var(--glass-border);
+    border-bottom: none;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 12px 12px 0 0;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #999;
+}
+
+.tab-btn:hover {
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--accent-color);
+}
+
+.tab-btn.active {
+    background: white;
+    color: var(--accent-color);
+    font-weight: 700;
+    border-color: #ffe4e1;
+    border-bottom: 2px solid white;
+    padding-bottom: calc(0.7rem + 1px);
+    box-shadow: 0 -4px 12px rgba(255, 20, 147, 0.05);
+}
+
+/* タブコンテンツ制御 */
+.tab-content-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.tab-content {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.selected-header {
+    background: rgba(255, 105, 180, 0.1);
+    color: var(--accent-color);
+    padding: 0.5rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255, 105, 180, 0.2);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.tab-content.active {
+    display: flex;
+}
+
+/* メッセージセクション */
+#message-section {
+    flex: 1;
+    background: rgba(255, 240, 245, 0.3);
+    /* 薄いピンク背景 */
+    border-radius: 15px;
+    padding: 0.8rem;
+    overflow-y: auto;
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    border: 1px solid rgba(255, 182, 193, 0.2);
+    min-height: 250px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.message-item {
+    padding: 0.7rem 0.9rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(255, 20, 147, 0.05);
+    color: #555;
+    line-height: 1.6;
+    animation: messageEntry 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-left: 3px solid var(--accent-color);
+}
+
+.message-placeholder {
+    color: #bbb;
+    text-align: center;
+    margin-top: 3rem;
+    font-style: italic;
+    font-size: 0.8rem;
+}
+
+@keyframes messageEntry {
+    from {
+        opacity: 0;
+        transform: translateX(10px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1.0);
+    }
 }
 
 /* サイドメニュー上部のリソース表示エリア */
@@ -747,6 +860,11 @@ h3 {
     /* オレンジがかった黄色 */
 }
 
+.gauge-fill.mood {
+    background: linear-gradient(90deg, #00f2fe, #4facfe);
+    /* 水色から青へのグラデーション */
+}
+
 .speaki-detail-footer {
     font-size: 0.7rem;
     color: #7f8c8d;
@@ -839,6 +957,28 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    /* bob（上下揺れ）はCSSアニメーションで処理（JS計算コスト削減） */
+    animation: speakiBob 1.4s ease-in-out infinite;
+    animation-delay: var(--bob-phase, 0s);
+}
+
+/* frozenモーション時はbobアニメーションを停止 */
+.char-sprite-container.frozen-motion {
+    animation: none;
+}
+
+/* bob（上下揺れ）keyframes */
+/* margin-topを使用: transformはJSが位置制御に使用しているため上書き不可 */
+@keyframes speakiBob {
+
+    0%,
+    100% {
+        margin-top: 0;
+    }
+
+    50% {
+        margin-top: calc(var(--bob-amount, 6px) * -1);
+    }
 }
 
 .speaki-sprite,
@@ -895,6 +1035,20 @@ button:hover {
     z-index: 50;
     /* スピキ本体よりも確実に手前に表示 */
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.char-foot-effect {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 40%);
+    width: 80px;
+    height: auto;
+    pointer-events: none;
+    z-index: 5;
+    /* スピキ本体orギフト(10, 50)より後ろ */
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+    transition: opacity 0.3s ease;
 }
 
 /* セリフテキスト表示用 */
@@ -1034,6 +1188,55 @@ button:hover {
         transform: translate(-50%, -50%) scale(2.0) rotate(45deg);
         opacity: 0;
     }
+}
+
+/* フィールド上のステータスバー表示 */
+.char-status-bars {
+    position: absolute;
+    bottom: -15px;
+    /* 足元より少し下 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    pointer-events: none;
+    z-index: 70;
+    opacity: 0.7;
+    /* 邪魔にならないよう少し透けさせる */
+    transition: opacity 0.3s;
+}
+
+.char-sprite-container:hover .char-status-bars {
+    opacity: 1.0;
+}
+
+.char-status-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.char-status-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* 各バーの色設定 */
+.char-status-fill.hunger {
+    background: linear-gradient(90deg, #ff8c00, #ffd700);
+}
+
+.char-status-fill.friendship {
+    background: linear-gradient(90deg, #ff69b4, #ffc0cb);
+}
+
+.char-status-fill.mood {
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
 }
 
 /* なでなでパーティクル (❤️) のスタイル */
@@ -1631,4 +1834,211 @@ button:hover {
     margin-bottom: 2rem;
     text-align: left;
     border: 1px solid #eee;
+}
+
+/* --- Stuck Detection Debug Overlay --- */
+.stuck-debug-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(139, 0, 0, 0.85);
+    /* Dark Red */
+    backdrop-filter: blur(15px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.stuck-debug-content {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 3rem;
+    border-radius: 40px;
+    max-width: 600px;
+    text-align: center;
+    border: 2px solid #ff4500;
+    box-shadow: 0 0 50px rgba(255, 69, 0, 0.3);
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.debug-code-box {
+    background: #1e1e1e;
+    color: #00ff00;
+    padding: 1.5rem;
+    border-radius: 12px;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: left;
+    margin: 1.5rem 0;
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+    border: 1px solid #333;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.resume-btn {
+    padding: 1rem 2rem;
+    background: #ff4500;
+    border: none;
+    color: white;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 5px 15px rgba(255, 69, 0, 0.3);
+}
+
+.resume-btn:hover {
+    transform: scale(1.05);
+    background: #ff6347;
+    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.5);
+}
+
+.resume-btn:active {
+    transform: scale(0.95);
+}
+
+/* ================================================================
+   観察メッセージウィンドウ (ドラッグ可能)
+   ================================================================ */
+.draggable-window {
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    width: 280px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 105, 180, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    overflow: hidden;
+    user-select: none;
+    touch-action: none; /* タッチ操作でのスクロール等を防ぐ */
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.draggable-window.hidden {
+    display: none;
+}
+
+.window-header {
+    background: linear-gradient(90deg, var(--accent-color), #ff69b4);
+    color: white;
+    padding: 8px 12px;
+    cursor: move;
+    touch-action: none; /* タッチ操作でのスクロール等を防ぐ */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.window-content {
+    padding: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    font-size: 0.85rem;
+    color: #444;
+}
+
+.window-content .message-item {
+    background: white;
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border-left: 3px solid var(--accent-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    animation: slideInLow 0.3s ease-out;
+}
+
+@keyframes slideInLow {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.window-placeholder {
+    color: #888;
+    text-align: center;
+    padding: 20px 10px;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* スピキ一覧タブ内の「観察する」ボタン */
+.observe-btn {
+    padding: 8px 16px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(255, 20, 147, 0.2);
+    margin-bottom: 8px;
+}
+
+.observe-btn:hover {
+    background: #ff1493;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(255, 20, 147, 0.3);
+}
+
+.observe-btn.active {
+    background: #ff69b4;
+    font-weight: 700;
+}
+
+/* スピキリストの星マークボタン */
+.highlight-toggle {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    color: #bdc3c7;
+    /* 未選択時はグレー */
+    transition: transform 0.2s, color 0.2s;
+}
+
+.highlight-toggle:hover {
+    transform: scale(1.2);
+    color: var(--accent-color);
+}
+
+.highlight-toggle.active {
+    color: #ffd700;
+    /* 選択時はゴールド */
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }

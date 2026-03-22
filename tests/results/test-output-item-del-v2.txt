@@ -1,0 +1,138 @@
+﻿
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mC:/Users/minat/Documents/MyProjects/MySweetSpeaki_dev[39m
+
+[90mstdout[2m | tests/item_emotion_logic.test.js
+[22m[39m[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: -0.8455% (Expect 1 event every 120s for 1 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: -0.8495% (Expect 1 event every 120s for 1 speakis)
+[Debug] Social Prob/frame: -0.8511% (Expect 1 event every 120s for 1 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+[Debug] Social Prob/frame: 0.0000% (Expect 1 event every Infinitys for 0 speakis)
+
+ [32m笨・[39m tests/item_emotion_logic.test.js [2m([22m[2m8 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+node.exe : [31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m U
+nhandled Errors [49m[22m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ
+[39m
+発生場所 行:1 文字:1
++ & "C:\Program Files\nodejs/node.exe" "C:\P
+rogram Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: 
+    ([31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ...竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m:Str  
+  ing) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommand 
+   Error
+ 
+[31m[1m
+Vitest caught 2 unhandled errors during the 
+test run.
+This might cause false positive tests. Resol
+ve unhandled errors to make sure your tests 
+are not affected.[22m[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Excep
+tion [49m[22m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: s.getStateLabel is 
+not a function[39m
+[36m [2m笶ｯ[22m managers/UIManager.js:[2m
+201:29[22m[39m
+    [90m199| [39m        displaySpeakis[3
+3m.[39m[34mforEach[39m(s [33m=>[39m {
+    [90m200| [39m            [35mconst[3
+9m isHighlighted [33m=[39m (s[33m.[39mid
+ [33m===[39m game[33m.[39mhighlightedCha
+rId)[33m;[39m
+    [90m201| [39m            [35mconst[3
+9m state [33m=[39m s[33m.[39m[34mgetSta
+teLabel[39m()[33m;[39m
+    [90m   | [39m                         
+   [31m^[39m
+    [90m202| [39m            [35mconst[3
+9m emotionLabel [33m=[39m [35mthis[39m[
+33m.[39m[34m_getEmotionLabel[39m(s)[33m;
+[39m
+    [90m203| [39m
+[90m [2m笶ｯ[22m UIManager.updateSpeakiList
+ managers/UIManager.js:[2m199:24[22m[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic m
+anagers/UIManager.js:[2m296:18[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m36
+4:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m344:
+18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39
+m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction 
+node_modules/jsdom/lib/generated/idl/Functio
+n.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks
+ node_modules/jsdom/lib/jsdom/browser/Window
+.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_mo
+dules/jsdom/lib/jsdom/browser/Window.js:[2m
+613:11[22m[39m
+
+[31mThis error originated in "[1mtests/ite
+m_emotion_logic.test.js[22m" test file. It 
+doesn't mean the error was thrown inside the
+ file itself, but while it was running.[39m
+
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m[1m[41m Uncaught Excep
+tion [49m[22m[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+[31m[1mTypeError[22m: s.getStateLabel is 
+not a function[39m
+[36m [2m笶ｯ[22m managers/UIManager.js:[2m
+201:29[22m[39m
+    [90m199| [39m        displaySpeakis[3
+3m.[39m[34mforEach[39m(s [33m=>[39m {
+    [90m200| [39m            [35mconst[3
+9m isHighlighted [33m=[39m (s[33m.[39mid
+ [33m===[39m game[33m.[39mhighlightedCha
+rId)[33m;[39m
+    [90m201| [39m            [35mconst[3
+9m state [33m=[39m s[33m.[39m[34mgetSta
+teLabel[39m()[33m;[39m
+    [90m   | [39m                         
+   [31m^[39m
+    [90m202| [39m            [35mconst[3
+9m emotionLabel [33m=[39m [35mthis[39m[
+33m.[39m[34m_getEmotionLabel[39m(s)[33m;
+[39m
+    [90m203| [39m
+[90m [2m笶ｯ[22m UIManager.updateSpeakiList
+ managers/UIManager.js:[2m199:24[22m[39m
+[90m [2m笶ｯ[22m UIManager.updatePeriodic m
+anagers/UIManager.js:[2m296:18[22m[39m
+[90m [2m笶ｯ[22m Game.update game.js:[2m36
+4:17[22m[39m
+[90m [2m笶ｯ[22m Game.loop game.js:[2m344:
+18[22m[39m
+[90m [2m笶ｯ[22m game.js:[2m85:43[22m[39
+m
+[90m [2m笶ｯ[22m invokeTheCallbackFunction 
+node_modules/jsdom/lib/generated/idl/Functio
+n.js:[2m19:26[22m[39m
+[90m [2m笶ｯ[22m runAnimationFrameCallbacks
+ node_modules/jsdom/lib/jsdom/browser/Window
+.js:[2m635:13[22m[39m
+[90m [2m笶ｯ[22m Timeout._onTimeout node_mo
+dules/jsdom/lib/jsdom/browser/Window.js:[2m
+613:11[22m[39m
+
+[31mThis error originated in "[1mtests/ite
+m_emotion_logic.test.js[22m" test file. It 
+doesn't mean the error was thrown inside the
+ file itself, but while it was running.[39m
+[31m竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡
+ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ竡ｯ[39m
+
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m     Errors [22m [1m[31m2 errors[39m[22m
+[2m   Start at [22m 00:21:11
+[2m   Duration [22m 1.36s[2m (transform 179ms, setup 0ms, import 227ms, tests 24ms, environment 906ms)[22m
+

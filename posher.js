@@ -5,7 +5,7 @@ import { FeederNPC } from './feeder-npc.js';
  * 満腹度が低い(30以下)スピキを見つけ、近くに移動してさつまいもを配置するNPC
  */
 export class Posher extends FeederNPC {
-    constructor(id, parentElement, x, y, options = {}) {
+    constructor(game, id, parentElement, x, y, options = {}) {
         options.characterType = options.characterType || 'posher';
         options.speed = options.speed || 1.5;
         options.size = options.size || 300;
@@ -15,7 +15,7 @@ export class Posher extends FeederNPC {
         options.rescueItemType = 'Poteto';
         options.dashSpeedMultiplier = 3.0;
 
-        super(id, parentElement, x, y, options);
+        super(game, id, parentElement, x, y, options);
     }
 
     /** UI表示用ラベル (ポーシャー固有) */

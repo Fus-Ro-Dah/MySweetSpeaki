@@ -17,7 +17,25 @@ describe('Speaki Character Logic', () => {
                 giftPartner: null,
                 speakis: [],
                 placedItems: [],
-                unlocks: { hungerDecayLv: 0, affectionDecayLv: 0 }
+                unlocks: { hungerDecayLv: 0, affectionDecayLv: 0 },
+                items: {
+                    requestItemUsage: vi.fn((char, item) => {
+                        const isFood = ['Candy', 'Mocaron', 'Poteto'].includes(item.id);
+                        if (isFood) {
+                            char.status.hunger = Math.min(100, char.status.hunger + 20);
+                            char.status.emotion = 'happy';
+                            
+                            // アイテムをリストから削除（本物の ItemManager の挙動を簡易再現）
+                            if (global.window.game.placedItems.includes(item)) {
+                                const idx = global.window.game.placedItems.indexOf(item);
+                                global.window.game.placedItems.splice(idx, 1);
+                            }
+                        } else {
+                            char.status.emotion = 'ITEM';
+                        }
+                        char.status.action = item.id;
+                    })
+                }
             },
             innerWidth: 1200,
             innerHeight: 800
@@ -30,7 +48,7 @@ describe('Speaki Character Logic', () => {
             clientHeight: 800
         };
 
-        speaki = new Speaki(1, mockParent, 100, 100, {
+        speaki = new Speaki(window.game, 1, mockParent, 100, 100, {
             hunger: 50,
             friendship: 0
         });
@@ -81,14 +99,20 @@ describe('Speaki Character Logic', () => {
         const mockItem = { id: 'Candy', consume: vi.fn(), x: 200, y: 200 };
         global.window.game.placedItems = [];
 
+        // アイテムがない場合は sad/idle になる (本来 ItemManager が行うがテスト用にモックを上書き)
+        global.window.game.items.requestItemUsage.mockImplementationOnce((char, item) => {
+            char.status.emotion = 'sad';
+            char.status.action = 'idle';
+            char.timers.actionDuration = 3000;
+        });
+
         speaki.status.state = STATE.ITEM_APPROACHING;
         speaki.interaction.targetItem = mockItem;
         speaki.pos.x = 0;
         speaki.pos.y = 0;
 
-        // arrived is FALSE (dist > 10)
         speaki._updateStateTransition();
-
+ 
         // 食べつくされたことを検知して ITEM_ACTION に移行し、sad idle になるはず
         expect(speaki.status.state).toBe(STATE.ITEM_ACTION);
         expect(speaki.status.emotion).toBe('sad');
@@ -260,7 +284,7 @@ describe('Speaki Character Logic', () => {
 
     it('should evolve baby when age > 60s', async () => {
         const { BabySpeaki } = await import('../baby-speaki.js'); // Dynamic import for test
-        const baby = new BabySpeaki(2, mockParent, 0, 0);
+        const baby = new BabySpeaki(window.game, 2, mockParent, 0, 0);
         global.window.game.evolveBabyToChild = vi.fn();
 
         // Case 1: Just born (Age 0) -> No evolution
