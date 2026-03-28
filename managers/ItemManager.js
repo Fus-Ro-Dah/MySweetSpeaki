@@ -120,7 +120,8 @@ export class ItemManager {
                 STATE.GIFT_TIMEOUT,
                 STATE.USER_INTERACTING,
                 STATE.GAME_APPROACHING,
-                STATE.GAME_REACTION
+                STATE.GAME_REACTION,
+                STATE.ITEM_ACTION
             ];
             if (nonInterruptibleStates.includes(speaki.status.state)) return;
 

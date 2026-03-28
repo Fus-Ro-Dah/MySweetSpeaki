@@ -190,7 +190,7 @@ export class SocialSystem {
                 s.canInteract &&
                 !this._isInSocialState(s) &&
                 !s.interaction.isInteracting &&
-                ![STATE.GIFT_LEAVING, STATE.GIFT_SEARCHING, STATE.GIFT_RETURNING].includes(s.status.state) &&
+                ![STATE.GIFT_LEAVING, STATE.GIFT_SEARCHING, STATE.GIFT_RETURNING, STATE.ITEM_ACTION].includes(s.status.state) &&
                 Math.sqrt((initiator.pos.x - s.pos.x) ** 2 + (initiator.pos.y - s.pos.y) ** 2) < 800 // 範囲を少し広げる
             );
             if (candidates.length === 0) return false;

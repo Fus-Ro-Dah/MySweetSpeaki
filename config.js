@@ -189,7 +189,7 @@ export const ASSETS = {
                     { imagefile: 'speaki_performance_givecandy1.png', soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3', text: 'ﾁｮﾜﾖ!', movePattern: 'bounce' },
                 ],
                 givecandy1_2: [
-                    { imagefile: 'speaki_normal_idle_1.png', soundfile: 'スピキ.mp3', text: 'スピキ!', movePattern: 'bounce' },
+                    { imagefile: 'speaki_normal_idle_1.png', soundfile: 'スピキ.mp3', text: 'ｽﾋﾟｷ!', movePattern: 'bounce' },
                 ],
                 givecandy2: [
                     { imagefile: 'speaki_performance_givecandy2.png', soundfile: 'チョワヨチョワヨホバギチョワヨ.mp3', text: 'ﾁｮﾜﾖ!', movePattern: 'bounce' },
@@ -596,12 +596,12 @@ export const UNLOCK_DATA = {
     autoReceive: {
         name: 'プレゼント自動回収',
         price: 1,
-        desc: 'スピキが持ってきたプレゼントを自動で受け取ります'
+        desc: 'ｽﾋﾟｷが持ってきたプレゼントを自動で受け取ります'
     },
     growthStop: {
         name: 'ｽﾋﾟｷの成長停止',
         price: 1,
-        desc: 'スピキが成長しなくなります赤ちゃんは赤ちゃんのまま、子供は子供のままの姿を維持します'
+        desc: 'ｽﾋﾟｷが成長しなくなります<br>赤ちゃんは赤ちゃんのまま、子供は子供のままの姿を維持します'
     },
     // チャレンジモード用強化項目
     hungerDecay: {
