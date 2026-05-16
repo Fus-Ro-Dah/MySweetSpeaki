@@ -76,6 +76,14 @@ export class Game {
         // モード選択ボタンの待機
         this._bindButton('start-relaxed-btn', () => this.selectMode('relaxed'));
         this._bindButton('start-challenge-btn', () => this.selectMode('challenge'));
+        this._bindButton('start-defense-btn', () => {
+            const modal = document.getElementById('defense-info-modal');
+            if (modal) modal.classList.remove('hidden');
+        });
+        this._bindButton('close-defense-btn', () => {
+            const modal = document.getElementById('defense-info-modal');
+            if (modal) modal.classList.add('hidden');
+        });
         this._bindButton('confirm-start-btn', () => {
             if (this.isGameStarted) {
                 const modal = document.getElementById('mode-info-modal');
@@ -363,6 +371,11 @@ export class Game {
     // ================================================================
     // ギフトイベント（Game側に残す: 状態管理が複数マネージャに跨るため）
     // ================================================================
+
+    /** ギフトイベントの開始（Speaki が画面外へ出発するタイミングで呼ばれる） */
+    startGiftLeaveEvent(speaki) {
+        this.giftPartner = speaki;
+    }
 
     startGiftReceiveEvent(speaki) {
         this.giftPartner = speaki;

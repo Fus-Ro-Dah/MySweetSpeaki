@@ -208,8 +208,9 @@ export class Speaki extends BaseCharacter {
         if (!canStartGift) return false;
 
         this.status.state = STATE.GIFT_LEAVING;
-        game.giftPartner = this;
         this._onStateChanged(this.status.state);
+        // giftPartner の設定は Game クラス経由で行う（直接書き込みを集約）
+        game.startGiftLeaveEvent(this);
         return true;
     }
 

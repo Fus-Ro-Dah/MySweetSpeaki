@@ -132,6 +132,16 @@ body {
     box-shadow: 0 12px 24px rgba(161, 196, 253, 0.5);
 }
 
+/* 防衛戦モードは紫系にしてみる */
+#start-defense-btn {
+    background: linear-gradient(135deg, #da70d6 0%, #e6e6fa 100%);
+    box-shadow: 0 8px 16px rgba(218, 112, 214, 0.3);
+}
+
+#start-defense-btn:hover {
+    box-shadow: 0 12px 24px rgba(218, 112, 214, 0.5);
+}
+
 /* モードによるUI制御 */
 body.mode-relaxed #happiness-container {
     display: none !important;

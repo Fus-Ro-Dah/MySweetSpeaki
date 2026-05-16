@@ -1330,6 +1330,7 @@ export class BaseCharacter {
             this.game.messages.logItemReaction(this, item);
         }
 
+        // 目的地を事前に計算しておく
         const dx = this.pos.x - item.x;
         const dy = this.pos.y - item.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -1341,11 +1342,11 @@ export class BaseCharacter {
             this.pos.targetX = item.x + offset;
             this.pos.targetY = item.y;
         }
-        this.pos.destinationSet = true;
+
+        // _onStateChanged を先に呼ぶ（内部で destinationSet がリセットされる）
         this._onStateChanged(this.status.state);
 
-        // 修正: _onStateChanged が destinationSet = false にリセットするため、
-        // 意図した目的地を設定した直後に再度明示的に true にする
+        // _onStateChanged の後に目的地を確定させる（SocialSystem.startInteraction と同じパターン）
         this.pos.destinationSet = true;
     }
 
