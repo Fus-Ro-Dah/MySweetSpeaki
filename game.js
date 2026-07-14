@@ -44,13 +44,23 @@ export class Game {
             mocaronUnlocked: false,
             reloadReductionLv: 0,
             growthStop: false,
+            uninse: false,
+            chickenspeaki: false,
+            sheepspeaki: false,
+            poemervivi: false,
+            hobagispeaki: false,
             itemUnlocks: {} // 特殊アイテムの個別解放状況
         };
 
         this.settings = {
             feederEnabled: false,
             autoReceiveEnabled: false,
-            growthStopEnabled: false
+            growthStopEnabled: false,
+            uninseEnabled: false,
+            chickenspeakiEnabled: false,
+            sheepspeakiEnabled: false,
+            poemerviviEnabled: false,
+            hobagispeakiEnabled: false
         };
 
         // --- マネージャの初期化 ---
@@ -317,6 +327,7 @@ export class Game {
             const centerY = this.canvas.height / 2;
             this.characters.addSpeaki(centerX - 100, centerY, 'speaki');
 
+
         } catch (e) {
             alert("Error starting game: " + e.message + "\n" + e.stack);
             console.error(e);
@@ -447,6 +458,16 @@ export class Game {
             } else {
                 if (!posher) this.callNPC('posher');
             }
+        } else if (['uninse', 'chickenspeaki', 'sheepspeaki', 'poemervivi', 'hobagispeaki'].includes(id)) {
+            const enabledKey = `${id}Enabled`;
+            this.settings[enabledKey] = !this.settings[enabledKey];
+            const npcChar = this.speakis.find(s => s.characterType === id);
+
+            if (!this.settings[enabledKey]) {
+                if (npcChar) this.removeSpeaki(npcChar.id);
+            } else {
+                if (!npcChar) this.callNPC(id);
+            }
         } else if (id === 'autoReceive') {
             this.settings.autoReceiveEnabled = !this.settings.autoReceiveEnabled;
         } else if (id === 'growthStop') {
@@ -466,6 +487,15 @@ export class Game {
                 this.unlocks.feeder = true;
                 this.settings.feederEnabled = true;
                 this.callNPC('posher');
+                break;
+            case 'uninse':
+            case 'chickenspeaki':
+            case 'sheepspeaki':
+            case 'poemervivi':
+            case 'hobagispeaki':
+                this.unlocks[id] = true;
+                this.settings[`${id}Enabled`] = true;
+                this.callNPC(id);
                 break;
             case 'hungerDecay': this.unlocks.hungerDecayLv++; break;
             case 'affectionDecay': this.unlocks.affectionDecayLv++; break;

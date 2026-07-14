@@ -6,13 +6,22 @@ import { Speaki } from '../speaki.js';
 import { FeederNPC } from '../feeder-npc.js';
 import { Ashur } from '../ashur.js';
 import { Posher } from '../posher.js';
+import { ItemDropperNPC } from '../item-dropper-npc.js';
+import { Uninse } from '../uninse.js';
+import { ChickenSpeaki } from '../chicken-speaki.js';
+import { SheepSpeaki } from '../sheep-speaki.js';
+import { PoemerVivi } from '../poemer-vivi.js';
+import { HobagiSpeaki } from '../hobagi-speaki.js';
+import { VibingGabia } from '../vibing-gabia.js';
 
 // Mock DOM
 global.document = {
     createElement: vi.fn(() => ({
         appendChild: vi.fn(),
-        classList: { add: vi.fn(), remove: vi.fn() },
-        style: {},
+        classList: { add: vi.fn(), remove: vi.fn(), toggle: vi.fn() },
+        style: {
+            setProperty: vi.fn()
+        },
         setAttribute: vi.fn(),
     })),
 };
@@ -158,6 +167,62 @@ describe('Character Expansion Logic', () => {
             expect(posher.characterType).toBe('posher');
             expect(posher.rescueItemType).toBe('Poteto');
             expect(posher.dashSpeedMultiplier).toBe(3.0);
+        });
+    });
+
+    describe('ItemDropperNPC logic', () => {
+        it('should drop items periodically', () => {
+            const dropper = new ItemDropperNPC(global.window.game, 'dropper1', parentElement, 100, 100, {
+                dropItemTypes: ['Uninse1'],
+                dropInterval: 1000
+            });
+            
+            const spy = vi.spyOn(dropper, 'dropItem');
+            
+            dropper.lastDropTime = Date.now() - 2000;
+            dropper.update(1000);
+            expect(spy).toHaveBeenCalled();
+        });
+    });
+
+    describe('Uninse specific logic', () => {
+        it('should initialize as uninse type with proper options', () => {
+            const uninse = new Uninse(global.window.game, 'uninse1', parentElement, 0, 0);
+            expect(uninse.characterType).toBe('uninse');
+            expect(uninse.dropItemTypes).toContain('NPC_action_Uninse');
+            expect(uninse.dropInterval).toBe(15000);
+        });
+    });
+
+    describe('New 4 Dropper NPCs specific logic', () => {
+        it('should initialize ChickenSpeaki with proper options', () => {
+            const char = new ChickenSpeaki(global.window.game, 'c1', parentElement, 0, 0);
+            expect(char.characterType).toBe('chickenspeaki');
+            expect(char.dropItemTypes).toContain('NPC_action_ChickenSpeaki');
+        });
+
+        it('should initialize SheepSpeaki with proper options', () => {
+            const char = new SheepSpeaki(global.window.game, 's1', parentElement, 0, 0);
+            expect(char.characterType).toBe('sheepspeaki');
+            expect(char.dropItemTypes).toContain('NPC_action_SheepSpeaki');
+        });
+
+        it('should initialize PoemerVivi with proper options', () => {
+            const char = new PoemerVivi(global.window.game, 'v1', parentElement, 0, 0);
+            expect(char.characterType).toBe('poemervivi');
+            expect(char.dropItemTypes).toContain('NPC_action_PoemerVivi');
+        });
+
+        it('should initialize HobagiSpeaki with proper options', () => {
+            const char = new HobagiSpeaki(global.window.game, 'h1', parentElement, 0, 0);
+            expect(char.characterType).toBe('hobagispeaki');
+            expect(char.dropItemTypes).toContain('NPC_action_HobagiSpeaki');
+        });
+
+        it('should initialize VibingGabia with proper options', () => {
+            const char = new VibingGabia(global.window.game, 'g1', parentElement, 0, 0);
+            expect(char.characterType).toBe('vibinggabia');
+            expect(char.dropItemTypes).toContain('StrangeRecord1');
         });
     });
 });

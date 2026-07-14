@@ -12,12 +12,14 @@ export class ItemManager {
 
     /** アイテムの配置 */
     addItem(id, type, x, y) {
+        console.log(`[ItemManager] addItem called with id: ${id}, type: ${type}, x: ${x}, y: ${y}`);
         const game = this.game;
         let def;
 
         // クールダウンチェック
         const now = Date.now();
         if (game.itemCooldowns[id] && now < game.itemCooldowns[id]) {
+            console.log(`[ItemManager] addItem aborted due to cooldown check for id: ${id}. Cooldown until: ${game.itemCooldowns[id]}, now: ${now}`);
             game.sound.playSound('アーウ.mp3', 0.5);
             return;
         }
@@ -25,6 +27,7 @@ export class ItemManager {
         // バイト(Job)の場合は専用オブジェクトから取得してNPC呼出
         if (type === 'job') {
             def = JOBS[id];
+            console.log(`[ItemManager] addItem job identified: ${id}. def found: ${!!def}`);
             if (def) {
                 game.characters.callNPC(def.npcType);
             }
@@ -35,6 +38,7 @@ export class ItemManager {
         if (id === 'RandomGift') {
             // プラスチックを消費
             if (game.plastics <= 0) {
+                console.log(`[ItemManager] addItem RandomGift aborted: no plastics left.`);
                 game.sound.playSound('アーウ.mp3', 0.5);
                 return;
             }
@@ -46,14 +50,21 @@ export class ItemManager {
                 game.plastics--;
                 game.ui.initItemMenu();
                 game.ui.updatePlasticStockUI();
+                console.log(`[ItemManager] addItem RandomGift selected: ${id}`);
             } else {
+                console.log(`[ItemManager] addItem RandomGift aborted: empty item pool.`);
                 return;
             }
         } else {
             def = ITEMS[id];
         }
 
-        if (!def) return;
+        if (!def) {
+            console.warn(`[ItemManager] addItem definition not found in ITEMS for id: ${id}`);
+            return;
+        }
+
+        console.log(`[ItemManager] Adding item to game.placedItems: ${id}, size: ${def.size}`);
 
         // 教主像の唯一性チェック: すでに存在する場合は古い方を削除
         if (id === 'MasterStatue') {
@@ -80,6 +91,10 @@ export class ItemManager {
         item.isInitialGift = true;
 
         game.placedItems.push(item);
+
+        if (def.summonNPC) {
+            this._handleNPCSummon(x, y, def.summonNPC);
+        }
 
         if (def.soundfile) {
             game.sound.playSound(def.soundfile, def.pitch || 1.0);
@@ -198,6 +213,26 @@ export class ItemManager {
             item.displayText = nextDef.text;
             item.textDisplayUntil = Date.now() + 15000;
         }
+
+        if (nextDef.summonNPC) {
+            this._handleNPCSummon(item.x, item.y, nextDef.summonNPC);
+        }
+    }
+
+    _handleNPCSummon(x, y, summonNPCConfig) {
+        if (!summonNPCConfig) return;
+        const game = this.game;
+        const npcType = summonNPCConfig.npcType;
+        const duration = summonNPCConfig.duration || 5000;
+        const offsetX = summonNPCConfig.offsetX || 0;
+        const offsetY = summonNPCConfig.offsetY || 0;
+
+        const summonedNPC = game.characters.addSpeaki(x + offsetX, y + offsetY, npcType);
+        setTimeout(() => {
+            if (game.speakis.includes(summonedNPC)) {
+                game.characters.removeSpeaki(summonedNPC.id);
+            }
+        }, duration);
     }
 
     /** 指定座標にあるアイテムを削除 */

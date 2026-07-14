@@ -363,7 +363,15 @@ export class UIManager {
         if (!force && listContainer.contains(document.activeElement)) return;
 
         // NPCはリストに表示しない
-        const displaySpeakis = game.speakis.filter(s => s.canInteract && s.characterType !== 'ashur' && s.characterType !== 'posher');
+        const displaySpeakis = game.speakis.filter(s => s.canInteract &&
+            s.characterType !== 'ashur' &&
+            s.characterType !== 'posher' &&
+            s.characterType !== 'uninse' &&
+            s.characterType !== 'chickenspeaki' &&
+            s.characterType !== 'sheepspeaki' &&
+            s.characterType !== 'poemervivi' &&
+            s.characterType !== 'hobagispeaki'
+        );
 
         if (displaySpeakis.length === 0) {
             listContainer.innerHTML = '<p class="empty-list">スピキはいません...</p>';
@@ -626,6 +634,9 @@ export class UIManager {
                     const isEnabled = game.settings[settingKey];
                     let toggleText = isEnabled ? 'ON' : 'OFF';
                     if (def.id === 'feeder') toggleText = isEnabled ? '手伝い中' : '今はいない';
+                    else if (['uninse', 'chickenspeaki', 'sheepspeaki', 'poemervivi', 'hobagispeaki'].includes(def.id)) {
+                        toggleText = isEnabled ? 'すでにいる' : '今はいない';
+                    }
                     else if (def.id === 'growthStop') toggleText = isEnabled ? '成長停止中' : '今は自然に成長する';
                     else if (def.id === 'autoReceive') toggleText = isEnabled ? '自動回収中' : '自動回収停止';
 

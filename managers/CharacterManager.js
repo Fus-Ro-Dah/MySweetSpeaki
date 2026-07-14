@@ -5,6 +5,12 @@ import { ChildSpeaki } from '../child-speaki.js';
 import { NPCCharacter } from '../npc-character.js';
 import { Ashur } from '../ashur.js';
 import { Posher } from '../posher.js';
+import { Uninse } from '../uninse.js';
+import { ChickenSpeaki } from '../chicken-speaki.js';
+import { SheepSpeaki } from '../sheep-speaki.js';
+import { PoemerVivi } from '../poemer-vivi.js';
+import { HobagiSpeaki } from '../hobagi-speaki.js';
+import { VibingGabia } from '../vibing-gabia.js';
 
 /**
  * キャラクター管理クラス
@@ -43,6 +49,18 @@ export class CharacterManager {
             char = new Ashur(game, id, game.speakiRoom, finalX, finalY, options);
         } else if (type === 'posher') {
             char = new Posher(game, id, game.speakiRoom, finalX, finalY, options);
+        } else if (type === 'uninse') {
+            char = new Uninse(game, id, game.speakiRoom, finalX, finalY, options);
+        } else if (type === 'chickenspeaki') {
+            char = new ChickenSpeaki(game, id, game.speakiRoom, finalX, finalY, options);
+        } else if (type === 'sheepspeaki') {
+            char = new SheepSpeaki(game, id, game.speakiRoom, finalX, finalY, options);
+        } else if (type === 'poemervivi') {
+            char = new PoemerVivi(game, id, game.speakiRoom, finalX, finalY, options);
+        } else if (type === 'hobagispeaki') {
+            char = new HobagiSpeaki(game, id, game.speakiRoom, finalX, finalY, options);
+        } else if (type === 'vibinggabia') {
+            char = new VibingGabia(game, id, game.speakiRoom, finalX, finalY, options);
         } else if (type === 'npc' || type.startsWith('npc_')) {
             char = new NPCCharacter(game, id, game.speakiRoom, finalX, finalY, options);
         } else {
@@ -50,6 +68,7 @@ export class CharacterManager {
         }
         game.speakis.push(char);
         game.ui.updateSpeakiList();
+        return char;
     }
 
     /** キャラクター削除 */
